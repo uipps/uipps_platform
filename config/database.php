@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'mysql57'),
 
     /*
     |--------------------------------------------------------------------------
@@ -33,55 +33,36 @@ return [
 
     'connections' => [
 
-        'sqlite' => [
-            'driver' => 'sqlite',
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
-            'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-        ],
 
-        'mysql' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+        'mysql57' => [
+            'driver'    => 'mysql',
+            'write' => [
+                'name' => 'writeConn',
+                'host' => env('DB_MASTER_HOST', '127.0.0.1'),
+                'port' => env('DB_MASTER_PORT', 3306),
+                'username' => env('DB_MASTER_USERNAME', 'uipps'),
+                'password' => env('DB_MASTER_PASSWORD', '')
+            ],
+            'read' => [
+                [
+                    'name' => 'readConn1',
+                    'host' => env('DB_SLAVE_HOST', '127.0.0.1'),
+                    'port' => env('DB_SLAVE_PORT', 3306),
+                    'username' => env('DB_SLAVE_USERNAME', 'uipps'),
+                    'password' => env('DB_SLAVE_PASSWORD', '')
+                ]
+            ],
+            //'host'      => env('DB_MASTER_HOST', '127.0.0.1'),
+            //'database'  => env('DB_MASTER_USERNAME', 'uipps'),
             'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
+            'charset' => 'utf8',
+            'collation' => 'utf8_general_ci',
+            'prefix' => env('DB_PREFIX', ''),
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            'timezone'  => env('DB_TIMEZONE', '+00:00'),
         ],
-
-        'pgsql' => [
-            'driver' => 'pgsql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'schema' => 'public',
-            'sslmode' => 'prefer',
-        ],
-
-        'sqlsrv' => [
-            'driver' => 'sqlsrv',
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-        ],
-
     ],
 
     /*
