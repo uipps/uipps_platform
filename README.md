@@ -13,3 +13,6 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
 - php artisan db:seed
 - php artisan key:generate
 - 登录后台：host/admin   帐号：admin  密码：admin
+
+### docker的安装
+- 参考官方文档 [windows](https://docs.docker.com/get-started/) , [mac](https://docs.docker.com/get-started/) 
