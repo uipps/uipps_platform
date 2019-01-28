@@ -10,6 +10,6 @@ class Delivery extends Model
     const STATUS_DELIVERING   = 2; // 配送中
 
     protected $connection = 'mysql57';
-    protected $table = 'jobs';
+    protected $table = 'dpps_project';
     public $timestamps = false;
 }

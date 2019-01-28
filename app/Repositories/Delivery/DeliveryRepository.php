@@ -21,6 +21,7 @@ class DeliveryRepository extends DeliveryRepositoryImpl
 
         $db_result = parent::getDeliveryInfoById($dispatch_id);
         if ($db_result) {
+            if (is_object($db_result)) $db_result = $db_result->toArray();
             Cache::add($cache_key, $db_result, self::CACHE_TIME);
         }
         return $db_result;
