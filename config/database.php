@@ -35,7 +35,6 @@ return [
         'mysql57' => [
             'driver'    => 'mysql',
             'write' => [
-                'name' => 'writeConn',
                 'host' => env('DB_MASTER_HOST', '127.0.0.1'),
                 'port' => env('DB_MASTER_PORT', 3306),
                 'username' => env('DB_MASTER_USERNAME', 'uipps'),
@@ -43,7 +42,6 @@ return [
             ],
             'read' => [
                 [
-                    'name' => 'readConn1',
                     'host' => env('DB_SLAVE_HOST', '127.0.0.1'),
                     'port' => env('DB_SLAVE_PORT', 3306),
                     'username' => env('DB_SLAVE_USERNAME', 'uipps'),
@@ -58,6 +56,7 @@ return [
             'prefix' => env('DB_PREFIX', ''),
             'prefix_indexes' => true,
             'strict' => true,
+            //'sticky' => false,
             'engine' => null,
             'timezone'  => env('DB_TIMEZONE', '+00:00'),
         ],
