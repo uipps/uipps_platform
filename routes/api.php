@@ -16,3 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group(['namespace' => 'Delivery'],function () use ($router) {
+    $router->get('getorderdelivery','DeliveryController@getOrderDeliveryInfo'); // 配送单 - 第一个带缓存扩展的样例
+});

@@ -32,8 +32,6 @@ return [
     */
 
     'connections' => [
-
-
         'mysql57' => [
             'driver'    => 'mysql',
             'write' => [
@@ -53,7 +51,7 @@ return [
                 ]
             ],
             //'host'      => env('DB_MASTER_HOST', '127.0.0.1'),
-            //'database'  => env('DB_MASTER_USERNAME', 'uipps'),
+            'database'  => env('DB_DATABASE', 'uipps'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8',
             'collation' => 'utf8_general_ci',
