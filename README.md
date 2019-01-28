@@ -6,17 +6,14 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
 ## 安装步骤
 - `git clone git@github.com:uipps/uipps_platform.git`
 - `docker-compose up -d`
-- 复制.env.example为.env
+- 复制.env.example为.env `cp .env.example .env`
 - 配置.env里的数据库连接信息
 - `composer update`
 - `php artisan migrate`
 - `php artisan db:seed`
 - `php artisan key:generate`
-- 登录后台：host/admin   帐号：admin  密码：admin
+- 登录后台：http://host.uipps.com/admin   帐号：admin  密码：admin
 
-
-### docker的安装
-- 参考官方文档 [windows](https://docs.docker.com/docker-for-windows/) , [mac](https://docs.docker.com/docker-for-mac/) 
 
 ## 编码约束-目录结构约定
 - Model层，只做一个表的声明，如：连哪个库、哪个表等
@@ -30,5 +27,8 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
   > 下层不能调用上层，同层不能互相调用
   
 
-
-###### [markdown](https://www.appinn.com/markdown/)
+## 附录
+### 1. [markdown](https://www.appinn.com/markdown/)
+### 2. docker的安装 
+- 参考官方文档 [windows](https://docs.docker.com/docker-for-windows/) , [mac](https://docs.docker.com/docker-for-mac/)
+ 
