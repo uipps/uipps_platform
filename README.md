@@ -28,7 +28,6 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
   
 
 ## 附录
-### 1. [markdown](https://www.appinn.com/markdown/)
-### 2. docker的安装 
-- 参考官方文档 [windows](https://docs.docker.com/docker-for-windows/) , [mac](https://docs.docker.com/docker-for-mac/)
+### 1. md文件编写 [markdown](https://www.appinn.com/markdown/) 
+### 2. docker的安装, 官方文档 [windows](https://docs.docker.com/docker-for-windows/) , [mac](https://docs.docker.com/docker-for-mac/)
  
