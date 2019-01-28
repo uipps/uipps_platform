@@ -17,10 +17,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
 Route::group(['namespace' => 'admin'], function ($router) {
+    Route::get('/home', 'HomeController@index')->name('home');
     $router->get('mainpage','AdminController@mainpage');
+
 });
 
 Route::group(['namespace' => 'Hostbackend', 'prefix' => 'host'], function ($router) {
