@@ -42,6 +42,7 @@ return [
             ],
             'read' => [
                 [
+                    'name' => 'readConn1',
                     'host' => env('DB_SLAVE_HOST', '127.0.0.1'),
                     'port' => env('DB_SLAVE_PORT', 3306),
                     'username' => env('DB_SLAVE_USERNAME', 'uipps'),
