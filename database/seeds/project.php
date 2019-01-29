@@ -48,5 +48,10 @@ class project extends Seeder
             'bendi_uri' => '/data0/htdocs/www',
             'created_at' => time(),
         ]);
+
+        // faker相对逼真的数据, php artisan make:factory UserFactory --model=User 创建的，在database/factory下
+        //factory(App\Models\User\User::class)->times(10)->make()->each(function($user, $index){
+        //    $user->save();
+        //});
     }
 }
