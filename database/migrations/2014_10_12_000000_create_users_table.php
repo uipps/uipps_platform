@@ -14,13 +14,17 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->increments('id')->comment('自增ID');
+            $table->string('name', 100)->comment('登录账号');
+            $table->string('email', 100)->unique()->comment('邮箱');
+            $table->dateTime('email_verified_at')->nullable()->comment('email认证时间');
+            $table->string('password')->default('')->comment('密码');
             $table->rememberToken();
-            $table->timestamps();
+            $table->tinyInteger('status')->default(1)->comment('状态：0-删除 1-正常 2-预留其他状态');
+            $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
+            $table->engine = 'InnoDB';
+            $table->comment = '用户表';
         });
     }
 
@@ -31,6 +35,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        //Schema::dropIfExists('users');
     }
 }
