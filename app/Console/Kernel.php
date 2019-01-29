@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('Crontab')->cron('* * * * *'); // 测试定时任务
+        $schedule->command('Crontab getProjectList')->cron('* * * * *'); // 测试定时任务
     }
 
     /**
