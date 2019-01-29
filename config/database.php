@@ -61,6 +61,36 @@ return [
             'engine' => null,
             'timezone'  => env('DB_TIMEZONE', '+00:00'),
         ],
+
+        'user_db' => [
+            'driver'    => 'mysql',
+            'write' => [
+                'host' => env('DB_MASTER_HOST', '127.0.0.1'),
+                'port' => env('DB_MASTER_PORT', 3306),
+                'username' => env('DB_MASTER_USERNAME', 'uipps'),
+                'password' => env('DB_MASTER_PASSWORD', '')
+            ],
+            'read' => [
+                [
+                    'name' => 'readConn1',
+                    'host' => env('DB_SLAVE_HOST', '127.0.0.1'),
+                    'port' => env('DB_SLAVE_PORT', 3306),
+                    'username' => env('DB_SLAVE_USERNAME', 'uipps'),
+                    'password' => env('DB_SLAVE_PASSWORD', '')
+                ]
+            ],
+            //'host'      => env('DB_MASTER_HOST', '127.0.0.1'),
+            'database'  => env('DB_DATABASE', 'uipps'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_general_ci',
+            'prefix' => env('DB_PREFIX', ''),
+            'prefix_indexes' => true,
+            'strict' => true,
+            //'sticky' => false,
+            'engine' => null,
+            'timezone'  => env('DB_TIMEZONE', '+00:00'),
+        ],
     ],
 
     /*
