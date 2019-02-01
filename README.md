@@ -18,7 +18,7 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
 
 ## 编码约束-目录结构约定
 - Model层，只做一个表的声明，如：连哪个库、哪个表等
-- Repositories层，可以引入多个表model。
+- Repositories层，可以引入多个表model，编写数据库表以及redis等。
   > 只能调用model层，不能调用其它Repositories
 - Service层，业务模块服务，一个service编写一个模块的业务逻辑。
   > 只能调用Repositories层，不能调用其它service和model层

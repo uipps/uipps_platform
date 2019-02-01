@@ -15,6 +15,11 @@ class ErrorMsg {
     const PARAM_FORMAT_ERROR = 40;
     const REQUEST_DATA_INCOMPLETE = 45;
 
+    const USER_NOT_EXISTS = 70;
+    const GOOGLE_AUTHENTICATOR_ERROR = 72;
+    const PASSWORD_ERROR = 75;
+    const USER_STATUS_ERROR = 77;
+
     static $error_msg_array = array(
         self::PARAM_ERROR       => '参数错误',
         self::UN_LOGIN          => '未登录',
@@ -27,6 +32,10 @@ class ErrorMsg {
         self::PARAM_FORMAT_ERROR  => '请求参数格式错误',
         self::REQUEST_DATA_INCOMPLETE  => '数据不全',
 
+        self::USER_NOT_EXISTS  => '用户不存在',
+        self::GOOGLE_AUTHENTICATOR_ERROR  => 'Google验证码错误',
+        self::PASSWORD_ERROR  => '密码错误',
+        self::USER_STATUS_ERROR  => '用户状态异常',
     );
 
     private function __construct() {}
@@ -54,17 +63,17 @@ class ErrorMsg {
      * @param array $other_info
      */
     public static function FillResponseAndLog(&$response, $status, $other_info=array()) {
-        $response->code = $status;
+        $response->ret = $status;
 
         // 如果有超过两个或更多的参数则都传递给如下方法
         array_unshift($other_info, $status); // 在数组插入一个单元
-        $response->info = call_user_func_array('App\Libs\Utils\ErrorMsg::GetErrorMsg', $other_info);
+        $response->msg = call_user_func_array('App\Libs\Utils\ErrorMsg::GetErrorMsg', $other_info);
 
         $call_info = debug_backtrace();
         $log_title = isset($call_info[1]) ? $call_info[0]['file'] . ' ' .
             $call_info[0]['line'] . ': ' . $call_info[1]['function'] .
             ' failed:' :
             $call_info[0]['file'] . ' ' . $call_info[0]['line'] . ': ';
-        //Log::alert($log_title . $response->info, false);
+        //Log::alert($log_title . $response->msg, false);
     }
 }

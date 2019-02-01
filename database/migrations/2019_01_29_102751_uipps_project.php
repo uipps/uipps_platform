@@ -49,7 +49,7 @@ class UippsProject extends Migration
             $table->string('db_pwd', 20)->default('')->comment('数据库密码');
             $table->unsignedInteger('db_timeout')->default(0)->comment('数据库超时时间');
             $table->string('db_sock', 100)->default('')->comment('数据库socket位置');
-            $table->enum('if_use_slave', ['yes','no'])->default('no')->comment('是否使用从库');
+            $table->enum('if_use_slave', ['T', 'F'])->default('F')->comment('是否使用从库');
             // 从库
             $table->string('slave_db_host', 50)->default('')->comment('从库主机名');
             $table->string('slave_db_name', 50)->default('')->comment('从库数据库名');
@@ -59,11 +59,11 @@ class UippsProject extends Migration
             $table->unsignedInteger('slave_db_timeout')->default(0)->comment('从库超时时间');
             $table->string('slave_db_sock', 100)->default('')->comment('从库socket位置');
             // 其他
-            $table->enum('if_daemon_pub', ['yes','no'])->default('no')->comment('是否后台发布');
-            $table->enum('status', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
+            $table->enum('if_daemon_pub', ['T','F'])->default('F')->comment('是否后台发布');
+            $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
             $table->unsignedInteger('search_order')->index()->default(0)->comment('搜索顺序');
             $table->unsignedInteger('list_order')->default(50)->comment('显示顺序');
-            $table->enum('if_hide', ['yes','no'])->default('no')->comment('是否隐藏');
+            $table->enum('if_hide', ['T','F'])->default('F')->comment('是否隐藏');
             $table->string('description', 1000)->default('')->comment('描述');
             $table->unsignedInteger('host_id')->default(0)->comment('主机id');
             $table->unsignedInteger('res_pub_map')->default(0)->comment('发布地图');
@@ -77,6 +77,33 @@ class UippsProject extends Migration
             $table->comment = '全部项目';
         });
 
+        // 用户
+        Schema::create('user', function (Blueprint $table) {
+            $table->increments('id')->comment('自增ID');
+            $table->unsignedInteger('g_id')->default(0)->comment('所属组ID,角色');
+            $table->unsignedInteger('parent_id')->default(0)->comment('所属父级ID');
+            $table->string('username', 100)->unique()->comment('用户名');
+            $table->string('password', 100)->comment('密码');
+            $table->string('nickname', 20)->default('')->comment('昵称');
+            $table->string('mobile', 11)->default('')->comment('手机号码');
+            $table->string('telephone', 20)->default('')->comment('电话');
+            $table->string('email', 100)->default('')->comment('email');
+            $table->string('google_authenticator', 16)->default('')->comment('google动态口令认证');
+            $table->enum('locked', ['T','F'])->default('F')->comment('是否锁定');
+            $table->enum('is_admin', ['T','F'])->default('F')->comment('是否管理员');
+            $table->string('creator', 100)->default('')->comment('创建者');
+            $table->string('mender', 100)->default('')->comment('修改者');
+            $table->dateTime('expired')->comment('过期时间');
+            $table->string('description', 255)->default('')->comment('描述');
+            $table->string('badPwdStr', 100)->default('')->comment('错误密码');
+            $table->string('lastPwdChange', 100)->default('')->comment('最后一次修改的密码');
+            $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
+
+            $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
+            $table->engine = 'InnoDB';
+            $table->comment = '用户表';
+        });
     }
 
     /**

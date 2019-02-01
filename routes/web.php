@@ -12,14 +12,24 @@
 */
 
 Route::get('/', function () {
-    return 'welcome here!';
+    return redirect('/admin/login');
 });
 
-Auth::routes();
+// Blade::setContentTags('<!--{', '}-->'); // 不可用
+Auth::routes(); // 暂时隐藏外网用户注册、找回密码等
 
-Route::group(['namespace' => 'admin'], function ($router) {
+
+Route::group(['namespace' => 'Admin', 'prefix'=>'admin'], function (){
+    //管理员登录、注销 （暂无注册）
+    Route::get('login','LoginController@showLoginForm')->name('admin.loginForm');
+    Route::post('login','LoginController@loginAdmin')->name('admin.login');
+    Route::get('logout','LoginController@logout')->name('admin.logout');
+    Route::get('mainpage','AdminController@mainpage')->name('admin.mainpage');
+});
+
+
+Route::group(['namespace' => 'Admin'], function ($router) {
     Route::get('/home', 'HomeController@index')->name('home');
-    $router->get('mainpage','AdminController@mainpage')->name('mainpage');
 
 });
 

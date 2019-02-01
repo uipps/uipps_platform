@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 class HostController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth');
+        $this->middleware('admin_auth');
     }
 
     public function list(Request $request)

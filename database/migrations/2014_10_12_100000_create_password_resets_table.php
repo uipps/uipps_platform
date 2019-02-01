@@ -13,7 +13,7 @@ class CreatePasswordResetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('password_resets', function (Blueprint $table) {
+        /*Schema::create('password_resets', function (Blueprint $table) {
             $table->increments('id')->comment('自增ID');
             $table->string('email')->index()->comment('邮箱');
             $table->string('token')->comment('口令token');
@@ -21,7 +21,7 @@ class CreatePasswordResetsTable extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
             $table->engine = 'InnoDB';
             $table->comment = '密码重置表';
-        });
+        });*/
     }
 
     /**

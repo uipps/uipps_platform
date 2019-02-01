@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 class ProjectController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth');
+        $this->middleware('admin_auth');
     }
 
     public function list(Request $request)
