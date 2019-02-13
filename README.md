@@ -28,7 +28,7 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
   > 下层不能调用上层，同层不能互相调用
   
 ## 大型公司技术架构
-- 搭建LDAP服务，一个账号公司各个系统都可以登录
+- 搭建LDAP服务，一个账号公司各个系统都可以登录 （不安装ldap提供一个内部账号密码验证接口也一样）
 - 搭建gitlab-用于内网代码管理，代码不用托管在github或码云等公网
 - 搭建jira、wiki（用confluence），大公司都用jira做各种流程管理，wiki，bug处理等等
 - 内网域名服务器，各种内部域名（优先程度次之）
