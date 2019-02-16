@@ -36,6 +36,7 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
 - 代码发布上线用gopub进行管理
 - 另外搭建tfs（Taobao File System），或其他文件系统
 - 内网域名服务器，各种内部域名（优先程度次之）
+- 用户首先访问的就是CDN, 顺序如下:  client  ->  CDN -> F5 -> nginx -> apache/php 
 - 要开除人，设置账号过期或删除账号即可，不受员工要挟（删除代码等破坏活动）
 
 ## 附录
