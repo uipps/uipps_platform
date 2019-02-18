@@ -5,6 +5,7 @@
     <title>登录 {{$system_name}}</title>
 
     <meta http-equiv="Content-Language" content="zh-CN" />
+    <meta name="csrf-token" content="{{csrf_token()}}">
     <style type="text/css">
         /* 全局样式begin */
         html{color:#000;background:#FFF;}
