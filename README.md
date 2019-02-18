@@ -1,7 +1,7 @@
 # uipps_platform
 
 ## 关于UIPPS系统
-UIPPS(universal information publish platform) 通用信息发布平台 基于laravel5.7版本，独特的设计理念
+UIPPS(universal information publish platform) 通用信息发布平台 基于laravel5.7版本，独特的设计理念，颠覆传统开发方式，一个后台管理搞定API、H5；集中管理高效开发。
 
 ## 本系统安装步骤
 - `git clone git@github.com:uipps/uipps_platform.git`
