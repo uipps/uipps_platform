@@ -37,7 +37,7 @@ class LoginController extends Controller
             return view('admin.login_register.login', $l_data_arr);
         }
         // 登录成功，种cookie，session等
-        $this->userService->SetSessionCookieByUserArr($result, $form);
+        $this->userService->SetSessionCookieByUserArr($result->data, $form);
         if ( !empty($request['back_url']) ){
             // 似乎应该用session中注册的，以后验证????
             return redirect($request['back_url']);

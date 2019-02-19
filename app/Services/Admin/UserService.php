@@ -12,7 +12,7 @@ use App\Services\BaseService;
 class UserService extends BaseService
 {
     protected $_sid = null;
-    protected $_fields = ['id','username','password','nickname','email','g_id','proj_priv','is_admin','expired'];
+    protected $_fields = ['id','username','password','nickname','email','g_id','is_admin','expired']; // 'proj_priv',
     protected $_cookie_sid_domain = '';
     protected $_cookie_sid_path   = '/';
     protected $_cookie_sid_expire = 315360000;  // 十年时间 3650*24*3600
@@ -132,6 +132,7 @@ class UserService extends BaseService
 
 
     public function SetSessionCookieByUserArr($l_uinfo, $a_arr=array()){
+        \Log::info(var_export($l_uinfo, true));
         $this->InitUserRowByInfo($l_uinfo);
         $this->_sid = \UIBI::getSidFromUIBIByUserPass($l_uinfo);
 
@@ -150,7 +151,12 @@ class UserService extends BaseService
             // 常用cookie种下
             setcookie('uid', $this->id, time()+$this->_cookie_sid_expire, $this->_cookie_sid_path, $this->_cookie_sid_domain);
             setcookie('user', $this->username, time()+$this->_cookie_sid_expire, $this->_cookie_sid_path, $this->_cookie_sid_domain);
-            if (''!=$this->email) setcookie('email', $this->email, time()+$this->_cookie_sid_expire, $this->_cookie_sid_path, $this->_cookie_sid_domain);
+            \Cookie::make('uid', $this->id, time()+$this->_cookie_sid_expire, $this->_cookie_sid_path, $this->_cookie_sid_domain);
+            \Cookie::make('user', $this->username, time()+$this->_cookie_sid_expire, $this->_cookie_sid_path, $this->_cookie_sid_domain);
+            if (''!=$this->email) {
+                setcookie('email', $this->email, time()+$this->_cookie_sid_expire, $this->_cookie_sid_path, $this->_cookie_sid_domain);
+                \Cookie::make('email', $this->email, time()+$this->_cookie_sid_expire, $this->_cookie_sid_path, $this->_cookie_sid_domain);
+            }
         }
     }
 
@@ -181,14 +187,21 @@ class UserService extends BaseService
     }
 
     public function InitUserSession(){
+        if (!\Session::has('user')) {
+            \Session::put('user', []);
+        }
         if ( !isset($_SESSION['user']) ){
             $_SESSION['user'] = array();
         }
         // session()->put('user', collect($l_user)->toArray());
         // $_SESSION['user']['username'] = $this->username;
+        $_session = [];
         foreach ($this->_fields as $l_field){
-            $_SESSION['user'][$l_field] = $this->$l_field;
+            //$_SESSION['user'][$l_field] = $this->$l_field;
+            //\Session::push("user.$l_field", $this->$l_field); // push变成多维数组，得用put
+            $_session[$l_field] = $this->$l_field;
         }
+        \Session::put('user', $_session);
     }
 
     public function InitUserRow_(){
@@ -198,13 +211,19 @@ class UserService extends BaseService
                 $this->$l_field = $_SESSION['user'][$l_field];
             }
         }
+        if (\Session::has('user')) {
+            foreach ($this->_fields as $l_field){
+                $this->$l_field = session('user')[$l_field];
+            }
+        }
     }
 
     public function InitUserRowByInfo($a_uinfo)
-    {echo __LINE__ . "\r\n";print_r($a_uinfo);
+    {//echo __LINE__ . "\r\n";print_r($a_uinfo);
         // $this->id = $a_uinfo['id'];
         foreach ($this->_fields as $l_field){
             $this->$l_field = $a_uinfo[$l_field];
+            \Log::info(var_export($this->$l_field, true));
         }
     }
 
@@ -276,6 +295,10 @@ class UserService extends BaseService
         // 如果使用 session 和 cookie 验证
         if ( isset($_SESSION['user']) && $_SESSION['user'] ){
             // session存在可以认为已经登录成功，可不用种cookie。
+            return true;
+        }
+
+        if (\Session::has('user') && session('user', '')) {
             return true;
         }
 
