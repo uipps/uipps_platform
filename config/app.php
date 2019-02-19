@@ -1,5 +1,10 @@
 <?php
 
+$GLOBALS['cfg']['SOURCE_CSS_PATH'] = "WEB-INF/template/css";
+$GLOBALS['cfg']['SOURCE_JS_PATH']  = "WEB-INF/template/js";
+$GLOBALS['cfg']['SOURCE_IMG_PATH'] = "WEB-INF/template/images";
+require_once 'chinese.utf8.lang.php';
+
 return [
 
     /*
@@ -133,6 +138,9 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
+
+    'contentOldTags' => ['<!--{', '}-->'],
+    'contentTags' => ['{{', '}}'],
 
     'providers' => [
 
