@@ -19,7 +19,7 @@ class UIBI {
             return "";
         }
 
-        $sign = UIBI::getSign();  // UIBI 提供，目前使用此
+        $sign = self::getSign();  // UIBI 提供，目前使用此
 
         $password   = $a_uinfo["password"];
         $md5pass    = array_key_exists("md5pass",$a_uinfo)?$a_uinfo["md5pass"]:false;
@@ -32,7 +32,7 @@ class UIBI {
                 $k = md5($password);
             }
 
-            $token = UIBI::genSidByUserPass($sign,$uid,$k,$a_uinfo["username"]);
+            $token = self::genSidByUserPass($sign,$uid,$k,$a_uinfo["username"]);
 
             return $token;
         }else {

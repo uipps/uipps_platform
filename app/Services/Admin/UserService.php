@@ -97,7 +97,7 @@ class UserService extends BaseService
     public function getMd5Password($pwd, $is_md5_pass=false) {
         if (!$is_md5_pass)
             $pwd = md5($pwd);
-        return $pwd; // 沿用旧的
+        return $pwd; // 沿用旧的 TODO 以后有时间则改成多次md5提高安全性
         //return md5($pwd . env('PWD_SECRET_KEY', 'my_secret_key'));
     }
 
