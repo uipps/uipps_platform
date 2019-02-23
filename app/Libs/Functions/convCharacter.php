@@ -21,7 +21,10 @@ function convCharacterByStr($str,$tar_char="gb2312"){
 
 function convCharacter($str,$in2db=false){
     $new_str = $str;             // 返回的结果
-    if ($GLOBALS['cfg']['out_character']!=$GLOBALS['cfg']['db_character']) {   // 字符编码相同则不用转换
+    $GLOBALS['cfg']['out_character'] = env('out_character', 'utf8');
+    $GLOBALS['cfg']['db_character'] = env('db_character', 'utf8');
+
+    if (env('out_character', 'utf8') != env('db_character', 'utf8')) {   // 字符编码相同则不用转换
         $tar_char = $in2db?$GLOBALS['cfg']['db_character']:$GLOBALS['cfg']['out_character'];
         if ("utf8"==$tar_char) {
             // 判断是否为utf8编码的，如果是则不用转换，如果不是则需要转换，多一重保险

@@ -1,14 +1,14 @@
 <?php
 
 class cString {
-    function get_rand_useragent(){
+    public function get_rand_useragent(){
         $l_arr = array(
             "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0)", // IE8
             "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.1.1) Gecko/20090715 Firefox/3.5.1 (.NET CLR 3.5.30729)",
         );
     }
     // 将do=project_list分解成前后两部分
-    function getNameActType($a_str){
+    public static function getNameActType($a_str){
         $l_rlt[0] = $a_str;
         $l_rlt[1] = "list";
 
@@ -42,7 +42,7 @@ class cString {
     }
 
     // 中文需要转义，没有中文就用英文替代
-    function getNameCN($a_key,$table_name_cn){
+    public function getNameCN($a_key,$table_name_cn){
         if (!empty($table_name_cn)) {
             return convCharacter($table_name_cn,true);
         }else {
@@ -50,7 +50,7 @@ class cString {
         }
     }
 
-    function GetAliasByDsnString($dsn,$l_name=""){
+    public function GetAliasByDsnString($dsn,$l_name=""){
         if (is_string($dsn) && ""!=$dsn) {
             $l_b = parse_url($dsn);
             if (isset($l_b["path"]) && "/"!=trim($l_b["path"])) {
@@ -70,7 +70,7 @@ class cString {
      * @param array or string: $l_content
      * @return string
      */
-    function GetContType(&$request,$l_content){
+    public function GetContType(&$request,$l_content){
         if (!function_exists('json_decode')) {
             require_once('JSON.php');
             $json = new Services_JSON();
@@ -149,7 +149,7 @@ class cString {
      * @param array $a_ge 常见的表示主机的数组索引名称
      * @return string
      */
-    function parse_mysql_ini($a_data){
+    public function parse_mysql_ini($a_data){
         $a_ge=array(
             "mysql_dsn"=>array(),
             "dsn"=>array(),
@@ -189,7 +189,7 @@ class cString {
 
     // 剔除字符串的行注释，例如sql中的 -- ，然后返回没有注释的新字符串
     // 注意仅仅对于行注释，暂时不针对块注释，以后参考 simple_html_dom的<!-- 也能做块注释????
-    function lineDelBySpe($a_str,$a_spe="--"){
+    public static function lineDelBySpe($a_str,$a_spe="--"){
         $a_str = preg_replace("/^$a_spe.+/","",$a_str);
         $a_str = preg_replace("/\n$a_spe.+/","\n",$a_str);
 
@@ -226,7 +226,7 @@ class cString {
      * @param string $a_str
      * @return string
      */
-    function str__replace($a_array_combine,$a_str){
+    public function str__replace($a_array_combine,$a_str){
         if (is_array($a_array_combine) && !empty($a_array_combine)) {
             //require_once("common/lib/cArray.cls.php");
             $l_arr = cArray::str__replace($a_array_combine,$a_str);
@@ -235,11 +235,11 @@ class cString {
         return $a_str;
     }
 
-    function getMysqlDsnStr($dsn){
+    public function getMysqlDsnStr($dsn){
         return "mysql://".$dsn["db_user"].":".$dsn["db_pwd"]."@".$dsn["db_host"].":".$dsn["db_port"]."/".$dsn["db_name"];
     }
 
-    function getMysqlDsnStrFromMDB2DSN($dsn){
+    public function getMysqlDsnStrFromMDB2DSN($dsn){
         return "mysql://".$dsn["username"].":".$dsn["password"]."@".$dsn["hostspec"].":".$dsn["port"]."/".$dsn["database"];
     }
 
@@ -249,7 +249,7 @@ class cString {
      * @param string $a_str
      * @return string
      */
-    function php_strip_whitespace_str($a_str){
+    public function php_strip_whitespace_str($a_str){
         // 将字符串存入文件，
         $l_f = 'u'.'nl'."i"."n"."k".'';
         require_once("common/Files.cls.php");
@@ -280,7 +280,7 @@ class cString_num
      * @param int $l_DepthCount
      * @return int
      */
-    function get_array_depth($a_arr,$l_DepthCount=0) {
+    public static function get_array_depth($a_arr,$l_DepthCount=0) {
         $l_DepthArray = array();
 
         if (is_array($a_arr)){
@@ -298,7 +298,7 @@ class cString_num
     }
 
     // 判断字符串是全英文、全中文还是中英混合
-    function Check_stringType($str1,$encode="utf-8") {
+    public static function Check_stringType($str1,$encode="utf-8") {
         $strA = trim($str1);
         $lenA = strlen($strA);
         $lenB = mb_strlen($strA, $encode);
@@ -318,7 +318,7 @@ class cString_num
 class cString_SQL
 {
     // 解析url字符串中显示的字段
-    function decodestr2sql($a_str){
+    public function decodestr2sql($a_str){
         $a_str = trim( urldecode($a_str) );
         if (""==$a_str) return $a_str;
 
@@ -334,7 +334,7 @@ class cString_SQL
      * @param array $data_arr
      * @param array or string: $a_exist_a, 如果是数组，则只单纯的字段而已
      */
-    function getUniExist($data_arr,$a_exist_a){
+    public function getUniExist($data_arr,$a_exist_a){
         // 是否存在,拼装唯一性条件
         $a_exist_c = "";
         $i=0;
@@ -356,7 +356,7 @@ class cString_SQL
      * @param array $ar
      * @return string
      */
-    function FmtFieldValArr2Str(&$ar, $a_sep=" and ", $addcount = false){
+    public function FmtFieldValArr2Str(&$ar, $a_sep=" and ", $addcount = false){
         $sql = 1;
         if (!is_array($ar)||empty($ar)) {  // 确保$ar为非空数组
             return $sql;
@@ -390,7 +390,7 @@ class cString_SQL
      * @staitc
      * @return string|integer
      */
-    function FormatValue( $theValue, $theType=null ,$slashes='gpc' ) {
+    public function FormatValue( $theValue, $theType=null ,$slashes='gpc' ) {
 
         if (empty($theType)) {
             if (is_numeric($theValue)) $theValue = 0 + $theValue;
@@ -423,13 +423,13 @@ class cString_SQL
      * @param string $theField
      * @return string
      */
-    function FormatField( $theField ){
+    public static function FormatField( $theField ){
         $theField = cString_SQL::stripslashe_but_single_quote($theField);
         return '`'. str_replace("`", "",$theField).'`';
     }
 
     // 只在查询的时候，但如果查询 \% 的时候会出问题，需要加上 addslashes
-    function stripslashe_but_single_quote($theValue){
+    public static function stripslashe_but_single_quote($theValue){
         // magic_quotes_sybase 在php6以后就废弃
         // mysql_escape_string 则将 单引号、双引号 \ 全部转义了，类似 addslashes
 

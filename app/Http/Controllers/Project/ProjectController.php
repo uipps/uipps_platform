@@ -18,6 +18,8 @@ class ProjectController extends Controller
     {
         // 检查是否登录
         $l_auth = $this->userService->ValidatePerm($request);
+        $l_request = $request->all();
+        $l_request['do'] = 'project_list';
         $_SESSION = session()->all();
         if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
             return redirect('/admin/login');
@@ -26,12 +28,46 @@ class ProjectController extends Controller
         $GLOBALS['cfg']['db_character'] = env('db_character', 'utf8');
         $GLOBALS['cfg']['out_character'] = env('out_character', 'utf8');
 
+        // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
+        $TBL_def = env('DB_PREFIX') . env('TABLE_DEF');
+        $FLD_def = env('DB_PREFIX') . env('FIELD_DEF');
 
-        if (isset($_SESSION['user']['nickname'])) {
-            $nickname = convCharacter($_SESSION['user']['nickname']);
-        }else {
-            $nickname = convCharacter($_SESSION['user']['username']);
+        $arr = array();
+        $arr['table_name'] = '';
+        $arr['TBL_def'] = $TBL_def;
+        $arr['FLD_def'] = $FLD_def;
+        $arr['html_title'] = $GLOBALS['language']['TPL_XIANGMU_STR'].$GLOBALS['language']['TPL_LIEBIAO_STR'];
+        $arr['html_name']  = $GLOBALS['language']['TPL_XIANGMU_STR'].$GLOBALS['language']['TPL_LIEBIAO_STR'];
+        $arr['sql_order'] = 'order by id desc';
+        //$arr['dbR'] = $dbR;
+
+        // 需要加入权限限制所能查看的数据表
+        if ('T' != $_SESSION['user']['is_admin']){
+            //$l_ps = UserPrivilege::getSqlInProjectByPriv();
+            $l_ps = '';
+            if (''!=$l_ps) $arr['default_sqlwhere'] = 'where id in (' . $l_ps . ')';
+            else $arr['default_sqlwhere'] = 'where id<0 ';  // 将获取不到任何数据, 如果么有权限的话
         }
+        $this->Init($l_request, $arr); // 初始化一下, 需要用到的数据的初始化动作,在parent::之前调用
+
+        $this->getFieldsInfo($arr);
+        if(!array_key_exists('f_info', $arr)) {
+            $response['ret'] = array('ret'=>1,'msg'=>'the f_info not exist!');
+            return null;
+        }
+
+        $dbR->table_name = $table_name;
+        $resp = parent::execute($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie, $files);
+
+        $ziduan_arr = getZiduan('id:ID;name_cn:项目名称;db_host:数据库主机;db_name:数据库名称;db_user:数据库用户名;status_:状态');// 需要的字段
+        $show_arr = buildH($arr['_arr'], $ziduan_arr);
+        $show = $show_arr[0];
+        $show_title = $show_arr[1];
+
+        $data_arr = array(
+            'show'=>$show,
+            'show_title'=>$show_title,
+        );
 
         // 先获取模板
         $l_file = __FUNCTION__ . '.blade.php';
@@ -40,26 +76,17 @@ class ProjectController extends Controller
         //unlink($l_path . $l_file);usleep(2000);
         if (false !== strpos($content, '<!--{'))
             file_put_contents($l_path . $l_file, str_replace(['<!--{', '}-->'], ['{{', '}}'], $content));
-        // 加入头尾
-        $header = file_get_contents(resource_path() . '/views/admin/'.'header.html');  // 标准头
-        $footer = file_get_contents(resource_path() . '/views/admin/'.'footer.html');  // 标准尾
-        $data_arr = array(
-            'nickname'=>$nickname,
-            'ip'=>getip(),
-            'RES_WEBPATH_PREF'=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
-            'header'=>$header,
-            'footer'=>$footer
-        );
+
         return view('admin/list', $data_arr);
     }
 
     public function add(Request $request)
     {
-        return __NAMESPACE__ .  "<br>\r\n"  . __CLASS__ .  "<br>\r\n"  . __FUNCTION__;
+        return __NAMESPACE__ .  '<br>\r\n'  . __CLASS__ .  '<br>\r\n'  . __FUNCTION__;
     }
 
     public function edit(Request $request)
     {
-        return __NAMESPACE__ .  "<br>\r\n"  . __CLASS__ .  "<br>\r\n"  . __FUNCTION__;
+        return __NAMESPACE__ .  '<br>\r\n'  . __CLASS__ .  '<br>\r\n'  . __FUNCTION__;
     }
 }

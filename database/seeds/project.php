@@ -22,7 +22,7 @@ class project extends Seeder
             'mender' => '',
             'db_host' => '127.0.0.1',
             'db_name' => 'uipps_platform',
-            'db_port' => 3306,
+            'db_port' => 3307,
             'db_user' => 'root',
             'db_pwd' => '10y9c2U5',
             'db_timeout' => 0,

@@ -9,7 +9,7 @@ class cArray
      * @param string $ziduan   存在的唯一的key
      * @return array 二维数组或一维
      */
-    function Index2KeyArr($field_arr, $a_val=array("key"=>"Field", "value"=>"Field")){
+    public static function Index2KeyArr($field_arr, $a_val=array("key"=>"Field", "value"=>"Field")){
         $arr = array();
         if(!empty($field_arr))
             foreach ($field_arr as $_f){
@@ -67,7 +67,7 @@ class cArray
      * @param array $a_ziduan_arr 需要的字段
      * @return array
      */
-    function array__slice($a_request, $a_ziduan_arr=array("id")){
+    public static function array__slice($a_request, $a_ziduan_arr=array("id")){
         $l_new_arr = array();
 
         if (!empty($a_ziduan_arr)) {
@@ -81,13 +81,13 @@ class cArray
         return $l_new_arr;
     }
 
-    function get_opt($a_argv, $a_para_short='i:d:t:',$a_para_long=array()){
+    public static function get_opt($a_argv, $a_para_short='i:d:t:',$a_para_long=array()){
         // PHP4.3以上直接有现成的方法
         return getopt($a_para_short, $a_para_long);
     }
 
     // 将类似1-4,1,6,8 这样的多id类型转换分解为独立的单个id列表数组
-    function getIdsByStr($a_str){
+    public static function getIdsByStr($a_str){
         $l_arr = array();  // 结果数组
 
         // 如果是单一的数字，直接返回, 后面的处理将非数字的也返回到数组
@@ -119,7 +119,7 @@ class cArray
     }
 
     // 带索引的插入数据头部, 直接对数组用加法就能保持索引进行合并数组
-    function array_unshift_assoc(&$arr, $key, $val) {
+    public static function array_unshift_assoc(&$arr, $key, $val) {
         return $arr = array($key => $val) + $arr;
         /*
         // 或者用下面这些代码进行反转也可
@@ -130,7 +130,7 @@ class cArray
     }
 
     // 将类似1-4的整型数字范围返回到数组中去，前后顺序没有关系, 返回数组
-    function sepretNumByStr($a_str){
+    public static function sepretNumByStr($a_str){
         $l_arr = array();
 
         $l_sep = "-";
@@ -149,7 +149,7 @@ class cArray
         return $l_arr;
     }
 
-    function getTimezone(){
+    public static function getTimezone(){
         return array(
             "12"=>"东12区",
             "11"=>"东11区",
@@ -178,17 +178,17 @@ class cArray
             "-12"=>"西12区"
         );
     }
-    function getTTypeCNnameArr(){
+    public static function getTTypeCNnameArr(){
         return GSPS_CONS::getTTypeCNnameArr();
     }
 
-    function getTempTypeCNnameArr(){
+    public static function getTempTypeCNnameArr(){
         return GSPS_CONS::getTempTypeCNnameArr();
     }
 
     // allow=post1,post2这样的字符串转成array("allow"=>"post1,post2")的数组
     // 支持多行解析
-    function str2keyvalue($a_str,$a_sep="=",$a_2wei=false){
+    public static function str2keyvalue($a_str,$a_sep="=",$a_2wei=false){
         $l_arr = array();
         $l_tmp = explode("\n", $a_str);
         if (!empty($l_tmp)) {
@@ -212,7 +212,7 @@ class cArray
 
     // 在数字键名的数组前或后追加另一个数组的数据合并成新数组。
     // 将$a_arr2放到$a_arr1的ahead 还是 after
-    function array__unshift(&$a_arr1, $a_arr2, $a_pos="ahead"){
+    public static function array__unshift(&$a_arr1, $a_arr2, $a_pos="ahead"){
 
         if (is_array($a_arr1) && is_array($a_arr2)) {
             if ("ahead"==$a_pos) {
@@ -241,7 +241,7 @@ class cArray
      * @param string $a_str
      * @return array
      */
-    function str__replace($a_array_combine,$a_str){
+    public static function str__replace($a_array_combine,$a_str){
         if (is_array($a_array_combine) && !empty($a_array_combine)) {
             if (array_values($a_array_combine) == $a_array_combine) {
                 // 说明是数字索引，则替换和被替换的一样
@@ -301,7 +301,7 @@ class cArray
     需要注意的是这里使用的时间并非 Delphi 的 TDateTime，而是 FILETIME(D里为对应的TFileTime)
     一个文件可能包含有多个节，按上面的格式循环即可
      */
-    function parse_cookiefile($cookie_file){
+    public static function parse_cookiefile($cookie_file){
         //
         $l_arr = array();
         if (file_exists($cookie_file)) {
@@ -322,7 +322,7 @@ class cArray
     }
 
     // 剔除新数组中同旧数组具有相同数值的单元。
-    function delSameValue(&$a_new, $a_old){
+    public static function delSameValue(&$a_new, $a_old){
         if (is_array($a_old)) {
             foreach ($a_new as $l_k => $l_v){
                 // 剔除掉没有数据修改的字段
@@ -340,7 +340,7 @@ class cArray
     }
 
     //
-    function array__merge($a_1, $a_2){
+    public static function array__merge($a_1, $a_2){
         $rlt = array();
         if (is_array($a_1) && is_array($a_2)) {
             $rlt = array_merge($a_1, $a_2);
@@ -353,12 +353,12 @@ class cArray
         return $rlt;
     }
     // 带索引的合并数组，不能用array_merge（因数字索引会重新从0开始索引）
-    function array_merge_assoc($arr, $ahead_arr) {
+    public static function array_merge_assoc($arr, $ahead_arr) {
         return $ahead_arr + $arr;
     }
 
     // 使用一个字符串分割另一个字符串. 同时还要填充分割字符串, 返回一个数组, 行为类似explode
-    function explode_str2arr($a_separator,$a_str,$a_pos="after"){
+    public static function explode_str2arr($a_separator,$a_str,$a_pos="after"){
         $l_rlt = array();
         if (false!==strpos($a_str,$a_separator)) {
             $l_tmp = explode($a_separator,$a_str);
@@ -388,7 +388,7 @@ class cArray
 
     // TODO or call_user_func_array('iconv2gb2312', $fn, $v)
     // 递归地将数组或对象的节点使用用户函数,例如字符编码转换
-    function array_map_recursive($fn, $arr, $with_key = false) {
+    public static function array_map_recursive($fn, $arr, $with_key = false) {
         //$rarr = array();
         foreach ($arr as $k => $v) {
             if ($with_key) {
@@ -415,7 +415,7 @@ class cArray
 class GSPS_CONS
 {
     // 模板类型
-    function getTTypeCNnameArr(){
+    public static function getTTypeCNnameArr(){
         $arr = array(
             "00"=>"空白模板",
             "01"=>"正文模板",
@@ -434,7 +434,7 @@ class GSPS_CONS
     }
 
     // 模板域类型
-    function getTempTypeCNnameArr(){
+    public static function getTempTypeCNnameArr(){
         $arr = array(
             "Form::TextField"=>array("name_cn"=>"单行文本框","if_into_db"=>1),
             "Form::Password"=>array("name_cn"=>"口令框","if_into_db"=>1),

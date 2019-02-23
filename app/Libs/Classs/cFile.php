@@ -3,7 +3,7 @@
 class cFile
 {
     // 如果重新创建的系统，则需要修改mysql数据库连接信息初始值
-    function modifyMysqlConfigIniAndLANGConfigFileWhenCreateSYSTEM($data_arr){
+    public static function modifyMysqlConfigIniAndLANGConfigFileWhenCreateSYSTEM($data_arr){
         if ("SYSTEM"==strtoupper($data_arr["type"])) {
             $files = new Files();
             // 修改 INI_DB_DSN_CONFIGS_FILE (mysql_config.ini)

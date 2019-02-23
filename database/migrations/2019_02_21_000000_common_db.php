@@ -25,7 +25,7 @@ class CommonDb extends Migration
             $table->date('expireddate')->comment('过期日期');
             $table->enum('audited', ['0','1'])->default('0')->comment('是否审核, 0:无需审核,能直接显示;1:需审核,不能直接发布,需要审核通过才能发布');
             $table->integer('flag')->default(0)->comment('标示, 预留');
-            $table->string('arithmetic', 18000)->default('')->comment('文档算法, 包括发布文档列表算法, [publish_docs]1:28:1,1:28:2,,,,');
+            $table->string('arithmetic', 10000)->default('')->comment('文档算法, 包括发布文档列表算法, [publish_docs]1:28:1,1:28:2,,,,');
             $table->string('unicomment_id', 30)->default('')->comment('评论唯一ID, 1-2-36963:项目id-表id-评论id');
             $table->enum('published_1', ['0','1'])->default('0')->comment('是否发布, 0:不发布;1:发布,通常都是发布的');
             $table->string('url_1', 255)->default('')->comment('文档发布成html的外网url,通常是省略了域名的相对地址');

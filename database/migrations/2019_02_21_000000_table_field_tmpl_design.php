@@ -31,7 +31,7 @@ class TableFieldTmplDesign extends Migration
             $table->string('description', 255)->default('')->comment('描述');
             $table->string('doc_list_order', 2000)->default('')->comment('文档显示顺序');
             $table->enum('source', ['db','grab','none'])->default('none')->comment('来源');
-            $table->string('arithmetic', 18000)->default('')->comment('表定义表的算法, 通常是CodeResult类型');
+            $table->string('arithmetic', 10000)->default('')->comment('表定义表的算法, 通常是CodeResult类型');
             $table->string('waiwang_url', 255)->default('')->comment('外网URL, 没有提供则继承自project的');
             $table->string('bendi_uri', 255)->default('')->comment('本地URI, 没有提供则继承自project的');
             $table->enum('js_verify_add_edit', ['TRUE','FALSE'])->default('FALSE')->comment('是否js验证, 某张表中添加、修改记录的时候');
@@ -69,8 +69,8 @@ class TableFieldTmplDesign extends Migration
             $table->string('length', 600)->default('255')->comment('长度');
             $table->enum('attribute', ['','BINARY','UNSIGNED','UNSIGNED ZEROFILL','ON UPDATE CURRENT_TIMESTAMP'])->default('')->comment('无符号等属性');
             $table->string('unit', 20)->default('')->comment('单位');
-            $table->text('default')->comment('默认值');
-            $table->string('arithmetic', 18000)->default('')->comment('字段算法');
+            $table->text('default')->nullable()->comment('默认值');
+            $table->string('arithmetic', 10000)->default('')->comment('字段算法');
             $table->enum('exec_mode', ['0','1','2','3'])->default('0')->comment('执行模式');
             $table->unsignedSmallInteger('list_order')->default('1000')->comment('显示顺序');
             $table->enum('source', ['db','grab','none'])->default('none')->comment('来源');
