@@ -167,7 +167,7 @@ class Html {
     }
 
     // 将数组的键值对填充到模板中去
-    function AccordingTpl2Str($data_arr, $a_field=array("p_id"), $a_tpl='<input type="hidden" id="<!--{$ziduan}-->" name="<!--{$ziduan}-->" value="<!--{$value}-->" />'){
+    public static function AccordingTpl2Str($data_arr, $a_field=array("p_id"), $a_tpl='<input type="hidden" id="<!--{$ziduan}-->" name="<!--{$ziduan}-->" value="<!--{$value}-->" />'){
         $l_str = '';
         if (is_array($a_field) && is_array($data_arr)) {
             foreach ($a_field as $l_f){
@@ -182,7 +182,7 @@ class Html {
     }
 
     // 转为多级相关链接而用
-    function AtagTpl2Str($data_arr){
+    public static function AtagTpl2Str($data_arr){
         $l_str = '';
 
         // 拼装链接地址

@@ -27,6 +27,7 @@ Route::group(['namespace' => 'Admin', 'prefix'=>'admin'], function (){
     Route::get('mainpage','AdminController@mainpage')->name('admin.mainpage');
     Route::get('frmMainMenu','AdminController@frmMainMenu')->name('admin.frmMainMenu');
     Route::get('GetProjectListJS/pt/{pt}/node/{node}','AdminController@GetProjectListJS')->name('admin.GetProjectListJS');
+    Route::get('GetTemplateListJS','AdminController@GetTemplateListJS')->name('admin.GetTemplateListJS');
 });
 
 

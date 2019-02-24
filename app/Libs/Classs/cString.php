@@ -390,7 +390,7 @@ class cString_SQL
      * @staitc
      * @return string|integer
      */
-    public function FormatValue( $theValue, $theType=null ,$slashes='gpc' ) {
+    public static function FormatValue( $theValue, $theType=null ,$slashes='gpc' ) {
 
         if (empty($theType)) {
             if (is_numeric($theValue)) $theValue = 0 + $theValue;

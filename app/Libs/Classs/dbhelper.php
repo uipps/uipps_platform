@@ -34,7 +34,7 @@ class DbHelper{
      * @param string $a_type:数据库连接类型,R:读库,W:写库
      * @return unknown
      */
-    function FmtDSNAndGetMdb2NameAlias($dsn=array(),$a_type='R'){
+    public static function FmtDSNAndGetMdb2NameAlias($dsn=array(),$a_type='R'){
         $l_name = "";
         if ('R'!=$a_type) $a_type='W';  // 强制只有两张类型
 
@@ -508,7 +508,6 @@ class DbHelper{
         //$dbR->table_name = $t_def;
         //$_tbl_name = $dbR->getOne("where id = $t_id");
         $_tbl_name = collect(DB::connection($connect_name)->table($t_def)->where('id', $t_id)->first())->toArray();
-        //$all_field = $dbR->getTblFields($_tbl_name["name_eng"]);
         $all_field = self::getTblFields($p_arr, $_tbl_name['name_eng']);
         if (!$all_field) {
             return 0;
@@ -1014,12 +1013,17 @@ class DbHelper{
         }
         return $rlt;
     }
+    // $p_arr 可以是数组也可以是连接名，为了兼容性处理
     public static function getTblFields($p_arr, $table_name, $FULL='FULL',$assoc=true) {
         if (!$table_name) return [];
 
-        self::getConfigInfoByProjectData($p_arr);
-        $connect_name = self::getConnectName($p_arr);
-        $sql = "SHOW $FULL COLUMNS FROM ".cString_SQL::FormatField($table_name)." "; // 或 show FULL fields from table 或 desc table
+        if (is_array($p_arr)) {
+            self::getConfigInfoByProjectData($p_arr);
+            $connect_name = self::getConnectName($p_arr);
+        } else {
+            $connect_name = $p_arr; // 数据库配置的连接名
+        }
+        $sql = "SHOW $FULL COLUMNS FROM ".cString_SQL::FormatField($table_name); // 或 show FULL fields from table 或 desc table
         $rlt = DB::connection($connect_name)->select($sql);
         if ($rlt) {
             $rlt = cArray::ObjectToArray($rlt);

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Project;
 
+use App\Http\Controllers\ListController;
 use App\Services\Admin\UserService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class ProjectController extends Controller
+class ProjectController extends ListController
 {
     protected $userService;
 
@@ -33,13 +33,14 @@ class ProjectController extends Controller
         $FLD_def = env('DB_PREFIX') . env('FIELD_DEF');
 
         $arr = array();
-        $arr['table_name'] = '';
+        $arr['table_name'] = 'project';
         $arr['TBL_def'] = $TBL_def;
         $arr['FLD_def'] = $FLD_def;
         $arr['html_title'] = $GLOBALS['language']['TPL_XIANGMU_STR'].$GLOBALS['language']['TPL_LIEBIAO_STR'];
         $arr['html_name']  = $GLOBALS['language']['TPL_XIANGMU_STR'].$GLOBALS['language']['TPL_LIEBIAO_STR'];
         $arr['sql_order'] = 'order by id desc';
-        //$arr['dbR'] = $dbR;
+        $arr['dbR'] = env('DB_CONNECTION'); // 数据库连接mysql57
+
 
         // 需要加入权限限制所能查看的数据表
         if ('T' != $_SESSION['user']['is_admin']){
@@ -56,8 +57,7 @@ class ProjectController extends Controller
             return null;
         }
 
-        $dbR->table_name = $table_name;
-        $resp = parent::execute($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie, $files);
+        $resp = parent::execute($arr, $request);
 
         $ziduan_arr = getZiduan('id:ID;name_cn:项目名称;db_host:数据库主机;db_name:数据库名称;db_user:数据库用户名;status_:状态');// 需要的字段
         $show_arr = buildH($arr['_arr'], $ziduan_arr);
@@ -69,15 +69,16 @@ class ProjectController extends Controller
             'show_title'=>$show_title,
         );
 
-        // 先获取模板
-        $l_file = __FUNCTION__ . '.blade.php';
-        $l_path = resource_path() . '/views/admin/';
-        $content = file_get_contents($l_path . $l_file);
-        //unlink($l_path . $l_file);usleep(2000);
-        if (false !== strpos($content, '<!--{'))
-            file_put_contents($l_path . $l_file, str_replace(['<!--{', '}-->'], ['{{', '}}'], $content));
+        $content = replace_template_para($data_arr,$resp);
+        return $content;
 
-        return view('admin/list', $data_arr);
+        // 先获取模板
+        //$l_file = __FUNCTION__ . env('BLADE_SUFFIX');
+        //$l_path = resource_path() . '/views/admin/';
+        //$content = file_get_contents($l_path . $l_file);
+        //unlink($l_path . $l_file);usleep(2000);
+        //if (false !== strpos($content, '<!--{')) file_put_contents($l_path . $l_file, str_replace(['<!--{', '}-->'], ['{{', '}}'], $content));
+        //return view('admin/list', $data_arr);
     }
 
     public function add(Request $request)

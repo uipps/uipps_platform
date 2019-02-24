@@ -44,6 +44,7 @@
         ],
         "files": [
             "app/Libs/Functions/functions.php",
+            "app/Libs/Functions/global_func.php",
             "app/Libs/Functions/convCharacter.php"
         ]
     },
