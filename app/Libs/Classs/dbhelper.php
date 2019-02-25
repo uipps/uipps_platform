@@ -951,13 +951,13 @@ class DbHelper{
     }
 
     // 通过数据库的项目信息，设置对应的配置信息，用于数据库操作
-    public static function getConfigInfoByProjectData($p_arr, $connect_type = 'master') {
+    public static function getConfigInfoByProjectData($p_arr) {
         // 对需要的字段进行映射
         $db_connect_info = [
             'driver' => 'mysql',
             'host' => '127.0.0.1',
             'port' => '3509',
-            'database' => 'laravel55_layuiadmin',
+            'database' => 'uipps_platform',
             'username' => 'root',
             'password' => '123456',
             'charset' => 'utf8',
@@ -967,35 +967,45 @@ class DbHelper{
             'strict' => false,
             'engine' => null,
             'timezone'  => env('DB_TIMEZONE', '+00:00'),
+
+            /*'write' => [
+                'host' => env('DB_MASTER_HOST', '127.0.0.1'),
+                'port' => env('DB_MASTER_PORT', 3306),
+                'username' => env('DB_MASTER_USERNAME', 'uipps'),
+                'password' => env('DB_MASTER_PASSWORD', '')
+            ],
+            'read' => [
+                [
+                    'name' => 'readConn1',
+                    'host' => env('DB_SLAVE_HOST', '127.0.0.1'),
+                    'port' => env('DB_SLAVE_PORT', 3306),
+                    'username' => env('DB_SLAVE_USERNAME', 'uipps'),
+                    'password' => env('DB_SLAVE_PASSWORD', '')
+                ]
+            ],*/
+
         ];
-        if ('both' == $connect_type) {
-            // 两种都要
-            self::getConfigInfoByProjectData($p_arr, 'master');
-            self::getConfigInfoByProjectData($p_arr, 'slave');
-        } else if ('master' == $connect_type) {
-            $connect_name = $p_arr['db_name'] . '_m';
-            $db_configs = Config::get("database.connections");
-            if (isset($db_configs[$connect_name])) return 1;
-            $db_connect_info['host']     = $p_arr['db_host'];
-            $db_connect_info['port']     = $p_arr['db_port'];
-            $db_connect_info['database'] = $p_arr['db_name'];
-            $db_connect_info['username'] = $p_arr['db_user'];
-            $db_connect_info['password'] = $p_arr['db_pwd'];
-        } else {
-            if ('F' == $p_arr['if_use_slave'] || !$p_arr['slave_db_host']) {
-                return 0;
-            }
-            $connect_name = $p_arr['db_name'] . '_r';
-            $db_configs = Config::get("database.connections");
-            if (isset($db_configs[$connect_name])) return 1;
+        $connect_name = self::getConnectName($p_arr);
 
-            $db_connect_info['host']     = $p_arr['slave_db_host'];
-            $db_connect_info['port']     = $p_arr['slave_db_port'];
-            $db_connect_info['database'] = $p_arr['slave_db_name'];
-            $db_connect_info['username'] = $p_arr['slave_db_user'];
-            $db_connect_info['password'] = $p_arr['slave_db_pwd'];
+        $db_connect_info['host']     = $p_arr['db_host'];
+        $db_connect_info['port']     = $p_arr['db_port'];
+        $db_connect_info['database'] = $p_arr['db_name'];
+        $db_connect_info['username'] = $p_arr['db_user'];
+        $db_connect_info['password'] = $p_arr['db_pwd'];
+
+        // 设置从库
+        if (isset($p_arr['if_use_slave']) && 'T' == $p_arr['if_use_slave'] && $p_arr['slave_db_host']) {
+            $db_connect_info['read']['name']     = 'readConn1';
+            $db_connect_info['read']['host']     = $p_arr['slave_db_host'];
+            $db_connect_info['read']['port']     = $p_arr['slave_db_port'];
+            $db_connect_info['read']['username'] = $p_arr['slave_db_user'];
+            $db_connect_info['read']['password'] = $p_arr['slave_db_pwd'];
+            // 主库
+            $db_connect_info['write']['host']     = $p_arr['db_host'];
+            $db_connect_info['write']['port']     = $p_arr['db_port'];
+            $db_connect_info['write']['username'] = $p_arr['db_user'];
+            $db_connect_info['write']['password'] = $p_arr['db_pwd'];
         }
-
         \Config::set("database.connections.{$connect_name}", $db_connect_info);
         // $result = DB::connection($connect_name)->select('show tables');
         // print_r($result);exit;
@@ -1031,6 +1041,17 @@ class DbHelper{
         return $rlt;
     }
     public static function getConnectName($p_arr) {
-        return $p_arr['db_name'] . '_m';
+        //return $p_arr'db_name'] . '_m';
+        if (!is_array($p_arr)) {
+            throw new \Exception('Invalid array p_arr');
+        }
+        if (array_key_exists("db_pwd", $p_arr)) {
+            $dsn = "mysql://".$p_arr["db_user"].":".$p_arr["db_pwd"]."@".$p_arr["db_host"].":".$p_arr["db_port"]."/".$p_arr["db_name"];
+        } else if (array_key_exists("db_pass", $p_arr)) {
+            $dsn = "mysql://".$p_arr["db_user"].":".$p_arr["db_pass"]."@".$p_arr["db_host"].":".$p_arr["db_port"]."/".$p_arr["db_name"];
+        } else {
+            throw new \Exception('Invalid array p_arr');
+        }
+        return str_replace('.', '_', $dsn); // 保证没有.符号, 防止config.set的时候出现问题
     }
 }

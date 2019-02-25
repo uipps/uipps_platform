@@ -1,11 +1,12 @@
 <?php
+define('NEW_LINE_CHAR', "\r\n");
 
 class DBR extends MysqlR
 {
-    protected $table_name = null;
+    public $table_name = null;
 
     public function __construct($_arr=null, $options=false){
-        parent::ConnectR($_arr, $options);
+        return $this->ConnectDB($_arr, $options);
     }
 
     public function getExistorNot($id){
@@ -86,7 +87,7 @@ class DBR extends MysqlR
         return array($fields_full,$fields_bixu);
     }
 
-    public function getTblFields2($table_name=null){
+    public function getTblFields2($table_name=null, $selected=''){
         $arr = $this->getTblFields();
 
 
@@ -174,13 +175,5 @@ class DBR extends MysqlR
         $sql = "SHOW DATABASES";
         $this->assoc = $assoc;
         return parent::GetPlan($sql);
-    }
-
-    public function Disconnect(){
-        return parent::Disconnect($this->dbo);
-    }
-
-    public function __destruct(){
-        self::Disconnect();
     }
 }

@@ -1,4 +1,7 @@
 <?php
+$GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
+$GLOBALS['cfg']['db_character'] = env('db_character', 'utf8');
+$GLOBALS['cfg']['out_character'] = env('out_character', 'utf8');
 
 $GLOBALS['cfg']['SOURCE_CSS_PATH'] = "WEB-INF/template/css";
 $GLOBALS['cfg']['SOURCE_JS_PATH']  = "WEB-INF/template/js";

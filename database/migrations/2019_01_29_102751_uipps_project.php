@@ -91,6 +91,7 @@ class UippsProject extends Migration
             $table->string('google_authenticator', 16)->default('')->comment('google动态口令认证');
             $table->enum('locked', ['T','F'])->default('F')->comment('是否锁定');
             $table->enum('is_admin', ['T','F'])->default('F')->comment('是否管理员');
+            $table->enum('if_super', ['1','0'])->default('0')->comment('是否超级用户, 1：是；0：不是');
             $table->string('creator', 100)->default('')->comment('创建者');
             $table->string('mender', 100)->default('')->comment('修改者');
             $table->dateTime('expired')->comment('过期时间');

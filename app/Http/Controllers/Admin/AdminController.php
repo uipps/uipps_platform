@@ -6,6 +6,7 @@ use App\Services\Admin\ProjectService;
 use App\Services\Admin\UserService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use DBR;
 
 class AdminController extends Controller
 {
@@ -25,21 +26,17 @@ class AdminController extends Controller
         if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
             return redirect('/admin/login');
         }
-        $GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
 
         // 先获取模板
-        $l_file = __FUNCTION__ . '.html';
-        $l_path = resource_path() . '/views/admin/';
-        $content = file_get_contents($l_path . $l_file);
-        //if (false !== strpos($content, '<!--{')) file_put_contents($l_path . $l_file, str_replace(['<!--{', '}-->'], ['{{', '}}'], $content));
+        $content = file_get_contents(resource_path() . '/views/admin/' . __FUNCTION__ . '.html');
         // 加入头尾
         $header = file_get_contents(resource_path() . '/views/admin/'.'header.html');  // 标准头
         $footer = file_get_contents(resource_path() . '/views/admin/'.'footer.html');  // 标准尾
         $data_arr = array(
-            'system_name'=>$GLOBALS['language']['SYSTEM_NAME_STR'],
-            'RES_WEBPATH_PREF'=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
-            'header'=>$header,
-            'footer'=>$footer
+            "system_name"=>$GLOBALS['language']['SYSTEM_NAME_STR'],
+            "RES_WEBPATH_PREF"=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
+            "header"=>$header,
+            "footer"=>$footer
         );
         $content = replace_template_para($data_arr,$content);
 
@@ -50,11 +47,9 @@ class AdminController extends Controller
         // 替换其中的css地址和js地址 以后采用缓存文件，而不用每次都实时取
         $content = replace_cssAndjsAndimg($content,$GLOBALS['cfg']['SOURCE_CSS_PATH'],$GLOBALS['cfg']['SOURCE_JS_PATH'],$GLOBALS['cfg']['SOURCE_IMG_PATH']);// js中还有图片
 
-        $content = replace_template_para($data_arr,$content);
+        $response['html_content'] = replace_template_para($data_arr,$content);
 
-        return $content;
-        //return view('admin/mainpage', $data_arr);
-        //return __NAMESPACE__ . "<br>\r\n" . __CLASS__ .  "<br>\r\n"  . __FUNCTION__;
+        return $response['html_content'];
     }
 
     public function frmMainMenu(Request $request) {
@@ -64,9 +59,6 @@ class AdminController extends Controller
         if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
             return redirect('/admin/login');
         }
-        $GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
-        $GLOBALS['cfg']['db_character'] = env('db_character', 'utf8');
-        $GLOBALS['cfg']['out_character'] = env('out_character', 'utf8');
 
         if (isset($_SESSION['user']['nickname'])) {
             $nickname = convCharacter($_SESSION['user']['nickname']);
@@ -78,7 +70,6 @@ class AdminController extends Controller
         $l_file = __FUNCTION__ . '.html';
         $l_path = resource_path() . '/views/admin/';
         $content = file_get_contents($l_path . $l_file);
-        //if (false !== strpos($content, '<!--{')) file_put_contents($l_path . $l_file, str_replace(['<!--{', '}-->'], ['{{', '}}'], $content));
         // 加入头尾
         $header = file_get_contents(resource_path() . '/views/admin/'.'header.html');  // 标准头
         $footer = file_get_contents(resource_path() . '/views/admin/'.'footer.html');  // 标准尾
@@ -112,9 +103,6 @@ class AdminController extends Controller
         if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
             return redirect('/admin/login');
         }
-        $GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
-        $GLOBALS['cfg']['db_character'] = env('db_character', 'utf8');
-        $GLOBALS['cfg']['out_character'] = env('out_character', 'utf8');
 
         $arr = $this->projectService->getProjectList($request);// 项目数据
         if ("RES"==$pt) {
@@ -127,7 +115,6 @@ class AdminController extends Controller
         $l_file = __FUNCTION__ . '.html';
         $l_path = resource_path() . '/views/admin/';
         $content = file_get_contents($l_path . $l_file);
-        //if (false !== strpos($content, '<!--{')) file_put_contents($l_path . $l_file, str_replace(['<!--{', '}-->'], ['{{', '}}'], $content));
         // 加入头尾
         $header = file_get_contents(resource_path() . '/views/admin/'.'header.html');  // 标准头
         $footer = file_get_contents(resource_path() . '/views/admin/'.'footer.html');  // 标准尾
@@ -157,60 +144,46 @@ class AdminController extends Controller
     public function GetTemplateListJS(Request $a_request) {
         $request = $a_request->all();
         //print_r($request);exit;
+        $_SESSION = session()->all();
+        $GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
 
         $dbR = new DBR();
-        $l_err = $dbR->errorInfo();
-        if ($l_err[1]>0){
-            // 数据库连接失败后
-            $response['html_content'] = date("Y-m-d H:i:s") . " 出错了， 错误信息： " . $l_err[2]. ".";
-            $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
-            return null;
-        }
-        $dbR -> table_name = TABLENAME_PREF."project";
+        $dbR->table_name = "project";
         $p_arr = $dbR->getOne(" where id = ".($request["p_id"]+0));
         //print_r($p_arr); // 模板信息需要从另一个库中获取信息
-        if (empty($p_arr)) {
+        if (!$p_arr) {
             // 漏洞:如果攻击者使用一个不存在的id，则$p_arr返回的是NULL????其他类似漏洞有时间的时候全部处理一下。
             $response['html_content'] = date("Y-m-d H:i:s") . "project not exist!";
-            $response['ret'] = array('ret'=>1);
-            return null;
+            return $response['html_content'];
         }
-        $dsn = DbHelper::getDSNstrByProArrOrIniArr($p_arr);$dbR->dbo = &DBO('', $dsn);
-        //$dbR = null;$dbR = new DBR($p_arr);
-        $l_err = $dbR->errorInfo();
-        if ($l_err[1]>0){
-            $arr = array();  // 防止js报错所做的空值
-            // 数据库连接失败后
-            $response['html_content'] = date("Y-m-d H:i:s") . " 出错了， 错误信息： " . $l_err[2]. ".";
-        }else {
-            $dbR->table_name = TABLENAME_PREF."table_def";
+        //$dsn = \DbHelper::getDSNstrByProArrOrIniArr($p_arr);
+        //$dbR->dbo = &DBO('', $dsn);
+        //$dbR = null;
+        $dbR = new DBR($p_arr);
+        $dbR->table_name = "table_def";
 
-            // 需要根据用户权限显示其具有操作权限的表
-            if (1==$_SESSION["user"]["if_super"]) {
-                $l_where = "";  // " where type='$pt' "
-            } else {
-                $l_ts = UserPrivilege::getSqlInTableByPid($request['p_id']);
-                if (""!=$l_ts) $l_where = " and id in ($l_ts)";
-                else $l_where = "and id<0 ";  // 将获取不到任何数据, 如果么有权限的话
-            }
-            $arr = $dbR->getAlls("where `name_eng` NOT LIKE '%table_def' and `name_eng` NOT LIKE '%field_def' " . $l_where);
+        // 需要根据用户权限显示其具有操作权限的表
+        if (1==$_SESSION["user"]["if_super"]) {
+            $l_where = "";  // " where type='$pt' "
+        } else {
+            $l_ts = \UserPrivilege::getSqlInTableByPid($request['p_id']);
+            if (""!=$l_ts) $l_where = " and id in ($l_ts)";
+            else $l_where = "and id<0 ";  // 将获取不到任何数据, 如果么有权限的话
+        }
+        $arr = $dbR->getAlls("where `name_eng` NOT LIKE '%table_def' and `name_eng` NOT LIKE '%field_def' " . $l_where);
 
-            if (PEAR::isError($arr)) {
-                $arr = array();  // 防止js报错所做的空值
-            }
+        // 如果还有t_id的话，则需要获取指定的表的数据
+        if (isset($request['t_id'])) {
+            $dbR->table_name = "table_def";
+            $l_t_info = $dbR->getOne('where id="'. ($request['t_id']+0) .'" or name_eng="'. $request['t_id'] .'"');
 
-            // 如果还有t_id的话，则需要获取指定的表的数据
-            if (isset($request['t_id'])) {
-                $dbR->table_name = TABLENAME_PREF."table_def";
-                $l_t_info = $dbR->getOne('where id="'. ($request['t_id']+0) .'" or name_eng="'. $request['t_id'] .'"');
-
-                if (!empty($l_t_info)) {
-                    $dbR->table_name = $l_t_info["name_eng"];
-                    $l_arr_tbl = $dbR->getAlls();
-                }
+            if (!empty($l_t_info)) {
+                $dbR->table_name = $l_t_info["name_eng"];
+                $l_arr_tbl = $dbR->getAlls();
             }
         }
-        if ( isset($request["cont_type"]) && "json"==trim($request["cont_type"])) {
+
+        if (isset($request["cont_type"]) && "json"==trim($request["cont_type"])) {
             if (isset($request['t_id']) && isset($l_arr_tbl)) {
                 //
                 $for_json = format_for_json($l_arr_tbl,"s_shu_xingqiu_id");
@@ -220,15 +193,15 @@ class AdminController extends Controller
                 $for_json = format_for_json($arr,"p_id");
                 $contentjs = getJson($for_json,$name="project","id","name_cn");
             }
-        }else {
+        } else {
             $contentjs = $this->buildjs($arr,$request["node"],$p_arr);
         }
 
         // 先获取模板
-        $content = file_get_contents($GLOBALS['cfg']['PATH_ROOT']."/".$GLOBALS['cfg']['Template_Path']."/".$actionMap->getProp("path").".html");
+        $content = file_get_contents(resource_path() . '/views/admin/' . __FUNCTION__ . '.html');
         // 加入头尾
-        $header = file_get_contents($GLOBALS['cfg']['PATH_ROOT']."/".$GLOBALS['cfg']['Template_Path']."/"."header.html");  // 标准头
-        $footer = file_get_contents($GLOBALS['cfg']['PATH_ROOT']."/".$GLOBALS['cfg']['Template_Path']."/"."footer.html");  // 标准尾
+        $header = file_get_contents(resource_path() . '/views/admin/'.'header.html');  // 标准头
+        $footer = file_get_contents(resource_path() . '/views/admin/'.'footer.html');  // 标准尾
         $data_arr = array(
             "contentjs"=>$contentjs,
             "RES_WEBPATH_PREF"=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
@@ -244,9 +217,8 @@ class AdminController extends Controller
         // 替换其中的css地址和js地址 以后采用缓存文件，而不用每次都实时取
         $content = replace_cssAndjsAndimg($content,$GLOBALS['cfg']['SOURCE_CSS_PATH'],$GLOBALS['cfg']['SOURCE_JS_PATH'],$GLOBALS['cfg']['SOURCE_IMG_PATH']);// js中还有图片
 
-
-        return $response['html_content'] = replace_template_para($data_arr,$content);
-
+        $response['html_content'] = replace_template_para($data_arr,$content);
+        return $response['html_content'];
     }
 
 
@@ -270,9 +242,9 @@ if(parentNode && parentNode.loaded != true)
                 $str .= "
   var cur_node=parentNode.addChild(parent.Tree_LAST, '".$cn_name."');
   cur_node = cur_node.addChild(parent.Tree_LAST, '资源管理');
-  cur_node.setLink('main.php?do=resource_list&p_id=".$val["id"]."', '');
+  cur_node.setLink('/resource/list?p_id=".$val["id"]."', '');
   cur_node = cur_node.addSibling(parent.Tree_LAST, '资源同步配置');
-  cur_node.setLink('main.php?do=res_sync_list&p_id=".$val["id"]."', '');
+  cur_node.setLink('/res_sync/list?p_id=".$val["id"]."', '');
     ";
             }
         }
@@ -312,12 +284,53 @@ if(parentNode && parentNode.loaded != true)
                 if (isset($_SESSION["user"]["if_super"]) && 1 == $_SESSION["user"]["if_super"]) {
                     $str .= "
   cur_node = cur_node.addSibling(parent.Tree_LAST, '模板管理');
-  cur_node.setLink('main.php?do=template_list&p_id=".$val["id"]."', '');
+  cur_node.setLink('/template/list?p_id=".$val["id"]."', '');
       ";
                 }
             }
         }
 
+        $str .= '
+     parentNode.delChild(0);
+}
+</script>';
+
+        return $str;
+    }
+
+
+    public function buildjs($arr, $nodeid=24, $p_arr){
+        $p_id = $p_arr["id"];
+        $l_type = $p_arr["type"];
+        if ("DATA"==$l_type) {
+            $l_do = "/dbdocs/list";
+        }else {
+            $l_do = "/document/list";
+        }
+
+        $str = "
+<script type=\"text/javascript\">
+var parentNode = null;
+if(parent.tree && parent.tree != 'undefined')
+{
+  parentNode=parent.tree.getNode($nodeid);
+}
+if(parentNode && parentNode.loaded != true)
+{
+  parentNode.loaded=true;
+    ";
+        if (!empty($arr)) {
+            foreach ($arr as $val){
+                // 如果设置了链接，则不自动拼装，因所用模板也可能是自定义
+                $tree_link = "{$l_do}?p_id=$p_id&t_id=".$val["id"];
+                if (@$val['tree_link']) $tree_link = $val['tree_link'];
+
+                $str .= "
+    var node=parentNode.addChild(parent.Tree_LAST, '".$val["name_cn"]."');
+  node.setLink('{$tree_link}');
+      ";
+            }
+        }
         $str .= '
      parentNode.delChild(0);
 }

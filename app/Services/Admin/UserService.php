@@ -12,7 +12,7 @@ use App\Services\BaseService;
 class UserService extends BaseService
 {
     protected $_sid = null;
-    protected $_fields = ['id','username','password','nickname','email','g_id','is_admin','expired']; // 'proj_priv',
+    protected $_fields = ['id','username','password','nickname','email','g_id','is_admin','if_super','expired']; // 'proj_priv',
     protected $_cookie_sid_domain = '';
     protected $_cookie_sid_path   = '/';
     protected $_cookie_sid_expire = 315360000;  // 十年时间 3650*24*3600

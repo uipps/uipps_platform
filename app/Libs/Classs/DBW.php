@@ -100,25 +100,4 @@ class DBW extends MysqlW
 
         return $this->DeleteData($this->table_name, $condition);
     }
-
-    public function LastID(){
-        return parent::LastID();
-    }
-
-    /**
-     * 获取sql语句
-     *
-     * @return string or bool
-     */
-    public function getSQL(){
-        return parent::getSQL();
-    }
-
-    public function Disconnect(){
-        return parent::Disconnect($this->dbo);
-    }
-
-    public function __destruct(){
-        self::Disconnect();
-    }
 }

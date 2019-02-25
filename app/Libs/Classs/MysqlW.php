@@ -1,80 +1,11 @@
 <?php
 
-class MysqlW
+class MysqlW extends MysqlDB
 {
-    protected $dbo = null;
-    protected $sql = null;
-    protected $schema = null;
-    protected $assoc = false;
-    protected $isconnectionW = false;  // 仅仅标识是否连接上数据库
-    protected $connectError = array();// 连接的错误信息
-    //var $connectionW = null;
-
     public function __construct($_arr=null, $options=false){
-        $this->ConnectW($_arr, $options);
+        $this->ConnectDB($_arr, $options);
     }
 
-    /**
-     * 主库连接
-     *
-     * @return resource
-     */
-    public function ConnectW($dsn=array(), $options=false){
-        $l_name_dsn = DbHelper::FmtDSNAndGetMdb2NameAlias($dsn,'W');
-
-        $this->dbo = &DBO($l_name_dsn['l_name'], $l_name_dsn['dsn'], $options);
-        $this->dbo->getConnection();  // 进行连接操作
-        // 立即检查是否连接上.因为mysql_errno仅返回最近一次 MySQL 函数的执行(不包括mysql_errno自身)
-        if ($this->isConnection()) {
-            $this->setCharset();
-            $this->isconnectionW = true;
-            $l_srv_db_dsn = $this->getDSN("array");
-            // 由于数据库切换的时候，mdb2对于同一个主机、端口、用户的连接认为是一个连接，但是数据库却不会自动切换，需要执行use db语句
-            if (!empty($l_srv_db_dsn["database"])) {
-                $this->SetCurrentSchema($l_srv_db_dsn["database"]);
-            }
-            //$this->schema = $this->GetCurrentSchema();//如果dsn中有数据库则初始化一下
-        }
-
-        //$this->connectError = $this->errorInfo();
-    }
-    // 如何判断是否连接上的方法, var_dump( $dbo->connection )有两种值int(0) 或 resource(60) of type (mysql link)
-    public function isConnection(){
-        $dbo =& $this->dbo;
-        if( $dbo->connection ){
-            return true;
-        } else {
-            return false;
-        }
-    }
-    public function errorInfo($error = null){
-        $dbo =& $this->dbo;
-        return $dbo->errorInfo($error);
-    }
-    /**
-     * 设置当前的 schema
-     * @access public
-     * @param string  $schema
-     * @return boolean
-     */
-    public function SetCurrentSchema($schema ){
-        return $this->setDatabase($schema);
-    }
-    /**
-     * 取得当前的 dsn
-     * @access  $type string  format to return ("array", "string")
-     * @access  $hidepw bool
-     * @return string|array
-     */
-    public function getDSN($type = 'array', $hidepw = false){
-        $dbo =& $this->dbo;
-        return $dbo->getDSN($type, $hidepw);
-    }
-    /**
-     * 插入
-     * @param string $sql 插入命令
-     * @return boolean
-     */
     public function &InsertIntoTbl($tablename, $ar){
         if (!is_array($ar)||empty($ar)) {  // 确保$ar为非空数组
             return false;
@@ -186,46 +117,4 @@ class MysqlW
         return $row;
     }
 
-    /**
-     * 获取sql语句
-     *
-     * @return string or bool
-     */
-    public function getSQL(){
-        return $this->sql;
-    }
-
-    public function GetCurrentSchema(){
-        $dbo =& $this->dbo;
-        return $dbo->getDatabase();
-    }
-
-    //
-    public function setDatabase($schema){
-        $dbo =& $this->dbo;    // 兼容php4的做法
-        $l_rlt = $dbo->query("use ".$schema);
-        $dbo->setDatabase($schema);
-        $this->schema = $this->GetCurrentSchema();
-        return $l_rlt;
-    }
-
-    public function setCharset($charset = null){
-        $dbo =& $this->dbo;
-        if ("" == $charset){
-            // 空的时候
-            if ("utf8"==strtolower($GLOBALS['cfg']['db_character'])) $dbo->setCharset("utf8", $dbo->getConnection());//mysql_query("set names utf8;");// 数据库字符编码转换问题
-            else if("gb2312"==strtolower($GLOBALS['cfg']['db_character'])) $dbo->setCharset("gbk", $dbo->getConnection());//mysql_query("set names gbk;");
-        }else {
-            // 指定的时候
-            if (in_array($charset, array("utf8","gbk","latin1"))) $dbo->setCharset($charset, $dbo->getConnection());
-            else $dbo->setCharset("latin1", $dbo->getConnection());
-        }
-    }
-
-    public function Disconnect(&$dbo){
-        $dbo->disconnect();
-    }
-    public function __destruct(){
-        $this->Disconnect($this->dbo);
-    }
 }

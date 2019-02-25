@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller;
 class DocumentController extends Controller
 {
     public function __construct() {
-        $this->middleware('admin_auth');
+        //$this->middleware('admin_auth');
+        return __NAMESPACE__ . "<br>\r\n" . __CLASS__ .  "<br>\r\n"  . __FUNCTION__;
     }
 
     public function list(Request $request)

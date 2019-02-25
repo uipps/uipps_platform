@@ -18,15 +18,13 @@ class ProjectController extends ListController
     {
         // 检查是否登录
         $l_auth = $this->userService->ValidatePerm($request);
-        $l_request = $request->all();
-        $l_request['do'] = 'project_list';
         $_SESSION = session()->all();
         if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
             return redirect('/admin/login');
         }
-        $GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
-        $GLOBALS['cfg']['db_character'] = env('db_character', 'utf8');
-        $GLOBALS['cfg']['out_character'] = env('out_character', 'utf8');
+
+        $l_request = $request->all();
+        $l_request['do'] = 'project_list';
 
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
         $TBL_def = env('DB_PREFIX') . env('TABLE_DEF');
@@ -43,7 +41,7 @@ class ProjectController extends ListController
 
 
         // 需要加入权限限制所能查看的数据表
-        if ('T' != $_SESSION['user']['is_admin']){
+        if ('1' != $_SESSION['user']['if_super']){
             //$l_ps = UserPrivilege::getSqlInProjectByPriv();
             $l_ps = '';
             if (''!=$l_ps) $arr['default_sqlwhere'] = 'where id in (' . $l_ps . ')';

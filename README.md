@@ -14,11 +14,11 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
 - 复制.env.example为.env `cp .env.example .env`
 - 修改.env文件里的数据库连接、邮箱等信息
 - `composer update`
+- `php artisan key:generate` 或手动指定
 - `php artisan make:auth`
 - `php artisan migrate`
 - `php artisan db:seed --class=project`
 - `php artisan crontab fill_db_table_field uipps_platform`
-- `php artisan key:generate`
 - 登录后台：http://host.uipps.com/admin   帐号：admin  密码：admin
 
 
