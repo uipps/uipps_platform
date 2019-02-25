@@ -56,7 +56,7 @@ class ProjectController extends ListController
         parent::getFieldsInfo($arr);
         if(!array_key_exists("f_info",$arr)) {
             $response['ret'] = array('ret'=>1,'msg'=>"the f_info not exist!");
-            return null;
+            return 'the f_info not exist!';
         }
 
         $dbR->table_name = $table_name;
@@ -82,15 +82,5 @@ class ProjectController extends ListController
         //unlink($l_path . $l_file);usleep(2000);
         //if (false !== strpos($content, '<!--{')) file_put_contents($l_path . $l_file, str_replace(['<!--{', '}-->'], ['{{', '}}'], $content));
         //return view('admin/list', $data_arr);
-    }
-
-    public function add(Request $request)
-    {
-        return __NAMESPACE__ .  '<br>\r\n'  . __CLASS__ .  '<br>\r\n'  . __FUNCTION__;
-    }
-
-    public function edit(Request $request)
-    {
-        return __NAMESPACE__ .  '<br>\r\n'  . __CLASS__ .  '<br>\r\n'  . __FUNCTION__;
     }
 }

@@ -85,8 +85,7 @@ class MysqlDB
      * @return string
      */
     public function GetCurrentSchema(){
-        $dbo =& $this->dbo;
-        return $dbo->getDatabase();
+        return $this->dbo->getDatabaseName();
     }
     /**
      * 取一个值

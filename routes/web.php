@@ -44,8 +44,8 @@ Route::group(['namespace' => 'Hostbackend', 'prefix' => 'host'], function ($rout
 
 Route::group(['namespace' => 'Project', 'prefix' => 'project'], function ($router) {
     $router->get('list','ProjectController@list')->name('projectlist');
-    $router->post('edit','ProjectController@edit')->name('projectedit');
-    $router->post('add', 'ProjectController@add')->name('projectadd');
+    $router->any('edit','ProjectEditController@edit')->name('projectedit');
+    $router->any('add', 'ProjectAddController@add')->name('projectadd');
 });
 
 Route::group(['namespace' => 'Template', 'prefix' => 'template'], function ($router) {

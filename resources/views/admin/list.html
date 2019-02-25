@@ -10,9 +10,9 @@
 function action_onclick(cgi_url,form_name,radio_name,action,ziduan)
 {
 	if(ziduan==null || ziduan==undefined || ziduan=="undefined" || ziduan=="") ziduan = "id";
-	
+
 	len = form_name.elements.length;
-	
+
 	for(index=0; index < len; index++ )
 	{
 		if(form_name.elements[index].name == radio_name)
@@ -25,7 +25,7 @@ function action_onclick(cgi_url,form_name,radio_name,action,ziduan)
 			if(len != null)
 			{
 				for(var i=0;i<len;i++)
-				{			
+				{
 					check = obj[i].checked;
 					if(check == true)
 					{
@@ -141,9 +141,9 @@ function PlusQueryClick(a_id){
   <table width="98%" border="0" align="center" cellpadding="1" cellspacing="1">
     <tr>
       <td>
-        <input onClick="location.replace('main.php?do=<!--{$type_name}-->_add&type_name=<!--{$type_name}-->&action=add<!--{$parent_ids_url_build_query}-->')" type=button value="<!--{$tpl_zengjia}-->" />
-        <input type=button onClick="action_onclick('main.php?do=<!--{$type_name}-->_edit&type_name=<!--{$type_name}-->&action=edit<!--{$parent_ids_url_build_query}-->',self.document.myform,'id','edit');return false" value="<!--{$tpl_xiugai}-->" />
-        <input type=button onClick="action_onclick('main.php?do=<!--{$type_name}-->_edit&type_name=<!--{$type_name}-->&action=edit<!--{$parent_ids_url_build_query}-->',self.document.myform,'id','del');return false" value="<!--{$tpl_shanchu}-->" />
+        <input onClick="location.replace('/<!--{$type_name}-->/add?type_name=<!--{$type_name}-->&action=add<!--{$parent_ids_url_build_query}-->')" type=button value="<!--{$tpl_zengjia}-->" />
+        <input type=button onClick="action_onclick('/<!--{$type_name}-->/edit?type_name=<!--{$type_name}-->&action=edit<!--{$parent_ids_url_build_query}-->',self.document.myform,'id','edit');return false" value="<!--{$tpl_xiugai}-->" />
+        <input type=button onClick="action_onclick('/<!--{$type_name}-->/edit?type_name=<!--{$type_name}-->&action=edit<!--{$parent_ids_url_build_query}-->',self.document.myform,'id','del');return false" value="<!--{$tpl_shanchu}-->" />
         <!--{$INPUT_other}-->
       </td>
       <td>

@@ -26,10 +26,12 @@ class UippsProject extends Migration
             $table->string('description', 1000)->default('')->comment('描述');
             $table->string('creator', 100)->default('')->comment('创建者');
             $table->string('mender', 100)->default('')->comment('修改者');
+            $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
+
             $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
             $table->engine = 'InnoDB';
-            $table->comment = '全部项目';
+            $table->comment = '主机';
         });
 
         // 项目

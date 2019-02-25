@@ -606,8 +606,8 @@ class DbHelper{
             return $l_rlt;
         }
 
-        $l_name0_r = $GLOBALS['cfg']['SYSTEM_DB_DSN_NAME_R'];
-        $dbR->dbo = &DBO($l_name0_r);
+        /*//$l_name0_r = $GLOBALS['cfg']['SYSTEM_DB_DSN_NAME_R'];
+        //$dbR->dbo = &DBO($l_name0_r);
         $l_srv_db_dsn = $dbR->getDSN("array");
         if (!empty($l_srv_db_dsn["database"])) $dbR->SetCurrentSchema($l_srv_db_dsn["database"]);
         $l_err = $dbR->errorInfo();
@@ -615,8 +615,8 @@ class DbHelper{
             // 数据库连接失败后
             echo date("Y-m-d H:i:s") . " 出错了， 错误信息： " . $l_err[2]. ".";
             return $l_rlt;
-        }
-
+        }*/
+        //echo __LINE__ . "\r\n";exit;
         // 父级id都是1开始, 加上自身，因此至少有一项
         // 先手动写，以后完善之???? foreach去掉了对$a_p_self_ids索引的依赖
         $i=1;
@@ -637,28 +637,29 @@ class DbHelper{
 
 
                 // 该项目下所有的表
-                $dsn = DbHelper::getDSNstrByProArrOrIniArr($l_p_s1);
+                /*$dsn = DbHelper::getDSNstrByProArrOrIniArr($l_p_s1);
                 $dbR->dbo = &DBO('', $dsn);
-                $dbR->SetCurrentSchema($l_p_s1['db_name']);
+                $dbR->SetCurrentSchema($l_p_s1['db_name']);*/
+                $dbR = new DBR($l_p_s1);
                 $dbR->table_name = empty($l_p_self_id["t_table_name"]) ? TABLENAME_PREF."table_def":$l_p_self_id["t_table_name"];
                 $l_t_all = $dbR->getAlls(" where status_!='stop'", 'id, name_eng, name_cn');
-                if (!PEAR::isError($l_t_all)) {
-                    if (!empty($l_t_all)) $l_rlt["t_all_"] = $l_t_all;
-                }
 
                 /*$dbR->table_name = $l_p_self_id["table_name"];
                 $l_p_s1 = $dbR->getOne(" where ".$l_p_self_id["ziduan"]." = ".$a_data[$l_p_self_id["ziduan"]]);
                 $l_rlt[$l_p_self_id["ziduan"]] = $l_p_s1;*/
-            }else if (2==$i) {
+            } else if (2==$i) {
                 // 在此处会存在两种可能：1 表定义表；2 该表的文档列表
                 // 某个模板id，即数据库下的哪张表，应该去访问表定义表
-                $dsn = DbHelper::getDSNstrByProArrOrIniArr($l_p_s1);
+
+                /*$dsn = DbHelper::getDSNstrByProArrOrIniArr($l_p_s1);
                 $dbR->dbo = &DBO('', $dsn);
-                $dbR->SetCurrentSchema($l_p_s1['db_name']);
+                $dbR->SetCurrentSchema($l_p_s1['db_name']);*/
+                $dbR = new DBR($l_p_s1);
                 //$dbR = null;$dbR = new DBR($l_p_s1);  // 涉及到数据库重连的问题，包含了数据库连接信息
                 $dbR->table_name = $l_tbl_name = empty($l_p_self_id["table_name"]) ? TABLENAME_PREF."table_def":$l_p_self_id["table_name"]; // 表定义表的数据必须获取到
                 $l_t_def_arr = $dbR->getOne(" where id = ".$a_data[$l_p_self_id["ziduan"]]);  // 在没有$a_p_self_ids设置的情况下也能获取到数据
                 $l_rlt["t_def"] = $l_t_def_arr;
+                //print_r($l_t_def_arr);exit;
 
                 // 需要将表级别的信息也一同获取到，例如表模板设计表的数据也需要一同获取到其信息
                 $l_real_tbls = $dbR->getDBTbls();
@@ -673,11 +674,11 @@ class DbHelper{
                 // 如果指定了字段，或者不获取的字段则需要进行范围确定
                 $l_f_range = "";
                 if (array_key_exists("nof",$a_data)) {
-                    require_once("common/lib/cString.cls.php");
+                    //require_once("common/lib/cString.cls.php");
                     $l_nof = cString_SQL::decodestr2sql($a_data["nof"]);
                     if(""!=$l_nof) $l_f_range = " and name_eng not in ($l_nof)";
                 }else if (array_key_exists("fid",$a_data)) {
-                    require_once("common/lib/cString.cls.php");
+                    //require_once("common/lib/cString.cls.php");
                     $l_fid = cString_SQL::decodestr2sql($a_data["fid"]);
                     if(""!=$l_fid) $l_f_range = " and name_eng in ($l_fid)";
                 }

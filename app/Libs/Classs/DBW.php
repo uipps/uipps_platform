@@ -2,7 +2,7 @@
 
 class DBW extends MysqlW
 {
-    protected $table_name = null;
+    public $table_name = null;
 
     public function __construct($_arr=null, $options=false){
         parent::ConnectW($_arr, $options);

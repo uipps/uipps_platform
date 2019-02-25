@@ -31,7 +31,7 @@ class Html {
      * @param array $a_init 外部数据，主要是修改默认值,也可能为空，修改数据的时候需要用到外部数据
      * @return string
      */
-    function FormInputByField($f_arr, $a_init=array(), $a_no_need_field=array()){
+    public static function FormInputByField($f_arr, $a_init=array(), $a_no_need_field=array()){
         $l_str = "";  // 结果字符串
         $a_init = is_array($a_init) ? $a_init : array();  // 强制成数组
 
@@ -64,7 +64,7 @@ class Html {
         return $l_str;
     }
 
-    function getOneFieldInput($a_arr, $l_init=array()){
+    public static function getOneFieldInput($a_arr, $l_init=array()){
         $l_str = "";
         // 对于不同类型使用不同表单框
         $field = trim($a_arr["name_eng"]);  // 字段都是英文的
@@ -121,7 +121,7 @@ class Html {
     }
 
     //
-    function buildoptionsOrCheckBoxRadio($a_arr, $a_default, $l_init=array(), $a_tag="option"){
+    public static function buildoptionsOrCheckBoxRadio($a_arr, $a_default, $l_init=array(), $a_tag="option"){
         $l_str = "";
         if ( "" !== $a_arr["length"] ) {
             $l_field = trim($a_arr["name_eng"]);
@@ -207,7 +207,7 @@ class Html {
      * @param  array  $a_content_arr 外部提供的数据, 在修改数据的时候用于填充额外的属性,例如隐藏属性等。暂时不做实现，用不到。
      * @return string 相应的html代码
      */
-    function getFormHtmlByFieldType($a_vals,$a_default,$a_content_arr=array()){
+    public static function getFormHtmlByFieldType($a_vals,$a_default,$a_content_arr=array()){
         $l_html = "";  // 存放结果
 
         $l_field = trim($a_vals["name_eng"]);
