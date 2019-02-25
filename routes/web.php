@@ -61,7 +61,7 @@ Route::group(['namespace' => 'Tempdef', 'prefix' => 'tempdef'], function ($route
 });
 
 Route::group(['namespace' => 'Document', 'prefix' => 'document'], function ($router) {
-    $router->get('list','DocumentController@execute')->name('documentlist');
+    $router->get('list','DocumentController@list')->name('documentlist');
     $router->any('edit','DocumentEditController@execute')->name('documentedit');
     $router->any('add', 'DocumentAddController@execute')->name('documentadd');
 });

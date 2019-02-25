@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Document;
 
 
+use App\Services\Admin\UserService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ListController;
 use DBR;
@@ -11,14 +12,34 @@ use DbHelper;
 
 class DocumentController extends ListController
 {
-    public function __construct() {
+    protected $userService;
+
+    public function __construct(UserService $userService) {
+        $this->userService = $userService;
     }
 
     public function list(Request $a_request)
     {
+        $actionMap = [];
+        $actionError = [];
+        $response = [];
+        $form = [];
+        $get = [];
+        $cookie = [];
+
+        $request = $a_request->all();
+        $request['do'] = 'template_list';
+
+        // 检查是否登录
+        $l_auth = $this->userService->ValidatePerm($a_request);
+        $_SESSION = session()->all();
+        if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
+            return redirect('/admin/login');
+        }
+
         $request = $a_request->all();
         $request['do'] = 'project_list';
-        $_SESSION = session()->all();
+        //$_SESSION = session()->all();
 
         // 配置其父级、自身级别字段列表。
         $dbR = new DBR();
@@ -82,7 +103,7 @@ class DocumentController extends ListController
         }
 
         $dbR->table_name = $table_name;
-        $content = parent::execute($arr,$request);
+        $content = parent::execute($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
 
         // 显示的字段需要过滤掉text类型的数据，防止列表页显示太长东西
         $l_list_f = array();
@@ -109,17 +130,6 @@ class DocumentController extends ListController
         $response['html_content'] = replace_template_para($data_arr,$content);
         return $response['html_content'];
     }
-
-    public function add(Request $request)
-    {
-        return __NAMESPACE__ .  "<br>\r\n"  . __CLASS__ .  "<br>\r\n"  . __FUNCTION__;
-    }
-
-    public function edit(Request $request)
-    {
-        return __NAMESPACE__ .  "<br>\r\n"  . __CLASS__ .  "<br>\r\n"  . __FUNCTION__;
-    }
-
 
     public function tem_func($arr) {
         $l_str = "";
