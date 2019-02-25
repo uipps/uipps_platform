@@ -38,14 +38,14 @@ Route::group(['namespace' => 'Admin'], function ($router) {
 
 Route::group(['namespace' => 'Hostbackend', 'prefix' => 'host'], function ($router) {
     $router->get('list','HostController@list')->name('hostlist');
-    $router->post('edit','HostController@edit')->name('hostedit');
-    $router->post('add', 'HostController@add')->name('hostadd');
+    $router->post('edit','HostEditController@execute')->name('hostedit');
+    $router->post('add', 'HostAddController@execute')->name('hostadd');
 });
 
 Route::group(['namespace' => 'Project', 'prefix' => 'project'], function ($router) {
     $router->get('list','ProjectController@list')->name('projectlist');
-    $router->any('edit','ProjectEditController@edit')->name('projectedit');
-    $router->any('add', 'ProjectAddController@add')->name('projectadd');
+    $router->any('edit','ProjectEditController@execute')->name('projectedit');
+    $router->any('add', 'ProjectAddController@execute')->name('projectadd');
 });
 
 Route::group(['namespace' => 'Template', 'prefix' => 'template'], function ($router) {
@@ -55,7 +55,7 @@ Route::group(['namespace' => 'Template', 'prefix' => 'template'], function ($rou
 });
 
 Route::group(['namespace' => 'Tempdef', 'prefix' => 'tempdef'], function ($router) {
-    $router->get('list','TempdefController@execute')->name('tempdeflist');
+    $router->get('list','TempdefController@list')->name('tempdeflist');
     $router->any('edit','TempdefEditController@execute')->name('tempdefedit');
     $router->any('add', 'TempdefAddController@execute')->name('tempdefadd');
 });
@@ -68,6 +68,6 @@ Route::group(['namespace' => 'Document', 'prefix' => 'document'], function ($rou
 
 Route::group(['namespace' => 'Schedule', 'prefix' => 'schedule'], function ($router) {
     $router->get('list','ScheduleController@list')->name('schedulelist');
-    $router->post('edit','ScheduleController@edit')->name('scheduleedit');
-    $router->post('add', 'ScheduleController@add')->name('scheduleadd');
+    $router->any('edit','ScheduleEditController@execute')->name('scheduleedit');
+    $router->any('add', 'ScheduleAddController@execute')->name('scheduleadd');
 });

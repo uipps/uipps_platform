@@ -16,7 +16,7 @@ class ProjectAddController extends AddController
         $this->userService = $userService;
     }
 
-    public function add(Request $a_request)
+    public function execute(Request $a_request)
     {
         $actionMap = [];
         $actionError = [];
