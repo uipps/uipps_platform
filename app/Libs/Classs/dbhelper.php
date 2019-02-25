@@ -275,7 +275,7 @@ class DbHelper{
      * @param $_FILES $a_files 上传文件，图片和其他文件
      * @return array    结果数组, 也可能是错误信息
      */
-    function getInsertArrByFormFieldInfo($form, $f_info, $with_null=true, $if_edit=false, $a_files=array()){
+    public static function getInsertArrByFormFieldInfo($form, $f_info, $with_null=true, $if_edit=false, $a_files=array()){
         $data_arr = array();
 
         // 图片上传处理 begin  （TODO 目前只做图片，附件以后做）
