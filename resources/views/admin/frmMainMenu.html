@@ -3,20 +3,20 @@
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<LINK REL="STYLESHEET" href="{{$RES_WEBPATH_PREF}}dpa_html/css/TreeMaker/main.css">
+<LINK REL="STYLESHEET" href="<!--{$RES_WEBPATH_PREF}-->dpa_html/css/TreeMaker/main.css">
 </head>
 <body style="margin:5 0 0 0 ;background-color:#D0DCE0" oncontextmenu="return true" onselectstart="return false">
 <table border="0" cellPadding="0" cellSpacing="0">
   <tr>
     <td width="10"></td>
     <td>
-      用户：{{$nickname}}<BR>
-      地址：{{$ip}}
+      用户：<!--{$nickname}--><BR>
+      地址：<!--{$ip}-->
     </td>
   </tr>
 </table>
-<script LANGUAGE="JavaScript" src="{{$RES_WEBPATH_PREF}}dpa_html/JSLib/treeMaker/tree_maker.js"></SCRIPT>
-<script LANGUAGE="JavaScript" src="{{$RES_WEBPATH_PREF}}dpa_html/JSLib/treeMaker/tree_data.js"></SCRIPT>
+<script LANGUAGE="JavaScript" src="<!--{$RES_WEBPATH_PREF}-->dpa_html/JSLib/treeMaker/tree_maker.js"></SCRIPT>
+<script LANGUAGE="JavaScript" src="<!--{$RES_WEBPATH_PREF}-->dpa_html/JSLib/treeMaker/tree_data.js"></SCRIPT>
 <iframe height=0 width=0></iframe>
 <script type="text/javascript">
   //-----------------------------------------------------
@@ -58,7 +58,7 @@
   //----------------------------------------------------------------------------------
 
   child_node = child_node.addSibling(Tree_LAST, '项目管理');
-  child_node.setLink('main.php?do=project_list&pt=PUB', '');
+  child_node.setLink('/project/list?pt=PUB', '');
 
   //----------------------------------------------------------------------------------
   //系统数据插件管理菜单项
@@ -76,7 +76,7 @@
   //---------------------------------------------------------
   var root_node = tree.add(0, Tree_ROOT, Tree_LAST, "计划任务管理", "","","","");
   var child_node = root_node.addChild(Tree_LAST, '计划任务');
-  child_node.setLink('main.php?do=schedule_list', '');
+  child_node.setLink('/schedule/list', '');
 
   //---------------------------------------------------------
   // 添加系统管理菜单
@@ -89,16 +89,16 @@
   //修改密码
   //----------------------------------------------------------------------------------
   child_node = child_node.addSibling(Tree_LAST, '修改密码');
-  child_node.setLink('main.php?do=pasword_edit', '');
+  child_node.setLink('/pasword/edit', '');
 
 /*
   //权限管理
   child_node = child_node.addSibling(Tree_LAST, '权限管理');
-  child_node.setLink('main.php?do=right_interface', '');
+  child_node.setLink('/right/interface', '');
 */
 
   child_node = child_node.addSibling(Tree_LAST, '登录日志');
-  child_node.setLink('main.php?do=loginlog_list', '');
+  child_node.setLink('/loginlog/list', '');
 
   //---------------------------------------------------------
   // 添加帮助菜单
@@ -126,7 +126,7 @@
     if(confirm("您真的要退出系统?"))
     {
 
-      window.open("main.php?do=logout","_top","");
+      window.open("/admin/logout","_top","");
       return true;
     }
     else
@@ -186,7 +186,7 @@
     var node = tree.getNode(nodeID);
     if( node && node.loaded != true )
     {
-      window.frames[0].location= "gdms/main.php?do=GetDataSpaceListJS&pt=DATASPACE&node=" + nodeID;
+      window.frames[0].location= "/gdms/GetDataSpaceListJS?pt=DATASPACE&node=" + nodeID;
     }
   }
 
@@ -199,7 +199,7 @@
     var node = tree.getNode(nodeID);
     if( node && node.loaded != true )
     {
-      window.frames[0].location= "main.php?do=GetTemplateListJS&node=" + nodeID + "&p_id=" + p_id;
+      window.frames[0].location= "/admin/GetTemplateListJS?node=" + nodeID + "&p_id=" + p_id;
     }
   }
 

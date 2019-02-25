@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<title>{{$html_title}}</title>
-<link rel="stylesheet" href="{{$RES_WEBPATH_PREF}}dpa_html/css/List.css" />
+<title><!--{$html_title}--></title>
+<link rel="stylesheet" href="<!--{$RES_WEBPATH_PREF}-->dpa_html/css/List.css" />
 <script type="text/javascript" language="javascript">
 <!--
 // delete action confirm
@@ -49,11 +49,11 @@ function action_onclick(cgi_url,form_name,radio_name,action,ziduan)
 	{
 		if(action == "del")
 		{
-			if(!confirm("{{$tpl_qingquerenshifouzhendeshanchu}}?"))
+			if(!confirm("<!--{$tpl_qingquerenshifouzhendeshanchu}-->?"))
 			{
 				return false;
 			}
-			form_name.elements["do"].value="{{$type_name}}_edit";
+			form_name.elements["do"].value="<!--{$type_name}-->_edit";
 			form_name.elements["action"].value="edit";
 			form_name.elements["status_"].value="del";
 			form_name.submit();
@@ -65,7 +65,7 @@ function action_onclick(cgi_url,form_name,radio_name,action,ziduan)
 	}
 	else
 	{
-		alert("{{$tpl_qingninxuanzhongyitiaoxinxi}}!");
+		alert("<!--{$tpl_qingninxuanzhongyitiaoxinxi}-->!");
 		return false;
 	}
 }
@@ -82,47 +82,47 @@ function PlusQueryClick(a_id){
 <body topmargin="0" leftmargin="0" bgcolor="#f2faff">
 <table bgcolor=#306e9f border="0" width="100%" cellspacing="2" cellpadding="3">
   <tr class="title hd">
-    <td width="50%" nowrap align=left>{{$tpl_dangqianweizhi}}:{{$parent_nav}}/{{$html_name}}</td>
-    <td width="50%" nowrap align=left>{{$tpl_xitongtongzhi}}:{{$l_tongzhi}}</td>
+    <td width="50%" nowrap align=left><!--{$tpl_dangqianweizhi}-->:<!--{$parent_nav}-->/<!--{$html_name}--></td>
+    <td width="50%" nowrap align=left><!--{$tpl_xitongtongzhi}-->:<!--{$l_tongzhi}--></td>
   </tr>
 </table>
 <hr size="1">
 <table width="90%" border="0" cellpadding="2" cellspacing="2" >
   <form method="post" action="main.php" name="myform_search">
-    {{$parent_ids_input_hidden}}
-    <input type="hidden" name="do" value="{{$do}}" />
-    <input type="hidden" name="action" value="{{$action}}" />
-    <input type="hidden" name="type_name" value="{{$type_name}}" />
-    <input type="hidden" name="{{$flag}}" value="{{$p}}" />
-    <input type="hidden" name="{{$pagesize_flag}}" value="{{$pagesize}}" />
-    <input type="hidden" name="sql_where" value="{{$sql_where}}" />
+    <!--{$parent_ids_input_hidden}-->
+    <input type="hidden" name="do" value="<!--{$do}-->" />
+    <input type="hidden" name="action" value="<!--{$action}-->" />
+    <input type="hidden" name="type_name" value="<!--{$type_name}-->" />
+    <input type="hidden" name="<!--{$flag}-->" value="<!--{$p}-->" />
+    <input type="hidden" name="<!--{$pagesize_flag}-->" value="<!--{$pagesize}-->" />
+    <input type="hidden" name="sql_where" value="<!--{$sql_where}-->" />
     <tr>
-      <td>{{$tpl_sousuo}}:
+      <td><!--{$tpl_sousuo}-->:
         <select name="search_field_1">
           <option value=""></option>
-          {{$field_option}}
+          <!--{$field_option}-->
         </select>
         <select name="search_method_1">
           <option value="" ></option>
-          {{$method_option}}
+          <!--{$method_option}-->
         </select>
         <input name="search_value_1" value="" type="text" size="20" />
-        <input type="submit" name="submit" value="{{$tpl_chaxun}}">
+        <input type="submit" name="submit" value="<!--{$tpl_chaxun}-->">
         <!-- tong shi tiao jian  -->
         <input name='plus_query_1' onClick="PlusQueryClick('ID_QUERY_UNIT_2')" value='2'  type="checkbox">
-        {{$tpl_bingcha}}
+        <!--{$tpl_bingcha}-->
         <div id="ID_QUERY_UNIT_2" style="display:none">
           <input name="search_concat_2" type=radio value="and" checked>
-          {{$tpl_tongshi}}
+          <!--{$tpl_tongshi}-->
           <input name="search_concat_2" type=radio value="or" >
-          {{$tpl_huozhe}}
+          <!--{$tpl_huozhe}-->
           <select name="search_field_2">
             <option value=""></option>
-            {{$field_option}}
+            <!--{$field_option}-->
           </select>
           <select name="search_method_2">
             <option value="" ></option>
-            {{$method_option}}
+            <!--{$method_option}-->
           </select>
           <input name="search_value_2" value="" type="text" size="20" />
         </div></td>
@@ -130,38 +130,38 @@ function PlusQueryClick(a_id){
   </form>
 </table>
 <form method="post" action="main.php" name="myform">
-  {{$parent_ids_input_hidden}}
-  <input type="hidden" name="do" value="{{$do}}" />
-  <input type="hidden" name="action" value="{{$action}}" />
-  <input type="hidden" name="type_name" value="{{$type_name}}" />
-  <input type="hidden" name="{{$flag}}" value="{{$p}}" />
-  <input type="hidden" name="{{$pagesize_flag}}" value="{{$pagesize}}" />
-  <input type="hidden" name="sql_where" value="{{$sql_where}}" />
+  <!--{$parent_ids_input_hidden}-->
+  <input type="hidden" name="do" value="<!--{$do}-->" />
+  <input type="hidden" name="action" value="<!--{$action}-->" />
+  <input type="hidden" name="type_name" value="<!--{$type_name}-->" />
+  <input type="hidden" name="<!--{$flag}-->" value="<!--{$p}-->" />
+  <input type="hidden" name="<!--{$pagesize_flag}-->" value="<!--{$pagesize}-->" />
+  <input type="hidden" name="sql_where" value="<!--{$sql_where}-->" />
   <input type="hidden" name="status_" value="" />
   <table width="98%" border="0" align="center" cellpadding="1" cellspacing="1">
     <tr>
       <td>
-        <input onClick="location.replace('main.php?do={{$type_name}}_add&type_name={{$type_name}}&action=add{{$parent_ids_url_build_query}}')" type=button value="{{$tpl_zengjia}}" />
-        <input type=button onClick="action_onclick('main.php?do={{$type_name}}_edit&type_name={{$type_name}}&action=edit{{$parent_ids_url_build_query}}',self.document.myform,'id','edit');return false" value="{{$tpl_xiugai}}" />
-        <input type=button onClick="action_onclick('main.php?do={{$type_name}}_edit&type_name={{$type_name}}&action=edit{{$parent_ids_url_build_query}}',self.document.myform,'id','del');return false" value="{{$tpl_shanchu}}" />
-        {{$INPUT_other}}
+        <input onClick="location.replace('main.php?do=<!--{$type_name}-->_add&type_name=<!--{$type_name}-->&action=add<!--{$parent_ids_url_build_query}-->')" type=button value="<!--{$tpl_zengjia}-->" />
+        <input type=button onClick="action_onclick('main.php?do=<!--{$type_name}-->_edit&type_name=<!--{$type_name}-->&action=edit<!--{$parent_ids_url_build_query}-->',self.document.myform,'id','edit');return false" value="<!--{$tpl_xiugai}-->" />
+        <input type=button onClick="action_onclick('main.php?do=<!--{$type_name}-->_edit&type_name=<!--{$type_name}-->&action=edit<!--{$parent_ids_url_build_query}-->',self.document.myform,'id','del');return false" value="<!--{$tpl_shanchu}-->" />
+        <!--{$INPUT_other}-->
       </td>
       <td>
-         <div class="setPages">{{$tpl_meiyexianshi}}:<input type="text" name="pagesize_form" size="6" />{{$tpl_tiao}}<input type="submit" value="{{$tpl_shezhi}}" /></div>
+         <div class="setPages"><!--{$tpl_meiyexianshi}-->:<input type="text" name="pagesize_form" size="6" /><!--{$tpl_tiao}--><input type="submit" value="<!--{$tpl_shezhi}-->" /></div>
       </td>
     </tr>
   </table>
   <hr size="1">
   <table bgColor=#f3f3ee border=0 cellPadding=3 cellSpacing=0 width="100%">
     <tr class="title">
-      {{$show_title}}
+      <!--{$show_title}-->
     </tr>
-    {{$show}}
+    <!--{$show}-->
   </table>
   <hr size="1" />
   <table width="98%" border="0" align="center" cellpadding="1" cellspacing="1">
     <tr>
-      <td><div class="pages">{{$pagebar}}</div></td>
+      <td><div class="pages"><!--{$pagebar}--></div></td>
     </tr>
   </table>
 </form>
