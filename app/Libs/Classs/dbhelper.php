@@ -10,7 +10,7 @@ class DbHelper{
         "LONGBLOB","LONGTEXT","ENUM","SET","BIT","BOOL","BINARY","VARBINARY");
 
     // 常量无法获取
-    public function get_s_ON_UPDATE_CURRENT_TIMESTAMP() {
+    public static function get_s_ON_UPDATE_CURRENT_TIMESTAMP() {
         return '@@ON__CURRENT_TIMESTAMP@@';
     }
 
