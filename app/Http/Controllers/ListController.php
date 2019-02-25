@@ -32,7 +32,7 @@ class ListController extends Controller
         $a_arr["parent_rela"] = GetParentIds($request, $a_arr["parent_ids_arr"], $a_arr["a_options"]);
     }
 
-    public function execute(&$arr, $request){
+    public function execute(&$arr,&$actionMap,&$actionError,$request,&$response,$form,$get,$cookie){
         $dbR = $arr['dbR'];
 
         if (array_key_exists("f_info",$arr)) {

@@ -50,20 +50,20 @@ Route::group(['namespace' => 'Project', 'prefix' => 'project'], function ($route
 
 Route::group(['namespace' => 'Template', 'prefix' => 'template'], function ($router) {
     $router->get('list','TemplateController@list')->name('templatelist');
-    $router->post('edit','TemplateController@edit')->name('templateedit');
-    $router->post('add', 'TemplateController@add')->name('templateadd');
+    $router->any('edit','TemplateEditController@execute')->name('templateedit');
+    $router->any('add', 'TemplateAddController@execute')->name('templateadd');
 });
 
 Route::group(['namespace' => 'Tempdef', 'prefix' => 'tempdef'], function ($router) {
-    $router->get('list','TempdefController@list')->name('tempdeflist');
-    $router->post('edit','TempdefController@edit')->name('tempdefedit');
-    $router->post('add', 'TempdefController@add')->name('tempdefadd');
+    $router->get('list','TempdefController@execute')->name('tempdeflist');
+    $router->any('edit','TempdefEditController@execute')->name('tempdefedit');
+    $router->any('add', 'TempdefAddController@execute')->name('tempdefadd');
 });
 
 Route::group(['namespace' => 'Document', 'prefix' => 'document'], function ($router) {
-    $router->get('list','DocumentController@list')->name('documentlist');
-    $router->post('edit','DocumentController@edit')->name('documentedit');
-    $router->post('add', 'DocumentController@add')->name('documentadd');
+    $router->get('list','DocumentController@execute')->name('documentlist');
+    $router->any('edit','DocumentEditController@execute')->name('documentedit');
+    $router->any('add', 'DocumentAddController@execute')->name('documentadd');
 });
 
 Route::group(['namespace' => 'Schedule', 'prefix' => 'schedule'], function ($router) {

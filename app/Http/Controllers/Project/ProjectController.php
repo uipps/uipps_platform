@@ -17,6 +17,13 @@ class ProjectController extends ListController
 
     public function list(Request $a_request)
     {
+        $actionMap = [];
+        $actionError = [];
+        $response = [];
+        $form = [];
+        $get = [];
+        $cookie = [];
+
         $request = $a_request->all();
         $request['do'] = 'project_list';
 
@@ -60,7 +67,7 @@ class ProjectController extends ListController
         }
 
         $dbR->table_name = $table_name;
-        $resp = parent::execute($arr, $request);
+        $resp = parent::execute($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
 
         $ziduan_arr = getZiduan("id:ID;name_cn:项目名称;db_host:数据库主机;db_name:数据库名称;db_user:数据库用户名;status_:状态");// 需要的字段
         $show_arr = buildH($arr["_arr"], $ziduan_arr);
