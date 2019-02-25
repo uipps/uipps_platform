@@ -281,11 +281,10 @@ class UserService extends BaseService
         return false;
     }
 
-    public function Authorize($a_arr) {
+    public function Authorize($a_request) {
+        $a_arr = $a_request->all();
         $_SESSION = session()->all();
-        $_COOKIE = [];
-        if (property_exists($a_arr, 'cookies'))
-            $_COOKIE = $a_arr->cookies->all();
+        $_COOKIE = $a_request->cookies->all();
 
         // 返回地址
         if ( !isset($_SESSION['back_url']) && isset($a_arr["back_url"]) ){
@@ -298,9 +297,9 @@ class UserService extends BaseService
             return true;
         }
 
-        if (\Session::has('user') && session('user', '')) {
+        /*if (\Session::has('user') && session('user', '')) {
             return true;
-        }
+        }*/
 
         if (isset($_COOKIE[$this->_sid_str]) && $_COOKIE[$this->_sid_str]) {
             // kaixin001 _kx    42ebe5b40da8b6ce25e1ae1a47c4dea5_105421

@@ -49,14 +49,14 @@ class ListController extends Controller
         // 查询 end
 
         // 分页
-        $pagebar_arr = getPagebar($arr, $this->pageSize, $this->flag,$this->pagesize_flag, $request->all(), $sql_where);
+        $pagebar_arr = getPagebar($dbR, $this->pageSize, $this->flag,$this->pagesize_flag, $request, $sql_where);
         $page_bar_size = $pagebar_arr["page_bar_size"];
 
         // 具体数据
         $offset = ($pagebar_arr["_p"]-1)*$pagebar_arr["pageSize"];
-        //$l_arr = $dbR->getAlls($sql_where. " ".$arr["sql_order"]." limit $offset , ". $pagebar_arr["pageSize"]." ");
-        $sql = 'SELECT * FROM ' . $arr['table_name'] . ' ' . $sql_where. " ".$arr["sql_order"]." limit $offset , ". $pagebar_arr["pageSize"]." ";
-        $l_arr = collect(\DB::connection($dbR)->select($sql))->toArray();
+        $l_arr = $dbR->getAlls($sql_where. " ".$arr["sql_order"]." limit $offset , ". $pagebar_arr["pageSize"]." ");
+        //$sql = 'SELECT * FROM ' . $arr['table_name'] . ' ' . $sql_where. " ".$arr["sql_order"]." limit $offset , ". $pagebar_arr["pageSize"]." ";
+        //$l_arr = collect(\DB::connection($dbR)->select($sql))->toArray();
         $arr["_arr"] = $l_arr;
         // 先获取模板
         //$content = file_get_contents(resource_path() . '/views/admin/' . $arr["tplname"] . env('BLADE_SUFFIX'));

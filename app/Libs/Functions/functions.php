@@ -566,9 +566,7 @@ function getProInfoTblInfoDocInfo(&$dbR, $a_p_t_d_arr=array()){
 }
 
 //
-function getPagebar(&$arr,$pageSize,$flag,$pagesize_flag, $request,$sql_where){
-    $dbR = $arr['dbR'];
-
+function getPagebar(&$dbR,$pageSize,$flag,$pagesize_flag, $request,$sql_where){
     // 分页部分 开始
     if (isset($request["pagesize_form"]) && $request["pagesize_form"] >= 1) {
         $pageSize = $request["pagesize_form"] + 0; // 替换掉request中旧的
@@ -578,16 +576,12 @@ function getPagebar(&$arr,$pageSize,$flag,$pagesize_flag, $request,$sql_where){
         if (isset($request[$pagesize_flag]) && $request[$pagesize_flag] >= 1)
             $pageSize = $request[$pagesize_flag] + 0;  // how many  per page
     }
-    $connect_name = $dbR; // 数据库配置的连接名
-
-    $sql = "select count(*) as num FROM ".cString_SQL::FormatField($arr['table_name']) . ' ' . $sql_where; // select count(*) as num FROM aups_t001  where status_ = 'use'
-    $rlt = collect(DB::connection($connect_name)->select($sql))->toArray();
-    $itemSum = $rlt[0]->num;
+    $itemSum = $dbR->getCountNum($sql_where);
     $_p = isset($request[$flag])?$request[$flag]:1; // page number $currentPageNumber
     $_p = (int)$_p;                   // int number
     $_p = ($_p>ceil($itemSum/$pageSize))?ceil($itemSum/$pageSize):$_p;
     $_p = ($_p<1)?1:$_p;
-    $pager = new \Pager("?".http_build_query(get_url_gpc($request)),$itemSum,$pageSize,$_p,$flag);
+    $pager = new Pager("?".http_build_query(get_url_gpc($request)),$itemSum,$pageSize,$_p,$flag);
     $pagebar = $pager->getBar();
     $page_bar_size = $pagebar." &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   每页显示 <a href='".$pager->buildurl(array($pagesize_flag=>5))."'>5条</a> <a href='".$pager->buildurl(array($pagesize_flag=>50))."'>50条</a> <a href='".$pager->buildurl(array($pagesize_flag=>100))."'>100条</a>";
