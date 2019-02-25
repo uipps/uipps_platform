@@ -174,7 +174,8 @@ class TemplateEditController extends AddController
 
                 if ('del'==$form['status_']) {
                     $response['ret'] = array('ret'=>0);
-                    return "main.php?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"];  // 删除处理直接返回到列表页面
+                    //return "main.php?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"];  // 删除处理直接返回到列表页面
+                    return redirect('/'.$this->type_name.'/list?_='.$arr["parent_rela"]["parent_ids_url_build_query"]);
                 }
                 $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ";
                 $response['ret'] = array('ret'=>0);
