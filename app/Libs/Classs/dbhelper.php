@@ -643,6 +643,7 @@ class DbHelper{
                 $dbR = new DBR($l_p_s1);
                 $dbR->table_name = empty($l_p_self_id["t_table_name"]) ? TABLENAME_PREF."table_def":$l_p_self_id["t_table_name"];
                 $l_t_all = $dbR->getAlls(" where status_!='stop'", 'id, name_eng, name_cn');
+                $l_rlt["t_all_"] = $l_t_all;
 
                 /*$dbR->table_name = $l_p_self_id["table_name"];
                 $l_p_s1 = $dbR->getOne(" where ".$l_p_self_id["ziduan"]." = ".$a_data[$l_p_self_id["ziduan"]]);

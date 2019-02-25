@@ -356,4 +356,52 @@ return $l_url;')
             return $response['html_content'];  // 总是返回此结果
         }
     }
+
+    public function getOtherStr($l_tbl_daoru_options,$other_tbl_daoru_source){
+        return '
+<script type="text/javascript" src="//img3.' . $GLOBALS['cfg']['WEB_DOMAIN'] . '/js/jquery.min.js"></script>
+<script type="text/javascript">
+        $(function(){
+
+$("#id_project_add_1").hide();//可以先隐藏表单
+
+$("#id_project_add_3").click(function(){
+  // 在form表单中
+  $("form > table").prepend(\'<tr><td nowrap="nowrap">来源模板</td><td><select id="'.$other_tbl_daoru_source.'" name="'.$other_tbl_daoru_source.'">'.$l_tbl_daoru_options.'</select></td></tr>\');
+
+  $("#id_project_add_2").hide();
+  $("#id_project_add_3").hide();
+  $("#id_project_add_4").hide();
+  $("#id_project_add_5").hide();
+  $("#id_project_add_6").hide();
+  $("#id_project_add_1").show();
+});
+
+$("#id_project_add_2").click(function(){
+  $("#id_project_add_2").hide();
+  $("#id_project_add_3").hide();
+  $("#id_project_add_4").hide();
+  $("#id_project_add_5").hide();
+  $("#id_project_add_6").hide();
+  $("#id_project_add_1").show();
+});
+
+        });
+</script>
+      '."<tr style='display:' id='id_project_add_3'>
+    <td><a href='#' title='暂时只支持从本项目的其他模板中导入'>导入项目模板</a></td>
+  </tr>
+  <tr style='display:' id='id_project_add_4'>
+    <td><a title='暂未实现'>从文件导入</a></td>
+  </tr>
+  <tr style='display:' id='id_project_add_5'>
+    <td><a title='暂未实现'>从模板库导入</a></td>
+  </tr>
+  <tr style='display:' id='id_project_add_6'>
+    <td><a title='暂未实现'>直接输入</a></td>
+  </tr>
+  <tr style='display:' id='id_project_add_2'>
+    <td><a href='#'>新建空白模板</a></td>
+  </tr>";
+    }
 }
