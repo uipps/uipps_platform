@@ -41,7 +41,7 @@ class CrontabCommand extends Command
         return $p_list;
     }
 
-    // 填充table_def,field_def数据
+    // 填充table_def,field_def数据 php artisan crontab fill_db_table_field uipps_platform
     private function fill_db_table_field($request) {
         // 主要参数是db_name=grab&if_repair
         // 主要功能是创建数据库（如果数据库存在则按照项目特点进行补充和修正）、数据表和字段
@@ -88,6 +88,7 @@ class CrontabCommand extends Command
         if (isset($proj_list[$request['p1']]) && $proj_list[$request['p1']]) {
             // 项目增加以及修改项目联合起来，建表、创建字段，添加数据。修改表结构
             $p_arr = $proj_list[$request['p1']];
+            //print_r($p_arr);exit;
             if ( !array_key_exists('table_name',$request) ) {
                 // 如果不存在，则需要进行必要的表修补
                 $rlt = DbHelper::createDBandBaseTBL($p_arr);
@@ -106,7 +107,7 @@ class CrontabCommand extends Command
             }
         } else {
             // 项目表中没有此项目的话，则需要入库一下，同时创建一个数据库
-
+            $dbR = new \DBR();
             // 自动获取默认数组
             $l_ins_arr = $dbR->getInSertArr();
             $data_arr = $l_ins_arr[1];  // 只需要必须的字段
@@ -121,7 +122,7 @@ class CrontabCommand extends Command
 
             // 系统本身不应该在此处默认的dbr连接信息的数据库中
             //if ('SYSTEM'!=strtoupper($request['pro_type'])) {
-            $dbW = new DBW();
+            $dbW = new \DBW();
             $l_err = $dbW->errorInfo();
             if ($l_err[1]>0){
                 // 数据库连接失败后

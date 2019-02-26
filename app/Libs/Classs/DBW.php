@@ -5,7 +5,7 @@ class DBW extends MysqlW
     public $table_name = null;
 
     public function __construct($_arr=null, $options=false){
-        parent::ConnectW($_arr, $options);
+        parent::ConnectDB($_arr, $options);
     }
 
     public function getExistorNot($condition, $assoc=true){

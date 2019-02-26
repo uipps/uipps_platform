@@ -6,7 +6,7 @@ class MysqlW extends MysqlDB
         $this->ConnectDB($_arr, $options);
     }
 
-    public function &InsertIntoTbl($tablename, $ar){
+    public function InsertIntoTbl($tablename, $ar){
         if (!is_array($ar)||empty($ar)) {  // 确保$ar为非空数组
             return false;
         }
@@ -46,7 +46,7 @@ class MysqlW extends MysqlDB
      * @param string $limit
      * @return resource|boolean
      */
-    public function &DeleteData($tablename, $condition, $limit = ""){
+    public function DeleteData($tablename, $condition, $limit = ""){
         $sql = "delete from {$tablename} $condition $limit ";$this->sql = $sql;
         global $SHOW_SQL;
         if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"202")) echo $sql.NEW_LINE_CHAR;
@@ -63,7 +63,7 @@ class MysqlW extends MysqlDB
      * @param boolean $bAdd
      * @return boolean
      */
-    public function &UpdateTableArray($tablename, $ar, $condition, $if_addcount = false){
+    public function UpdateTableArray($tablename, $ar, $condition, $if_addcount = false){
         if (!is_array($ar)||empty($ar)) {  // 确保$ar为非空数组
             return false;
         }
@@ -82,14 +82,16 @@ class MysqlW extends MysqlDB
      * @param string $sql sql
      * @return resource|boolean
      */
-    public function &exec($sql){
+    public function exec($sql){
         // 事先判断 查询语句是否是 update ，不是就返回false
-        $dbo =& $this->dbo;  $this->setCharset();// 兼容php4的做法
-        $sql = ltrim($sql);$this->sql = $sql;
-        $affected =& $dbo->exec($sql);
+        //$dbo =& $this->dbo;
+        //$this->setCharset();// 兼容php4的做法
+        $sql = ltrim($sql);
+        $this->sql = $sql;
+        $affected = $this->dbo->insert($sql);
         return $affected;
     }
-    public function &Query($sql){
+    public function Query($sql){
         // 调用的时候为了兼容其他地方
         $affected =& $this->exec($sql);
         return $affected;

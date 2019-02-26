@@ -99,16 +99,11 @@ class DbHelper{
         return DbHelper::getAutocreamentDbname($a_proj, $a_f_name, $a_data, $a_default);
     }
 
-    public static function getAllDB(&$p_arr, $l_no_need_db = array("information_schema", "mysql", "test", "performance_schema")){
+    public static function getAllDB(&$dbR, $l_no_need_db = array("information_schema", "mysql", "test", "performance_schema")){
         $l_rlt = array();
-
-        self::getConfigInfoByProjectData($p_arr);
-        //print_r(Config::get("database.connections"));exit;
-        $connect_name = self::getConnectName($p_arr);
-        $l_tmp = DB::connection($connect_name)->select('show databases');
-
+        $l_tmp = $dbR->SHOW_DATABASES();
         foreach ($l_tmp as $l_arr){
-            $l_d_n = trim($l_arr->Database);
+            $l_d_n = trim($l_arr["Database"]);
             // 过滤掉一些默认的表
             if (!in_array($l_d_n, $l_no_need_db)) $l_rlt[] = $l_d_n;
         }
@@ -126,13 +121,16 @@ class DbHelper{
         if (!array_key_exists('db_name', $data_arr) && !array_key_exists('db_port', $data_arr)) return ;
         $db_name = $data_arr["db_name"];
 
+        $dbR = new DBR($data_arr);
+        $dbW = new DBW($data_arr);
         // 在指定的主机上建库
-        $l_tmp = DbHelper::getAllDB($data_arr);
+        $l_tmp = DbHelper::getAllDB($dbR);
         if ( !in_array($db_name, $l_tmp) ) {
             // 不存在则创建该数据库
-            $sql = 'CREATE DATABASE IF NOT EXISTS '.cString_SQL::FormatField($db_name).' DEFAULT CHARACTER SET '.$db_charset.' COLLATE '.$db_charset.'_general_ci';
-            $connect_name = self::getConnectName($data_arr);
-            $rlt = DB::connection($connect_name)->insert($sql);
+            //$sql = 'CREATE DATABASE IF NOT EXISTS '.cString_SQL::FormatField($db_name).' DEFAULT CHARACTER SET '.$db_charset.' COLLATE '.$db_charset.'_general_ci';
+            //$connect_name = self::getConnectName($data_arr);
+            //$rlt = DB::connection($connect_name)->insert($sql);
+            $rlt = $dbW->create_db($db_name, $db_charset);
         }
 
         // 依据项目的类型，确定需要建立哪几张基本表
@@ -154,7 +152,7 @@ class DbHelper{
             case "SYSTEM":
                 //$a_sql .= file_get_contents(database_path('migrations/uipps.sql'));
 
-                //$l_e_wai = file_get_contents(database_path('migrations/uipps_init_insert.sql'));
+                $l_e_wai = file_get_contents(database_path('migrations/uipps_init_insert.sql'));
 
                 $data_arr["name_cn"] = convCharacter($GLOBALS['language']['SYSTEM_NAME_STR'],true);
                 if (!array_key_exists("id",$data_arr)) {
@@ -184,7 +182,7 @@ class DbHelper{
         // 如果字段定义表指定在本项目内, 则同时需要创建表定义表和字段定义表
 
         // 所有的数据库都必须有这两张表
-        //$a_sql .= file_get_contents($GLOBALS['cfg']['PATH_RUNTIME']."/DataDriver/sql/table_field.sql");
+        $a_sql .= file_get_contents(database_path('migrations/table_field.sql'));
 
         // 首先创建相应的数据表
         DbHelper::execDbWCreateInsertUpdate($data_arr, $a_sql);
@@ -203,6 +201,7 @@ class DbHelper{
             $a_data_arr = array("source"=>$source,"creator"=>$creator);  // 能在外部增加字段的
             // $dsn = DbHelper::getDSNstrByProArrOrIniArr($data_arr);
 
+            // TODO 暂时不用文件的方式, 应该直接
             DbHelper::fill_table($data_arr, $a_data_arr,"all",$field_def,$table_def,$data_arr["id"]);
             DbHelper::fill_field($data_arr, $a_data_arr,"all",$field_def,$table_def);
 
@@ -212,9 +211,7 @@ class DbHelper{
                 DbHelper::execDbWCreateInsertUpdate($data_arr, $l_e_tmpl,array("INSERT INTO ","REPLACE INTO ","UPDATE "));
             }
         } else {
-            $a_data_arr = array("source"=>$source,"creator"=>$creator);  // 能在外部增加字段的
-            DbHelper::fill_table($data_arr, $a_data_arr,"all",'field_def','table_def', $data_arr["id"]);
-            DbHelper::fill_field($data_arr, $a_data_arr,"all",'field_def','table_def');
+            //
         }
 
         // ------ 如果有额外的初始化数据需要insert或update的时候

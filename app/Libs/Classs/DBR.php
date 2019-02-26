@@ -173,7 +173,7 @@ class DBR extends MysqlR
     }
     public function SHOW_DATABASES($assoc=true){
         $sql = "SHOW DATABASES";
-        $this->assoc = $assoc;
+        //$this->assoc = $assoc;
         return parent::GetPlan($sql);
     }
 }
