@@ -14,7 +14,7 @@ class CommonDb extends Migration
     public function up()
     {
         // 星球表
-        Schema::create('region_planets', function (Blueprint $table) {
+        /*Schema::create('region_planets', function (Blueprint $table) {
             $table->increments('id')->comment('自增ID');
             $table->string('creator', 100)->default('')->comment('创建者');
             $table->date('createdate')->comment('创建日期');
@@ -39,7 +39,7 @@ class CommonDb extends Migration
             $table->index(['createdate','createtime'], 'idx_cdt');
             $table->engine = 'InnoDB';
             $table->comment = '星球表';
-        });
+        });*/
 
 
     }

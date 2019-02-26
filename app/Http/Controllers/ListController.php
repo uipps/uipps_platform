@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 class ListController extends Controller
 {
-    protected $type_name= '';
-    protected $action= 'list';
+    public $type_name= '';
+    public $action= 'list';
 
-    protected $pageSize = 100;
-    protected $flag = "p";          // 当前页面标记
-    protected $pagesize_flag = "pagesize";
+    public $pageSize = 100;
+    public $flag = "p";          // 当前页面标记
+    public $pagesize_flag = "pagesize";
 
     public static function getFieldsInfo(&$a_arr){
         return AddController::getFieldsInfo($a_arr);

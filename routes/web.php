@@ -34,6 +34,7 @@ Route::group(['namespace' => 'Admin', 'prefix'=>'admin'], function (){
 Route::group(['namespace' => 'Admin'], function ($router) {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::any('/password/edit', 'PasswordEditController@execute')->name('home');
+    Route::any('/loginlog/list', 'LoginLogController@list')->name('home');
 
 });
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Schedule;
+namespace App\Http\Controllers\Admin;
 
 
 use App\Services\Admin\UserService;
@@ -11,7 +11,7 @@ use DBW;
 use Pager;
 
 
-class ScheduleController extends ListController
+class LoginLogController extends ListController
 {
     protected $userService;
 
@@ -37,45 +37,16 @@ class ScheduleController extends ListController
         $files = [];
 
         $request = $a_request->all();
-        $request['do'] = 'schedule_list';
+        $request['do'] = 'loginlog_list';
 
 
 
         if (!isset($request["pagesize"])) $request["pagesize"] = $this->pageSize;
         if (!isset($request["pagesize_form"])) $request["pagesize_form"] = 0;
 
-        //
-        if (1!=$_SESSION["user"]["if_super"]) {
-            $response['html_content'] = "权限不够!";
-            return $response['html_content'];  // 总是返回此结果
-        }
-        // 如果对列表中单个计划任务进行启动、停止或删除，执行完以后，依然显示列表页面 begin
-        // 本应该分离出来, 但为了页面的所有post数据都能记忆上，便于搜索功能,以后连同js一起进行分离出去
-        if (!isset($request["_action"]))
-            $request["_action"] = '';
-        if("delete"==$request["_action"]){
-            // 可以调用 main.php?do=schedule_del&id=$request["id"]
-            $dbW = new DBW();
-            $dbW->table_name = TABLENAME_PREF."schedule";
-            $ar = array("id"=>$request["id"]);
-            $dbW->delOne($ar,"id");
-        }else if("start"==$request["_action"]){
-            $dbW = new DBW();
-            $dbW->table_name = TABLENAME_PREF."schedule";
-            $ar = array("status_"=>'1');
-            $dbW->updateOne($ar,"id=".$request["id"]);
-        }else if("stop"==$request["_action"]){
-            $dbW = new DBW();
-            $dbW->table_name = TABLENAME_PREF."schedule";
-            $ar = array("status_"=>'0');
-            $dbW->updateOne($ar,"id=".$request["id"]);
-        }
-        //  end
-
         // 显示页面数据
         $dbR = new DBR();
-        $dbR -> table_name = TABLENAME_PREF."schedule";
-
+        $dbR->table_name = TABLENAME_PREF."loginlog";
 
         // 有查询的时候，查询sql语句保留
         $sql_where = isset($request["sql_where"]) ? urldecode($request["sql_where"]) : "";
@@ -87,8 +58,8 @@ class ScheduleController extends ListController
             // 有查询条件的时候，同时将sql语句注入到 request 数组中，便于作为链接的一部分
             $request["sql_where"] = $sql_where;
         }
-        //$field_option  = buildOptions(array("host"=>"发布主机ip","shell_command"=>"执行命令","description"=>"说明"),"",false);
-        $field_option  = buildOptions(getFieldArr($dbR->getTblFields()),"",false);
+        //$field_option = buildOptions(array("username"=>"用户名","nickname"=>"昵称","succ_or_not"=>"成功或失败"),"",false);
+        $field_option = buildOptions(getFieldArr($dbR->getTblFields()),"",false);
         $method_option = get_method_option();
         // 查询 end
 
@@ -108,20 +79,19 @@ class ScheduleController extends ListController
         $_p = ($_p<1)?1:$_p;
         $pager = new Pager("?".http_build_query(get_url_gpc($request)),$itemSum,$pageSize,$_p,$this->flag);
         $pagebar = $pager->getBar();
-        $page_bar_size = $pagebar." &nbsp;&nbsp;&nbsp;&nbsp; "."(共有：".$pager->itemSum." 条)";
-        //每页显示 <a href='".$pager->buildurl(array($this->pagesize_flag=>5))."'>5条</a> <a href='".$pager->buildurl(array($this->pagesize_flag=>50))."'>50条</a> <a href='".$pager->buildurl(array($this->pagesize_flag=>100))."'>100条</a>";
-        //." 共有：".$pager->itemSum." 条";
+        $page_bar_size = $pagebar." &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  每页显示 <a href='".$pager->buildurl(array($this->pagesize_flag=>5))."'>5条</a> <a href='".$pager->buildurl(array($this->pagesize_flag=>50))."'>50条</a> <a href='".$pager->buildurl(array($this->pagesize_flag=>100))."'>100条</a>";
+        //."(共找到：".$pager->itemSum." 条)";
         // 分页部分 结束
 
         // 具体数据
         $offset = ($_p-1)*$pageSize;
         $_arr = $dbR->getAlls("$sql_where order by id desc limit $offset , $pageSize ");
 
-        $ziduan_arr = getZiduan("id:任务号;name:任务名称;__minute_hour_day_month_week__:时间设置:width,300px|overflow,hidden|text-overflow,ellipsis;status_:执行状态:1,blue|0,red;host:任务执行主机;creator:创建者;__create_datetime__:创建时间:width,150px;shell_command:shell命令:text-align,left");// 需要的字段
-        $show_arr = buildH($_arr,$ziduan_arr,array("status_"=>array(0=>"停止",1=>"启动")));
+        $ziduan_arr = getZiduan("id:日志ID;username:用户名;nickname:昵称;logindate:登录时间;clientip:登录IP;serverip:主机IP;succ_or_not:请求成败");// 需要的字段
+        $show_arr = buildH($_arr,$ziduan_arr);
         $show = $show_arr[0];
         $show_title = $show_arr[1];
-
 
         // 先获取模板
         $content = file_get_contents(resource_path() . '/views/admin/' . $request['do'] . '.html');
@@ -140,8 +110,8 @@ class ScheduleController extends ListController
 
             "flag"=>$this->flag,
             "pagesize_flag"=>$this->pagesize_flag,
-            "schedule_show"=>$show,
-            "schedule_show_title"=>$show_title,
+            "loginlog_show"=>$show,
+            "loginlog_show_title"=>$show_title,
             "nav"=>"计划任务列表",
             "pagebar"=>$page_bar_size,
             "RES_WEBPATH_PREF"=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
@@ -159,6 +129,7 @@ class ScheduleController extends ListController
 
 
         $response['html_content'] = replace_template_para($data_arr,$content);
+        $response['ret'] = array('ret'=>0);
         return $response['html_content'];  // 总是返回此结果
     }
 }

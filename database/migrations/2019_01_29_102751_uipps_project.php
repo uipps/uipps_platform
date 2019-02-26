@@ -115,7 +115,7 @@ class UippsProject extends Migration
             $table->string('nickname', 100)->comment('昵称');
             $table->string('clientip', 15)->default('')->comment('客户端IP');
             $table->string('serverip', 15)->default('')->comment('服务器IP');
-            $table->dateTime('logindate')->default(0)->comment('创建时间');
+            $table->dateTime('logindate')->comment('登录时间');
             $table->string('description', 200)->default('')->comment('描述');
             $table->enum('succ_or_not', ['y','n'])->default('n')->comment('登录成功如否');
             $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
