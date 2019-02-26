@@ -116,7 +116,7 @@ class DocumentAddController extends AddController
 
         //$l_bixuziduanform = DbHelper::getBiXuFields($arr["dbR"], array("table_name"=>$table_name, "f_info"=>$arr["f_info"]));
         // empty($form[$l_bixuziduanform["one"]])
-        if (empty($form)) {
+        if ($a_request->isMethod('get')) {
             $arr["no_need_field"] = array("mender","menddate","mendtime","creator","createdate","createtime",'published_1','unicomment_id','audited','expireddate','flag');
             $l_resp = parent::executeListForm($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie, $files);
 

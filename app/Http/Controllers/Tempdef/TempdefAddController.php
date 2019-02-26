@@ -96,7 +96,7 @@ class TempdefAddController extends AddController
         }
 
         //$l_bixuziduanform = DbHelper::getBiXuFields($arr["dbR"], array("table_name"=>$table_name, "f_info"=>$arr["f_info"]));
-        if (empty($form)) {
+        if ($a_request->isMethod('get')) {
             // 因为还没有数据表，因此可以执行外部sql，也可以选择某些类型还可以使用默认表
             // 需要根据项目类型(是否CMS)来决定显示相应的静态模板
             $arr["default_over"] = array(

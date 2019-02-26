@@ -105,7 +105,7 @@ class DocumentEditController extends AddController
         if (isset($arr["t_def"]['arithmetic']) && !empty($arr["t_def"]['arithmetic'])) {
             $l_arith = Parse_Arithmetic::parse_like_ini_file($arr["t_def"]['arithmetic']); // 首先将算法解析为一维数组
         }
-        if (empty($form)) {
+        if ($a_request->isMethod('get')) {
             // 作为上级目录, 暂不提供修改权限，因此隐藏，但列出中文名
             // 要格式化成"value"，"hidden"附加属性的数组
             $a_over = array(

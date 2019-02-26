@@ -11,18 +11,8 @@ class HostController extends Controller
         $this->middleware('admin_auth');
     }
 
-    public function list(Request $request)
+    public function list(Request $a_request)
     {
         return __NAMESPACE__ . "<br>\r\n" . __CLASS__ .  "<br>\r\n"  . __FUNCTION__;
-    }
-
-    public function add(Request $request)
-    {
-        return __NAMESPACE__ .  "<br>\r\n"  . __CLASS__ .  "<br>\r\n"  . __FUNCTION__;
-    }
-
-    public function edit(Request $request)
-    {
-        return __NAMESPACE__ .  "<br>\r\n"  . __CLASS__ .  "<br>\r\n"  . __FUNCTION__;
     }
 }

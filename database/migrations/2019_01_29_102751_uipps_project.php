@@ -107,6 +107,62 @@ class UippsProject extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '用户表';
         });
+
+        // 登录日志
+        Schema::create('loginlog', function (Blueprint $table) {
+            $table->increments('id')->comment('自增ID');
+            $table->string('username', 100)->comment('用户名');
+            $table->string('nickname', 100)->comment('昵称');
+            $table->string('clientip', 15)->default('')->comment('客户端IP');
+            $table->string('serverip', 15)->default('')->comment('服务器IP');
+            $table->dateTime('logindate')->default(0)->comment('创建时间');
+            $table->string('description', 200)->default('')->comment('描述');
+            $table->enum('succ_or_not', ['y','n'])->default('n')->comment('登录成功如否');
+            $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
+
+            $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
+            $table->engine = 'InnoDB';
+            $table->comment = '登录日志';
+        });
+
+        // 计划任务
+        Schema::create('schedule', function (Blueprint $table) {
+            $table->increments('id')->comment('自增ID');
+            $table->string('name', 255)->default('')->comment('名称');
+            $table->string('host', 255)->default('')->comment('主机');
+            $table->enum('fashion', ['0','1','2'])->default('0')->comment('样式');
+            $table->string('month', 255)->default('*')->comment('执行月份');
+            $table->string('day', 255)->default('*')->comment('执行天');
+            $table->string('week', 255)->default('*')->comment('执行周');
+            $table->string('hour', 255)->default('*')->comment('执行小时');
+            $table->string('minute', 255)->default('*')->comment('执行分钟');
+            $table->enum('mode', ['0','1','2'])->default('0')->comment('模式');
+            $table->string('shell_command', 600)->default('')->comment('shell命令');
+            $table->unsignedInteger('suoshuxiangmu_id')->default(0)->comment('所属项目id');
+            $table->unsignedInteger('suoshubiao_id')->default(0)->comment('所属表id');
+            $table->enum('condition', ['0','1'])->default('0')->comment('条件');
+            $table->string('doc_list', 255)->default('')->comment('文档列表');
+            $table->enum('jit', ['yes','no'])->default('yes')->comment('jit');
+            $table->string('creator', 100)->default('')->comment('创建者');
+            $table->date('createdate')->comment('创建日期');
+            $table->time('createtime')->default('00:00:00')->comment('创建时间');
+            $table->string('mender', 100)->default('')->comment('修改者');
+            $table->date('menddate')->comment('修改日期');
+            $table->time('mendtime')->default('00:00:00')->comment('修改时间');
+            $table->string('belong_user', 100)->default('finance')->comment('所属用户');
+            $table->string('forbidden_date', 200)->default('')->comment('禁止执行的日期');
+            $table->tinyInteger('forbidden_timezone')->default('-12')->comment('禁止执行的时区');
+            $table->tinyInteger('server_timezone')->default('8')->comment('服务器时区');
+            $table->string('description', 255)->default('')->comment('描述');
+            $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
+
+            $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
+            $table->engine = 'InnoDB';
+            $table->comment = '计划任务';
+        });
+
     }
 
     /**

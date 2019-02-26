@@ -33,6 +33,7 @@ Route::group(['namespace' => 'Admin', 'prefix'=>'admin'], function (){
 
 Route::group(['namespace' => 'Admin'], function ($router) {
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::any('/password/edit', 'PasswordEditController@execute')->name('home');
 
 });
 
@@ -71,3 +72,5 @@ Route::group(['namespace' => 'Schedule', 'prefix' => 'schedule'], function ($rou
     $router->any('edit','ScheduleEditController@execute')->name('scheduleedit');
     $router->any('add', 'ScheduleAddController@execute')->name('scheduleadd');
 });
+
+

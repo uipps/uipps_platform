@@ -78,7 +78,7 @@ class ProjectEditController extends AddController
         // 需要获取到必须填写的一个字段, 依据数据库结构进行判断
         $l_bixuziduanform = DbHelper::getBiXuFields($arr["dbR"], array("table_name"=>$table_name, "f_info"=>$arr["f_info"]));
 
-        if (empty($form) || empty($form[$l_bixuziduanform[0]])) {
+        if ($a_request->isMethod('get') || empty($request[$l_bixuziduanform[0]])) {
             // 要格式化成"value"，"hidden"附加属性的数组
             $a_over = array();  // 暂时没有附加属性进行添加，之转变为value即可
             $l_self_arr = FmtDataAddAtr($l_rlt, $a_over);

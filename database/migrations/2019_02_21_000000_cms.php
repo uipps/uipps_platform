@@ -14,7 +14,7 @@ class Cms extends Migration
     public function up()
     {
         // CMS系统初始数据表
-        Schema::create('aups_t001', function (Blueprint $table) {
+        /*Schema::create('aups_t001', function (Blueprint $table) {
             $table->increments('id')->comment('自增ID');
             $table->string('creator', 100)->default('')->comment('创建者');
             $table->date('createdate')->comment('创建日期');
@@ -102,7 +102,7 @@ class Cms extends Migration
             $table->index(['createdate','createtime'], 'idx_cdt');
             $table->engine = 'InnoDB';
             $table->comment = '正文页';
-        });
+        });*/
 
     }
 

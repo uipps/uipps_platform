@@ -107,7 +107,7 @@ class TempdefEditController extends AddController
         $l_rlt = $dbR->getOne(" where id=".$request["id"]);  // 获取数据库中当前id数据
         $arr["f_data"] = $l_rlt;  // 当前数据注册进来
 
-        if (empty($form) || empty($form[$l_bixuziduanform[0]])) {
+        if ($a_request->isMethod('get') || empty($request[$l_bixuziduanform[0]])) {
             // 要格式化成"value"，"hidden"附加属性的数组
             $a_over = array("p_id"=>array("value"=>$request["p_id"],"hidden"=>1),
                 "t_id"=>array("value"=>$request["t_id"],"hidden"=>1));

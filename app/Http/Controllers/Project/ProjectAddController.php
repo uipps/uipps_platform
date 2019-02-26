@@ -153,9 +153,4 @@ class ProjectAddController extends AddController
             }
         }
     }
-
-    public function edit(Request $request)
-    {
-        return __NAMESPACE__ .  '<br>\r\n'  . __CLASS__ .  '<br>\r\n'  . __FUNCTION__;
-    }
 }

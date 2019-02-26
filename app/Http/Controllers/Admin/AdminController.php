@@ -18,14 +18,27 @@ class AdminController extends Controller
         $this->projectService = $projectService;
     }
 
-    public function mainpage(Request $request)
+    public function mainpage(Request $a_request)
     {
         // 检查是否登录
-        $l_auth = $this->userService->ValidatePerm($request);
+        $l_auth = $this->userService->ValidatePerm($a_request);
         $_SESSION = session()->all();
         if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
             return redirect('/admin/login');
         }
+
+        $actionMap = [];
+        $actionError = [];
+        $response = [];
+        $form = [];
+        $get = [];
+        $cookie = [];
+        $files = [];
+
+        $request = $a_request->all();
+        $request['do'] = 'project_add';
+        //$_SESSION = session()->all();
+
 
         // 先获取模板
         $content = file_get_contents(resource_path() . '/views/admin/' . __FUNCTION__ . '.html');
@@ -52,9 +65,9 @@ class AdminController extends Controller
         return $response['html_content'];
     }
 
-    public function frmMainMenu(Request $request) {
+    public function frmMainMenu(Request $a_request) {
         // 检查是否登录
-        $l_auth = $this->userService->ValidatePerm($request);
+        $l_auth = $this->userService->ValidatePerm($a_request);
         $_SESSION = session()->all();
         if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
             return redirect('/admin/login');
@@ -96,15 +109,15 @@ class AdminController extends Controller
         //return view('admin/frmMainMenu', $data_arr);
     }
 
-    public function GetProjectListJS(Request $request, $pt, $node) {
+    public function GetProjectListJS(Request $a_request, $pt, $node) {
         // 检查是否登录
-        $l_auth = $this->userService->ValidatePerm($request);
+        $l_auth = $this->userService->ValidatePerm($a_request);
         $_SESSION = session()->all();
         if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
             return redirect('/admin/login');
         }
 
-        $arr = $this->projectService->getProjectList($request);// 项目数据
+        $arr = $this->projectService->getProjectList($a_request);// 项目数据
         if ("RES"==$pt) {
             $contentjs = $this->buildjsRES($arr, $node);
         }else {

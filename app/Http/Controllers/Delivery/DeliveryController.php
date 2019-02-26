@@ -22,10 +22,10 @@ class DeliveryController extends Controller
     }
 
     // 获取配送单信息
-    public function getOrderDeliveryInfo(Request $request)
+    public function getOrderDeliveryInfo(Request $a_request)
     {
         $response = new ResponseDto();
-        $params = $request->all();
+        $params = $a_request->all();
         $data = $this->deliveryLogic->getDeliveryInfoById($params);  // 没有特别复杂的逻辑，可以不用Logic层
         #$data = $this->deliveryService->getDeliveryInfoById($params);
         if (is_object($data) && property_exists($data, 'code')) {

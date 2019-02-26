@@ -16,28 +16,28 @@ class LoginController extends Controller
         $this->userService = $userService;
     }
 
-    public function showLoginForm(Request $request)
+    public function showLoginForm(Request $a_request)
     {
-        $params = $request->all();
+        $params = $a_request->all();
         $l_data_arr = self::getDataArray($params);
         return view('admin.login_register.login', $l_data_arr);
     }
 
     // 自定义登录验证
-    public function loginAdmin(Request $request)
+    public function loginAdmin(Request $a_request)
     {
-        $form = $request->all();
+        $request = $a_request->all();
 
-        $l_data_arr = self::getDataArray($form);
+        $l_data_arr = self::getDataArray($request);
 
-        $result = $this->userService->getUserexistByuser($form);
+        $result = $this->userService->getUserexistByuser($request);
         //$result = $this->userService->ValidatePerm($form);
         if ($result->ret > 0) {
             $l_data_arr['action_error_notice'] = $result->msg;
             return view('admin.login_register.login', $l_data_arr);
         }
         // 登录成功，种cookie，session等
-        $this->userService->SetSessionCookieByUserArr($result->data, $form);
+        $this->userService->SetSessionCookieByUserArr($result->data, $request);
         if ( !empty($request['back_url']) ){
             // 似乎应该用session中注册的，以后验证????
             return redirect($request['back_url']);
@@ -45,7 +45,7 @@ class LoginController extends Controller
         return redirect('/admin/mainpage');
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $a_request) {
         $this->userService->logout();
         return redirect(route('admin.login'));
     }
