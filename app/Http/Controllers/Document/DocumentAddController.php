@@ -57,7 +57,7 @@ class DocumentAddController extends AddController
             return 'err!!';
         }
 
-        $dsn = \DbHelper::getDSNstrByProArrOrIniArr($p_self_info["p_def"]);$dbR->dbo = &DBO('', $dsn);
+        //$dsn = DbHelper::getDSNstrByProArrOrIniArr($p_self_info["p_def"]);
         //$dbR = null;$dbR = new DBR($p_self_info["p_def"]);  // 连接到相关数据库中去，如果有多级则需要循环进行直到找到对应的数据库和表
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
         $TBL_def = TABLENAME_PREF."table_def";
