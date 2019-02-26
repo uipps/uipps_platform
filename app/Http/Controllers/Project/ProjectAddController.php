@@ -18,12 +18,20 @@ class ProjectAddController extends AddController
 
     public function execute(Request $a_request)
     {
+        // 检查是否登录
+        $l_auth = $this->userService->ValidatePerm($a_request);
+        $_SESSION = session()->all();
+        if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
+            return redirect('/admin/login');
+        }
+
         $actionMap = [];
         $actionError = [];
         $response = [];
         $form = [];
         $get = [];
         $cookie = [];
+        $files = [];
 
         $request = $a_request->all();
         $request['do'] = 'project_add';

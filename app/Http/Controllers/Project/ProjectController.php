@@ -17,22 +17,24 @@ class ProjectController extends ListController
 
     public function list(Request $a_request)
     {
-        $actionMap = [];
-        $actionError = [];
-        $response = [];
-        $form = [];
-        $get = [];
-        $cookie = [];
-
-        $request = $a_request->all();
-        $request['do'] = 'project_list';
-
         // 检查是否登录
         $l_auth = $this->userService->ValidatePerm($a_request);
         $_SESSION = session()->all();
         if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
             return redirect('/admin/login');
         }
+
+        $actionMap = [];
+        $actionError = [];
+        $response = [];
+        $form = [];
+        $get = [];
+        $cookie = [];
+        $files = [];
+
+        $request = $a_request->all();
+        $request['do'] = 'project_list';
+
 
         $dbR = new DBR();
         $dbR->table_name = $table_name = "project";

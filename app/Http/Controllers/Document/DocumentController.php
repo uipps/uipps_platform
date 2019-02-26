@@ -20,16 +20,6 @@ class DocumentController extends ListController
 
     public function list(Request $a_request)
     {
-        $actionMap = [];
-        $actionError = [];
-        $response = [];
-        $form = [];
-        $get = [];
-        $cookie = [];
-
-        $request = $a_request->all();
-        $request['do'] = 'template_list';
-
         // 检查是否登录
         $l_auth = $this->userService->ValidatePerm($a_request);
         $_SESSION = session()->all();
@@ -37,8 +27,16 @@ class DocumentController extends ListController
             return redirect('/admin/login');
         }
 
+        $actionMap = [];
+        $actionError = [];
+        $response = [];
+        $form = [];
+        $get = [];
+        $cookie = [];
+        $files = [];
+
         $request = $a_request->all();
-        $request['do'] = 'project_list';
+        $request['do'] = 'document_list';
         //$_SESSION = session()->all();
 
         // 配置其父级、自身级别字段列表。

@@ -34,9 +34,10 @@ class TemplateEditController extends AddController
         $form = [];
         $get = [];
         $cookie = [];
+        $files = [];
 
         $request = $a_request->all();
-        $request['do'] = 'project_add';
+        $request['do'] = 'template_edit';
         //$_SESSION = session()->all();
 
 

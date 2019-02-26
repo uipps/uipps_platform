@@ -56,7 +56,7 @@ class Publish
     // 生成文档，并同步到相应地方去
     // 也有可能是删除文件, 同步出去
     // $if_delete 参数表示‘删除’处理
-    function toPublishing(&$arr,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie,$data_arr,$a_tmpl_design,$l_url='',$if_delete=false){
+    public static function toPublishing(&$arr,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie,$data_arr,$a_tmpl_design,$l_url='',$if_delete=false){
         // 1 从数据库中获取模板、url和本地地址等，如果某项为空，则不予生成，并显示错误信息。
         // 依据nginx.conf配置中关于该web前端项目的项目对应的本地目录
         // 配置信息以后放到数据库中去，当前先写成现成的文件。

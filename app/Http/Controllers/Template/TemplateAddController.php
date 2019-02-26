@@ -34,9 +34,10 @@ class TemplateAddController extends AddController
         $form = [];
         $get = [];
         $cookie = [];
+        $files = [];
 
         $request = $a_request->all();
-        $request['do'] = 'project_add';
+        $request['do'] = 'template_add';
 
         // 需要建表同时要在表定义表中增加一条记录
 

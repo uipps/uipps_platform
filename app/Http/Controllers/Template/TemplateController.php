@@ -19,16 +19,6 @@ class TemplateController extends ListController
 
     public function list(Request $a_request)
     {
-        $actionMap = [];
-        $actionError = [];
-        $response = [];
-        $form = [];
-        $get = [];
-        $cookie = [];
-
-        $request = $a_request->all();
-        $request['do'] = 'template_list';
-
         // 检查是否登录
         $l_auth = $this->userService->ValidatePerm($a_request);
         $_SESSION = session()->all();
@@ -36,8 +26,19 @@ class TemplateController extends ListController
             return redirect('/admin/login');
         }
 
-        $dbR = new DBR();
+        $actionMap = [];
+        $actionError = [];
+        $response = [];
+        $form = [];
+        $get = [];
+        $cookie = [];
+        $files = [];
 
+        $request = $a_request->all();
+        $request['do'] = 'template_list';
+
+
+        $dbR = new DBR();
         $table_name = TABLENAME_PREF."table_def";
 
         // 获取发布主机列表 , 用于ui
