@@ -81,10 +81,10 @@ class AddController extends Controller
             "html_title" => $a_arr["html_title"],
             "html_name" => $a_arr["html_name"],
 
-            "parent_nav"=>$a_arr["parent_rela"]["parent_nav"],
-            "parent_elements_str"=>$a_arr["parent_rela"]["parent_elements_str"],// 多项用逗号隔开，单项的分号后面是表名简称没有前缀的
-            "parent_ids_input_hidden"=>$a_arr["parent_rela"]["parent_ids_input_hidden"],
-            "parent_ids_url_build_query"=>$a_arr["parent_rela"]["parent_ids_url_build_query"],
+            "parent_nav"=>$a_arr["parent_rela"] ? $a_arr["parent_rela"]["parent_nav"] : '',
+            "parent_elements_str"=>$a_arr["parent_rela"] ? $a_arr["parent_rela"]["parent_elements_str"] : '',// 多项用逗号隔开，单项的分号后面是表名简称没有前缀的
+            "parent_ids_input_hidden"=>$a_arr["parent_rela"] ? $a_arr["parent_rela"]["parent_ids_input_hidden"] : '',
+            "parent_ids_url_build_query"=>$a_arr["parent_rela"] ? $a_arr["parent_rela"]["parent_ids_url_build_query"] : '',
 
             "do"=>$request["do"],
             "type_name"=>$this->type_name,

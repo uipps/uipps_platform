@@ -72,10 +72,10 @@ class ListController extends Controller
             "html_title" => $arr["html_title"],
             "html_name"  => $arr["html_name"],
 
-            "parent_nav" => @$arr["parent_rela"]["parent_nav"],
-            "parent_elements_str"=>@$arr["parent_rela"]["parent_elements_str"],// 多项用逗号隔开，单项的分号后面是表名简称没有前缀的
-            "parent_ids_input_hidden"=>@$arr["parent_rela"]["parent_ids_input_hidden"],
-            "parent_ids_url_build_query"=>@$arr["parent_rela"]["parent_ids_url_build_query"],
+            "parent_nav" => $arr["parent_rela"] ? @$arr["parent_rela"]["parent_nav"] : '',
+            "parent_elements_str"=>$arr["parent_rela"] ? @$arr["parent_rela"]["parent_elements_str"] : '',// 多项用逗号隔开，单项的分号后面是表名简称没有前缀的
+            "parent_ids_input_hidden"=>$arr["parent_rela"] ? @$arr["parent_rela"]["parent_ids_input_hidden"] : '',
+            "parent_ids_url_build_query"=>$arr["parent_rela"] ? @$arr["parent_rela"]["parent_ids_url_build_query"] : '',
 
             "do"=>$request["do"],
             "type_name"=>$this->type_name,
