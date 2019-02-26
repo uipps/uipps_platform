@@ -21,7 +21,7 @@ class Publish
     }
 
     // 为了兼容先前的，因此$a_field有一个默认值
-    function getUrl(&$arr,&$actionMap,&$actionError,&$request,&$response,$a_field='url_1'){
+    public static function getUrl(&$arr,&$actionMap,&$actionError,&$request,&$response,$a_field='url_1'){
         // 首先替换掉变量值，因为变量值都是当前表的字段。
         if (isset($response["arithmetic"][$a_field]["pa_val"])) $l_url = $response["arithmetic"][$a_field]["pa_val"];
         else if (isset($arr["f_info"][$a_field][Parse_Arithmetic::getArithmetic_Result_str()]["value"])) $l_url = $arr["f_info"][$a_field][Parse_Arithmetic::getArithmetic_Result_str()]["value"];
@@ -37,7 +37,7 @@ class Publish
         return $l_url;
     }
 
-    function getRootPath(&$arr,&$actionMap,&$actionError,&$request,&$response){
+    public static function getRootPath(&$arr,&$actionMap,&$actionError,&$request,&$response){
         $l_root = "";
         if ( isset($arr["p_def"]["bendi_uri"]) ) {
             // 从项目定义处获取本地uri，不同的表发布的地址也许不一样，因此还需要在表定义字段中添加url，并进行相应的替换动作，哪个存在用哪个，都存在用表定义
@@ -117,7 +117,7 @@ class Publish
 
     }
 
-    function toPaging(&$arr, &$l_files, $l_tmp_arr, $a_tmpl_design, $l_local_path, $if_delete=false){
+    public static function toPaging(&$arr, &$l_files, $l_tmp_arr, $a_tmpl_design, $l_local_path, $if_delete=false){
         if (!empty($l_tmp_arr)) {
             $l_flag = 'p';  // 分页flag
 
@@ -195,7 +195,7 @@ class Publish
     */
 
     //
-    function toOne(&$arr, &$l_files, $a_tmpl_design, $l_local_path, $if_delete=false){
+    public static function toOne(&$arr, &$l_files, $a_tmpl_design, $l_local_path, $if_delete=false){
         // 如果url里面含有参数，则生成的静态文件不能包含参数 /data0/htdocs/www/zhanhui/20160421/1339661.shtml?id=45
         // 需要用 $l_arr = parse_url($str); 解析之后 用 $l_arr['path']部分
         // 这里简单地用字符串查找替换, 这是windows和linux的区别，linux上文件名可以有问号等特殊字符

@@ -14,7 +14,7 @@ class Html {
      * @access public
      * @param string $url
      */
-    function jump($url){
+    public static function jump($url){
         header("Location: $url");
     }
 
@@ -293,7 +293,7 @@ class Html {
         return $l_html;
     }
 
-    function getImageFileHtml($f_name, $a_content, $a_content_arr=array()){
+    public static function getImageFileHtml($f_name, $a_content, $a_content_arr=array()){
         // 如果有内容则显示
         $a_content = trim($a_content);
 
@@ -320,7 +320,7 @@ class Html {
     }
 
     // 除图片外文件
-    function getFileHtml($f_name, $a_content, $a_content_arr=array()){
+    public static function getFileHtml($f_name, $a_content, $a_content_arr=array()){
         // 如果有内容则显示
         $a_content = trim($a_content);
 
@@ -345,7 +345,7 @@ class Html {
     }
 
     // 正文的区域不一样!
-    function getHTMLEditor($f_name,$content){
+    public static function getHTMLEditor($f_name,$content){
         $host_pre = GetCurrentUrlPre();
         $str = '
     <TEXTAREA NAME="'.$f_name.'" COLS="80" ROWS="16">'.$content.'</TEXTAREA>

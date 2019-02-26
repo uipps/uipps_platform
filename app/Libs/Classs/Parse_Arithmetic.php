@@ -21,7 +21,7 @@ class Form
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function CodeResult(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function CodeResult(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         // 获取算法
         $l_ath = trim($a_vals["arithmetic"]);
         if (""!=$l_ath) {
@@ -50,7 +50,7 @@ class Form
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function Password(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function Password(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         // 主要是将非空字符进行密码工具进行加密处理成新串
         // echo var_export($a_vals, true). "  key:" . $a_key . " FUNC:" . __FUNCTION__ ." FILE:" . __FILE__ ." LINE:" . __LINE__ ." \n";
         // 获取算法
@@ -87,7 +87,7 @@ class Form
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function TextArea(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function TextArea(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         // 首先解析为二维数组, 没有什么特别的用处
         //$l_arr = Parse_Arithmetic::parse_like_ini_file($a_vals["arithmetic"],true);
         //var_dump($l_arr);
@@ -113,7 +113,7 @@ class Form
         // echo var_export($a_vals, true). "  key:" . $a_key . " FUNC:" . __FUNCTION__ ." FILE:" . __FILE__ ." LINE:" . __LINE__ ." \n";
     }
     // 同TextArea，Preview功能不提供
-    function HTMLEditor(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function HTMLEditor(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         self::TextArea($a_arr,$a_key,$a_vals,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
     }
 
@@ -130,7 +130,7 @@ class Form
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function Select(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function Select(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         // 类似上面那样, 不过数据不需要另外从数据库获取，而只需直接从数组中
         $l_rlt = cArray::str2keyvalue($a_vals["arithmetic"],",",true);  // 解析成二维数组
         Parse_Arithmetic::fillInselect($a_arr,$a_key,$l_rlt,true);
@@ -154,7 +154,7 @@ class Form
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function DB_Select(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function DB_Select(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         $l_err = array();
         $l_arr = Parse_Arithmetic::parse_like_ini_file($a_vals["arithmetic"]);// 首先解析为一维数组
 
@@ -229,7 +229,7 @@ class Form
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function DB_RadioGroup(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function DB_RadioGroup(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         $l_err = array();
         $l_arr = Parse_Arithmetic::parse_like_ini_file($a_vals["arithmetic"],true);// 首先解析为二维数组
 
@@ -293,7 +293,7 @@ class Form
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function File(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function File(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         // 碰到以后具体再做
         //echo var_export($a_vals, true). "  key:" . $a_key . " FUNC:" . __FUNCTION__ ." FILE:" . __FILE__ ." LINE:" . __LINE__ ." \n";
     }
@@ -315,7 +315,7 @@ class Form
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function ImageFile(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function ImageFile(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         // 在呈现的时候，主要是为了前端js做判断？ 也或者是后端才需要做的事情。所以可以先跳过
 
         // 获取算法参数
@@ -352,7 +352,7 @@ class Application
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function CodeResult(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function CodeResult(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         // 获取算法
         $l_ath = trim($a_vals["arithmetic"]);
         if (""!=$l_ath) {
@@ -432,7 +432,7 @@ class Application
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function SQLResult(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function SQLResult(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         $l_err = array();
         // 首先将算法解析为一维数组
         $l_arr = Parse_Arithmetic::parse_like_ini_file($a_vals["arithmetic"]);
@@ -522,7 +522,7 @@ class Application
      * @param string $a_key 字段名
      * @param array  $a_vals 字段信息数组
      */
-    function CrossPublish(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function CrossPublish(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         /*var_dump($a_key);
         var_dump($a_vals);
         print_r($a_arr);*/
@@ -723,7 +723,7 @@ class Application
 
 class Parse_SQL
 {
-    function ReplaceSQlTblAndFieldname(&$dbR, &$a_arr, $a_vals,$a_str, $request=array()){
+    public static function ReplaceSQlTblAndFieldname(&$dbR, &$a_arr, $a_vals,$a_str, $request=array()){
         if (""==$a_str) return $a_str;  // 直接返回
 
         // 依据不同特征，确定不同的处理方法
@@ -748,7 +748,7 @@ class Parse_SQL
         return $a_str;
     }
     // 替换sql语句的所有字段，并且最好都带上表名加点
-    function ReplaceSQLFieldname(&$dbR, &$a_arr, $a_str,$a_from_sql,$a_tblname_arr,$a_tbl_arr,$a_t_all,$request=array()){
+    public static function ReplaceSQLFieldname(&$dbR, &$a_arr, $a_str,$a_from_sql,$a_tblname_arr,$a_tbl_arr,$a_t_all,$request=array()){
         $a_tblname_arr = array_flip($a_tblname_arr);
         $a_t_all = cArray::Index2KeyArr($a_t_all,array("key"=>"name_eng", "value"=>array()));
 
@@ -794,7 +794,7 @@ class Parse_SQL
     }
 
     // 从sql语句的table_references 部分解析出所有的表
-    function ReplaceSQLFieldname2(&$dbR, &$a_arr, $a_str,$a_from_sql,$a_tblname_arr,$a_tbl_arr,$a_t_all,$request=array()){
+    public static function ReplaceSQLFieldname2(&$dbR, &$a_arr, $a_str,$a_from_sql,$a_tblname_arr,$a_tbl_arr,$a_t_all,$request=array()){
         $a_tblname_arr = array_flip($a_tblname_arr);
         $a_t_all = cArray::Index2KeyArr($a_t_all,array("key"=>"name_eng", "value"=>array()));
 
@@ -844,7 +844,7 @@ class Parse_SQL
     }
 
     // 从下面那个方法的逆向
-    function pinzhuangTblsAndFields($l_f_arr,$a_str=''){
+    public static function pinzhuangTblsAndFields($l_f_arr,$a_str=''){
         // 拼装一些可能的组合进行字符串的替换工作
         $l_f_for_replace = array();
         $l_f_for_replace2 = array();
@@ -902,7 +902,7 @@ class Parse_SQL
     )
      *
      */
-    function BreakawayTblsAndFieldsBySelectSql(&$dbR, &$a_arr, $a_str, $request){
+    public static function BreakawayTblsAndFieldsBySelectSql(&$dbR, &$a_arr, $a_str, $request){
         $l_rlt = array();
         $l_match = array();
 
@@ -941,7 +941,7 @@ class Parse_SQL
 
         return $l_rlt;
     }
-    function BreakawayFieldname(&$dbR, &$a_arr, $a_str,$a_select_sql,$a_tblname_arr,$a_tbl_arr,$a_t_all,$request=array()){
+    public static function BreakawayFieldname(&$dbR, &$a_arr, $a_str,$a_select_sql,$a_tblname_arr,$a_tbl_arr,$a_t_all,$request=array()){
         $l_rlt = array();
         $a_tblname_arr = array_flip($a_tblname_arr);
         $a_t_all = cArray::Index2KeyArr($a_t_all,array("key"=>"name_eng", "value"=>array()));
@@ -980,7 +980,7 @@ class Parse_SQL
 
     // 此语句只从sql中截取过from table_references 这段sql中，
     // FROM employee AS t1, info AS t2 也可能是中文的
-    function getTblsByFromSql($a_str,$a_cn_arr=array()){
+    public static function getTblsByFromSql($a_str,$a_cn_arr=array()){
         $l_rlt = array();
 
         $a_str = str_ireplace("from ","",$a_str);
@@ -993,7 +993,7 @@ class Parse_SQL
 
     // 从select语句中分离出字段来
     // 从from截断，找到字段以及其别名
-    function getFieldsBySelectSql($a_str){
+    public static function getFieldsBySelectSql($a_str){
         $l_rlt = array();
 
         $l_tmp = array();
@@ -1009,7 +1009,7 @@ class Parse_SQL
     }
 
     // {栏目页}:{栏目名称}='${所属栏目}'这样的语句
-    function MatchTblnameFieldByTblCondition(&$dbR, &$a_arr, $a_str, $request){
+    public static function MatchTblnameFieldByTblCondition(&$dbR, &$a_arr, $a_str, $request){
         $l_match = array();
 
         // 为了安全考虑进行严格限制，否则退出不执行
@@ -1050,7 +1050,7 @@ class Parse_SQL
     }
 
     //
-    function MatchTblnameFieldByExpr(&$dbR, &$a_arr, $a_str, $request){
+    public static function MatchTblnameFieldByExpr(&$dbR, &$a_arr, $a_str, $request){
         $l_match = array();
 
         // 将语句进行分解，分离表名和字段名，先替换掉表名，字段可以留在下一步进行替换
@@ -1087,7 +1087,7 @@ class Parse_SQL
     }
 
     // 从sql语句中获取表英文名或表id。暂不支持多表
-    function MatchTblnameFieldBySelectSql(&$dbR, &$a_arr, $a_str, $request){
+    public static function MatchTblnameFieldBySelectSql(&$dbR, &$a_arr, $a_str, $request){
         $l_match = array();
         // 为了安全考虑当前只支持select语句，否则退出不执行
         if (!preg_match("/^select/i",ltrim($a_str))) {
@@ -1125,7 +1125,7 @@ class Parse_SQL
     }
 
     // 通过项目中文名获取项目信息
-    function getPinfoByProjCNname($a_str_project){
+    public static function getPinfoByProjCNname($a_str_project){
         // 需要获取到项目id等数据，暂时不支持这样，只有在跨项目的时候才允许，或者以后再完善
         $dbR = new DBR($GLOBALS['cfg']['SYSTEM_DB_DSN_NAME_R']);  // 连项目本身， 去获取项目名称等数据
         $dbR->table_name = TABLENAME_PREF."project";
@@ -1157,7 +1157,7 @@ class Parse_SQL
     }
 
 
-    function getAlias($a_arr,$a_cn_arr=array()){
+    public static function getAlias($a_arr,$a_cn_arr=array()){
         $l_rlt = array();
         if (is_array($a_arr)) {
             foreach ($a_arr as $l_val){
@@ -1189,18 +1189,18 @@ class Parse_SQL
 class Parse_Arithmetic
 {
     //
-    function getArithmetic_Result_str(){
+    public static function getArithmetic_Result_str(){
         // 因为在没有new一个对象的时候，不能使用对象中的全局属性，所以采用此方法
         return "pa_arithmetic_result_";
     }
 
-    function array__map($a_f_info,$a_key_key="name_eng", $a_val_key="name_cn",$a_map_method='__call_back_addDollarBrace2str'){
+    public static function array__map($a_f_info,$a_key_key="name_eng", $a_val_key="name_cn",$a_map_method='__call_back_addDollarBrace2str'){
         $l_f_1wei = cArray::Index2KeyArr($a_f_info,array("key"=>$a_key_key,"value"=>$a_val_key));
         return array_map($a_map_method, $l_f_1wei);
     }
     // 将英文键名转换成中文键名并且加${}，而数值则是提供的英文字段对应的数值，例如request数组
     // 替换掉代码中的变量为相应数据 ${所属栏目}替换为相应的post数值
-    function getDollarBraceNameCnArr($a_key,$a_f_info,$a_data_arr,$a_key_key="name_eng", $a_val_key="name_cn",$a_map_method='__call_back_addDollarBrace2str'){
+    public static function getDollarBraceNameCnArr($a_key,$a_f_info,$a_data_arr,$a_key_key="name_eng", $a_val_key="name_cn",$a_map_method='__call_back_addDollarBrace2str'){
         //if ("aups_f023"==$a_key) print_r($a_data_arr);
         $l_f_1wei_cn_key = Parse_Arithmetic::array__map($a_f_info,$a_key_key, $a_val_key,$a_map_method);
         $l_f_1wei_cn_key = array_flip($l_f_1wei_cn_key);  // 数组键值互换，转为中文键名
@@ -1209,7 +1209,7 @@ class Parse_Arithmetic
         return $l_f_1wei_cn_key;
     }
 
-    function Int_FillREQUESTValue(&$arr, &$response, $a_fils_info, $a_data_arr){
+    public static function Int_FillREQUESTValue(&$arr, &$response, $a_fils_info, $a_data_arr){
         // 此处的注册可以从_STR_REPLACE_fields_VAL获取到，其他地方因为有额外添加前缀
         //if (!array_key_exists('_STR_REPLACE_fields_info',$arr)) $arr['_STR_REPLACE_fields_info'] = array();
         //$arr['_STR_REPLACE_fields_info'] = array_merge($arr['_STR_REPLACE_fields_info'],$a_data_arr);
@@ -1227,7 +1227,7 @@ class Parse_Arithmetic
         return ;
     }
 
-    function Int_FillPROJECTValue(&$arr, &$response){
+    public static function Int_FillPROJECTValue(&$arr, &$response){
         $l_p_def = $arr['p_def'];
         // 将表定义中的部分信息也放进来, 除了有一项模板设计的数据是数组的不能放进来
         if (isset($arr['t_def']['id']))  $l_p_def['TABLE_id'] = $arr['t_def']['id'];
@@ -1245,7 +1245,7 @@ class Parse_Arithmetic
     }
 
     // 填充用户名信息 $a_data_arr 通常是 session['user']
-    function Int_FillUSERValue(&$arr, &$response, $a_data_arr){
+    public static function Int_FillUSERValue(&$arr, &$response, $a_data_arr){
         // 主要用到的用户也就这两项了
         $l_user_f_info = array(
             "_USER_id"    =>array("name_eng"=>"_USER_id","name_cn"=>"当前用户ID"),
@@ -1273,7 +1273,7 @@ class Parse_Arithmetic
     }
 
     // 填充用户名、时间信息到用于模板替换的数组中去,字段_STR_REPLACE_fields_info,包括中英键名
-    function Int_FillDataTimeValue(&$arr, &$response, &$request, $a_requ_key=array('createdate','createtime')){
+    public static function Int_FillDataTimeValue(&$arr, &$response, &$request, $a_requ_key=array('createdate','createtime')){
         // 将创建时间进行分解成 YYYY mm dd HH ii ss 这六个变量
         $l_date_time_f_info = array(
             "_SYSTEM_date"=>array("name_eng"=>"_SYSTEM_date","name_cn"=>"系统当前日期"),
@@ -1322,7 +1322,7 @@ class Parse_Arithmetic
         return ;
     }
 
-    function Int_FillDefDuo(&$arr, &$response, &$request){
+    public static function Int_FillDefDuo(&$arr, &$response, &$request){
         // 继续注册 算法字段的数据进来, 在各个算法的时候已经注册了
         $l_pa_arr1 = array();
         if (is_array($response["arithmetic"])) {
@@ -1347,7 +1347,7 @@ class Parse_Arithmetic
         }
     }
 
-    function Int_FillALL(&$arr, &$response, &$request){
+    public static function Int_FillALL(&$arr, &$response, &$request){
         // 注册或获取需要替换的字段中文名=>数值等数组, 填充文档创建时间或系统时间
         Parse_Arithmetic::Int_FillUSERValue($arr, $response, $_SESSION['user']);
         Parse_Arithmetic::Int_FillDataTimeValue($arr, $response, $request, array('createdate','createtime'));
@@ -1406,7 +1406,7 @@ class Parse_Arithmetic
     }
 
     // 将类似ini的文件解析成一维数组, 特别的allow=post1,post2这样的也支持, 也同时支持转为二维
-    function parse_like_ini_file($l_str,$a_2erwei=false) {
+    public static function parse_like_ini_file($l_str,$a_2erwei=false) {
         $l_arr = array();
         $l_tmp = explode("\n", $l_str);
         if (!empty($l_tmp)) {
