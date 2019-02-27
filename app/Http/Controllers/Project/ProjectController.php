@@ -79,6 +79,7 @@ class ProjectController extends ListController
         $data_arr = array(
             "show"=>$show,
             "show_title"=>$show_title,
+            "get_csrf_token"=>csrf_token(),
         );
 
         $content = replace_template_para($data_arr,$resp);

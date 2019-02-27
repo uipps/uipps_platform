@@ -111,6 +111,7 @@ class TemplateAddController extends AddController
             $l_other = $this->getOtherStr($l_tbl_daoru_options, $this->other_tbl_daoru_source);
 
             $data_arr = array(
+                "get_csrf_token"=>csrf_token(),
                 "l_other" => $l_other
             );
 

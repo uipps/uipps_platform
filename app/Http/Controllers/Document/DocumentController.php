@@ -122,6 +122,7 @@ class DocumentController extends ListController
         $data_arr = array(
             "show"=>$show,
             "show_title"=>$show_title,
+            "get_csrf_token"=>csrf_token(),
             "INPUT_other"=> '<input type="button" onClick="action_onclick(\'/topublishdocs/edit?type_name=topublishdocs&action=edit&p_id='.$request["p_id"].'&t_id='.$request["t_id"].'\',self.document.myform,\'id\',\'edit\');return false" value="发布" />'.$mobanyu_guanli,
         );
 

@@ -145,6 +145,7 @@ class ScheduleController extends ListController
             "nav"=>"计划任务列表",
             "pagebar"=>$page_bar_size,
             "RES_WEBPATH_PREF"=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
+            "get_csrf_token"=>csrf_token(),
             "header"=>$header,
             "footer"=>$footer
         );

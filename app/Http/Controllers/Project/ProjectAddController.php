@@ -78,6 +78,7 @@ class ProjectAddController extends AddController
             $data_arr = array(
                 //"p_id"=>isset($request["p_id"])?$request["p_id"]:1,  // 默认就是系统本身,
                 // 可以不显示
+                "get_csrf_token"=>csrf_token(),
                 "l_other" => "<tr style='display:none' id='id_project_add_3'>
     <td><a href='/project/import'>复制发布项目</a></td>
   </tr>

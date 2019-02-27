@@ -39,7 +39,7 @@ class PasswordEditController extends Controller
 
 
         $dbR = new DBR();
-        $dbR->table_name = "dpps_user";
+        $dbR->table_name = "user";
         if (!$a_request->isMethod('get')) {
             // 获取用户信息
             $_arr = $dbR->getOne(" where id = ". $_SESSION['user']['id']);
@@ -57,7 +57,7 @@ class PasswordEditController extends Controller
                 } else {
                     // 则进行重置密码
                     $dbW = new DBW();
-                    $dbW->table_name = "dpps_user";
+                    $dbW->table_name = "user";
                     $dbW->updateOne(array('pwd'=>md5($form['password'])), 'id=' . $_arr['id']);
 
                     $response['html_content'] = '修改成功';
@@ -73,6 +73,7 @@ class PasswordEditController extends Controller
         $data_arr = array(
             "nickname"=>$_SESSION['user']['nickname'],
             "ip"=>getip(),
+            "get_csrf_token"=>csrf_token(),
             "RES_WEBPATH_PREF"=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
         );
         // 获取模板

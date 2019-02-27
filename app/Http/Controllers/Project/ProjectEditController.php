@@ -89,6 +89,7 @@ class ProjectEditController extends AddController
             Parse_Arithmetic::parse_for_list_form($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
             $l_resp = parent::executeListForm($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
             $data_arr = array(
+                "get_csrf_token"=>csrf_token(),
                 "l_other" => ""
             );
 

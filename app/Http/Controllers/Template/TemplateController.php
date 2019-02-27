@@ -94,6 +94,7 @@ class TemplateController extends ListController
         $data_arr = array(
             "show"=>$show,
             "show_title"=>$show_title,
+            "get_csrf_token"=>csrf_token(),
             "INPUT_other"=>'',//表的字段管理在各个表里面进行，'<input type=button onClick="action_onclick(\'main.php?do=tempdef_list&p_id='.$request["p_id"].'\',self.document.myform,\'id\',\'list\',\'t_id\');return false" value="'.$GLOBALS['language']['TPL_MOBAN_STR'].$GLOBALS['language']['TPL_YU_STR'].$GLOBALS['language']['TPL_GUANLI_STR'].'" />',
         );
 

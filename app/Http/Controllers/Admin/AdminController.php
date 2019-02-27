@@ -48,6 +48,7 @@ class AdminController extends Controller
         $data_arr = array(
             "system_name"=>$GLOBALS['language']['SYSTEM_NAME_STR'],
             "RES_WEBPATH_PREF"=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
+            "get_csrf_token"=>csrf_token(),
             "header"=>$header,
             "footer"=>$footer
         );
@@ -90,6 +91,7 @@ class AdminController extends Controller
             'nickname'=>$nickname,
             'ip'=>getip(),
             'RES_WEBPATH_PREF'=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
+            "get_csrf_token"=>csrf_token(),
             'header'=>$header,
             'footer'=>$footer
         );
@@ -135,6 +137,7 @@ class AdminController extends Controller
         $data_arr = array(
             "contentjs"=>$contentjs,
             "RES_WEBPATH_PREF"=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
+            "get_csrf_token"=>csrf_token(),
             "header"=>$header,
             "footer"=>$footer
         );
@@ -218,6 +221,7 @@ class AdminController extends Controller
         $data_arr = array(
             "contentjs"=>$contentjs,
             "RES_WEBPATH_PREF"=>$GLOBALS['cfg']['RES_WEBPATH_PREF'],
+            "get_csrf_token"=>csrf_token(),
             "header"=>$header,
             "footer"=>$footer
         );
