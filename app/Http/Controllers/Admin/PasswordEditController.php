@@ -7,6 +7,7 @@ use App\Services\Admin\UserService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DBR;
+use DBW;
 
 class PasswordEditController extends Controller
 {
@@ -28,7 +29,7 @@ class PasswordEditController extends Controller
         $actionMap = [];
         $actionError = [];
         $response = [];
-        $form = [];
+        $form = $a_request->all();
         $get = [];
         $cookie = [];
         $files = [];
@@ -44,7 +45,7 @@ class PasswordEditController extends Controller
             // 获取用户信息
             $_arr = $dbR->getOne(" where id = ". $_SESSION['user']['id']);
             if ($_arr) {
-                $o_passwd = $_arr['pwd'];
+                $o_passwd = $_arr['password'];
                 if($form['password']!=$form['password_c']){
                     $response['html_content'] = '输入密码不一致';
                     $response['ret'] = array('ret'=>0);
@@ -58,7 +59,7 @@ class PasswordEditController extends Controller
                     // 则进行重置密码
                     $dbW = new DBW();
                     $dbW->table_name = "user";
-                    $dbW->updateOne(array('pwd'=>md5($form['password'])), 'id=' . $_arr['id']);
+                    $dbW->updateOne(array('password'=>md5($form['password'])), 'id=' . $_arr['id']);
 
                     $response['html_content'] = '修改成功';
                     $response['ret'] = array('ret'=>0);

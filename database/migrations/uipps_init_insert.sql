@@ -48,7 +48,7 @@ update  dpps_field_def set `f_type`='Form::Password' where name_eng='db_pwd' and
 -- 5) 用户表  dpps_user
 --   a) 更新数据类型 :
 update  dpps_field_def set `f_type`='Form::Password', `arithmetic`='[PwdGen]
-md5' where name_eng='pwd' and t_id = (select id from dpps_table_def where name_eng='dpps_user')
+md5' where name_eng='password' and t_id = (select id from dpps_table_def where name_eng='dpps_user')
 
 update  dpps_field_def set `f_type`='Form::CodeResult', `arithmetic`='[html]
 $_SESSION["user"]["id"]' where name_eng='parent_id' and t_id = (select id from dpps_table_def where name_eng='dpps_user')
