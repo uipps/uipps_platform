@@ -13,7 +13,7 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        /*Schema::create('users', function (Blueprint $table) {
             $table->increments('id')->comment('自增ID');
             $table->string('name', 100)->comment('登录账号');
             $table->string('email', 100)->unique()->comment('邮箱');
@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
             $table->engine = 'InnoDB';
             $table->comment = '用户表';
-        });
+        });*/
     }
 
     /**

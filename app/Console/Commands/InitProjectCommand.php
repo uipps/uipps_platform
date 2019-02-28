@@ -33,6 +33,7 @@ class InitProjectCommand extends Command
         // 主要功能是创建数据库（如果数据库存在则按照项目特点进行补充和修正）、数据表和字段
         // 具备修复功能，保持同真实数据表一致的功能
         $this->info(date('Y-m-d H:i:s') . ' begin to process:' . self::NEW_LINE_CHAR);
+        \DB::statement('drop table if exists migrations'); // 删除迁移库
 
         $_SESSION = session()->all();
         $creator = 1;

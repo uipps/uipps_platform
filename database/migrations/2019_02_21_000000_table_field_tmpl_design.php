@@ -45,7 +45,7 @@ class TableFieldTmplDesign extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '表定义表';
         });
-
+        DB::statement("ALTER TABLE `table_def` comment '表定义表'");
 
 
         // 字段定义表
@@ -84,6 +84,8 @@ class TableFieldTmplDesign extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '字段定义表';
         });
+        DB::statement("ALTER TABLE `field_def` comment '字段定义表'");
+
         // 模板设计表
         Schema::create('tmpl_design', function (Blueprint $table) {
             $table->increments('id')->comment('自增ID');
@@ -110,6 +112,7 @@ class TableFieldTmplDesign extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '模板设计表';
         });
+        DB::statement("ALTER TABLE `tmpl_design` comment '模板设计表'");
     }
 
     /**

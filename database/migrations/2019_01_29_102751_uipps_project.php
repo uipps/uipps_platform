@@ -31,8 +31,9 @@ class UippsProject extends Migration
             $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
             $table->engine = 'InnoDB';
-            $table->comment = '主机';
+            //$table->comment = '主机';
         });
+        DB::statement("ALTER TABLE `host_reg` comment '主机'");
 
         // 项目
         Schema::create('project', function (Blueprint $table) {
@@ -76,8 +77,10 @@ class UippsProject extends Migration
             $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
             $table->engine = 'InnoDB';
-            $table->comment = '全部项目';
+            //$table->comment = '全部项目';
+
         });
+        DB::statement("ALTER TABLE `project` comment '全部项目'"); // 表注释
 
         // 用户
         Schema::create('user', function (Blueprint $table) {
@@ -107,6 +110,7 @@ class UippsProject extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '用户表';
         });
+        DB::statement("ALTER TABLE `user` comment '用户表'"); // 表注释
 
         // 登录日志
         Schema::create('loginlog', function (Blueprint $table) {
@@ -125,6 +129,7 @@ class UippsProject extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '登录日志';
         });
+        DB::statement("ALTER TABLE `loginlog` comment '登录日志'");
 
         // 计划任务
         Schema::create('schedule', function (Blueprint $table) {
@@ -162,6 +167,7 @@ class UippsProject extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '计划任务';
         });
+        DB::statement("ALTER TABLE `schedule` comment '计划任务'");
 
     }
 
