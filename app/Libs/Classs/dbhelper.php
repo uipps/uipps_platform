@@ -431,7 +431,7 @@ class DbHelper{
             $creator = $_SESSION['user']['id'];
         }
         $dbW->table_name = $t_def;
-        print_r($dbW->getExistorNot("name_eng='".$name_eng."'"));
+        //print_r($dbW->getExistorNot("name_eng='".$name_eng."'"));
         if($dbW->getExistorNot("name_eng='".$name_eng."'")){
             // 表如果存在是否需要进行修复???? 对于tpl_type等的修改基于什么呢？如何获取这样的数据呢？
             // 暂时先不更新存在中的数据表

@@ -11,7 +11,10 @@ class DBW extends MysqlW
     public function getExistorNot($condition, $assoc=true){
         $sql = "select * from ".cString_SQL::FormatField($this->table_name)." where $condition  limit 1";
         $this->assoc = $assoc;
-        return parent::Query_master_select($sql);
+        $rows = parent::Query_master_select($sql);
+        if (!$rows || !isset($rows[0]))
+            return [];
+        return cArray::ObjectToArray($rows[0]);
     }
 
     /**
