@@ -229,7 +229,41 @@ class DbHelper{
     }
 
     //
-    public static function execDbWCreateInsertUpdate(&$data_arr, $a_sql='', $a_spe_arr=array("CREATE ","INSERT INTO ","UPDATE ","REPLACE INTO ")){
+    public static function execDbWCreateInsertUpdate(&$dbW, $a_sql, $a_spe_arr=array("CREATE ","INSERT INTO ","UPDATE ","REPLACE INTO ")){
+        // 换另外一种更合理的算法
+        $a_sql = cString::lineDelBySpe($a_sql,"--");  // 仅仅去掉行注释
+        $a_sql = str_replace('ON UPDATE CURRENT_TIMESTAMP',DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),$a_sql);  // 替换掉其中的ON UPDATE CURRENT_TIMESTAMP为特定字符串执行sql的时候然后替换回来，因为里面还有sql关键词'update '
+
+        if (!empty($a_spe_arr)) {
+            $l_str = implode("|",$a_spe_arr);
+            $l_str = "/($l_str)/i";
+
+            if( preg_match_all($l_str,trim($a_sql),$l_matches,PREG_SET_ORDER) ) {
+                $l_arr = preg_split($l_str, $a_sql);  // 正则分割成多块
+                //
+                foreach ($l_matches as $l_k => $l_v){
+                    $l_arr[$l_k+1] = $l_v[1] . $l_arr[$l_k+1]; // 字符串补全，还原
+                }
+            }
+        }
+
+        // 然后逐一执行
+        foreach ($l_arr as $l_sql) {
+            if (""!=trim($l_sql)) {
+                $l_sql = str_replace(DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),'ON UPDATE CURRENT_TIMESTAMP',$l_sql);  // sql字符串复原
+                $dbW->Query($l_sql);
+                $l_err = $dbW->errorInfo();
+                if ($l_err[1]>0){
+                    // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
+                    echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . "sql: $l_sql,  _arr:" . var_export($l_err, TRUE);
+                    exit;
+                    return $l_err[2];
+                }
+            }
+        }
+        return 1;
+    }
+    /*public static function execDbWCreateInsertUpdate(&$data_arr, $a_sql='', $a_spe_arr=array("CREATE ","INSERT INTO ","UPDATE ","REPLACE INTO ")){
         // 换另外一种更合理的算法
         $a_sql = cString::lineDelBySpe($a_sql,"--");  // 仅仅去掉行注释
         $a_sql = str_replace('ON UPDATE CURRENT_TIMESTAMP',DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),$a_sql);  // 替换掉其中的ON UPDATE CURRENT_TIMESTAMP为特定字符串执行sql的时候然后替换回来，因为里面还有sql关键词'update '
@@ -258,7 +292,7 @@ class DbHelper{
             }
         }
         return 1;
-    }
+    }*/
 
     /**
      * 各个项目自动检测

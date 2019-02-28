@@ -585,7 +585,7 @@ $sub_column_name = ''${所属子栏目}'';
 $dbR->table_name = ''{栏目配置}'';
 $l_rlt = $dbR->GetOne("where {级别}=''1'' and {栏目名称}=''$column_name'' limit 1",''{栏目名称},{链接}'');
 $html='''';
-if (!PEAR::isError($l_rlt)){
+if ($l_rlt){
 	$name=$l_rlt["{栏目名称}"];
 	$link=$l_rlt["{链接}"];
 	if(''''!=$name && ''''!=$link){
@@ -594,7 +594,7 @@ if (!PEAR::isError($l_rlt)){
 	// 如果有子栏目也一起显示
 	if (''''!=$sub_column_name) {
 		$l_rlt = $dbR->GetOne("where {所属栏目}=''$column_name'' and {栏目名称}=''$sub_column_name'' limit 1",''{栏目名称},{链接}'');
-		if (!PEAR::isError($l_rlt)){
+		if ($l_rlt){
 			$name=$l_rlt["{栏目名称}"];
 			$link=$l_rlt["{链接}"];
 			if(''''!=$name && ''''!=$link){
@@ -669,7 +669,7 @@ $dbR->table_name = ''{专题页}'';
 $l_rlt = $dbR->GetOne("where ({专题英文名}=''$l_eng'' or {专题英文名}=''$l_eng2'') and {专题是否显示}=''yes''",''{专题名称},url_1'');
 
 $html='''';
-if (!PEAR::isError($l_rlt)) {
+if ($l_rlt) {
 	$name=$l_rlt["{专题名称}"];
 	$link=trim($l_rlt["url_1"]);
 	if('''' != $name && '''' != $link ){
@@ -897,7 +897,7 @@ if ('''' != $sub_column_name){
 	$dbR->table_name = ''{栏目配置}'';
 	$sth_column = $dbR->GetOne("where {栏目名称}=''$sub_column_name'' order by id desc limit 1 ",''{保存路径}'');
 	//print_r($sth_column);
-	if (!PEAR::isError($sth_column)) {
+	if ($sth_column) {
 		$sth_column = $sth_column[''{保存路径}''];
 	}else {
 		$sth_column = '''';
@@ -907,7 +907,7 @@ if ('''' != $sub_column_name){
 
 $sql = "select {保存路径} from {栏目配置} where {栏目名称}=''$column_name'' order by id desc limit 1";
 $column_path2=$dbR->query_plan($sql);
-if (!PEAR::isError($column_path2)) {
+if ($column_path2) {
 	$column_path2 = $column_path2[0][''{保存路径}''];
 }else {
 	$column_path2 = '''';
@@ -984,7 +984,7 @@ $column_name = ''${栏目名称}'';
 if ('''' != $column_name) {
 	$dbR->table_name = ''{栏目配置}'';
 	$column_path = $dbR->GetOne("where {栏目名称}=''$column_name'' order by id desc limit 1 ",''{保存路径}'');
-	if (!PEAR::isError($column_path)) {
+	if ($column_path) {
 		$l_path = "/". trim($column_path[''{保存路径}'']," /") . "/";
 	}
 }
@@ -1001,7 +1001,7 @@ $name = ''${栏目名称}'';
 if (!empty($name)) {
 	$dbR->table_name = ''{栏目配置}'';
 	$level = $dbR->GetOne("where {栏目名称}=''$name'' order by id desc limit 1 ",''{级别}'');
-	if (!PEAR::isError($level)) {
+	if ($level) {
 		$level = $level[''{级别}''];
 	}else {
 		$level = '''';
@@ -1035,7 +1035,7 @@ $name = ''${栏目名称}'';
 if (!empty($name)) {
 	$dbR->table_name = ''{栏目配置}'';
 	$html = $dbR->GetOne("where {栏目名称}=''$name'' order by id desc limit 1 ",''{关键词}'');
-	if (!PEAR::isError($html)) {
+	if ($html) {
 		$html = $html[''{关键词}''];
 	}
 }
@@ -1069,7 +1069,7 @@ if (!empty($name)) {
 	$level = $dbR->GetOne("where {栏目配置}.{栏目名称}=''$name'' order by id desc limit 1 ",''{栏目配置}.{级别}'');
 	//echo $dbR->getSQL();
 	//print_r($level);
-	if (!PEAR::isError($level)) {
+	if ($level) {
 		$level = $level[''{级别}''];
 	}else {
 		$level = '''';
@@ -1084,7 +1084,7 @@ if (1==$level){
 
 $column_path2=$dbR->query_plan($sql);
 //print_r($column_path2);exit;
-if (!PEAR::isError($column_path2)) {
+if ($column_path2) {
 	$html = getProjectListHtml2($column_path2);
 }else {
 	$html = '''';
@@ -1103,7 +1103,7 @@ $name = ''${栏目名称}'';
 if (!empty($name)) {
 	$dbR->table_name = ''{栏目配置}'';
 	$column_description = $dbR->GetOne("where {栏目名称}=''$name'' order by id desc limit 1 ",''{描述}'');
-	if (!PEAR::isError($column_description)) {
+	if ($column_description) {
 		$l_description = $column_description[''{描述}''];
 	}
 }

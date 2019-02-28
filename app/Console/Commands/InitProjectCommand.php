@@ -64,6 +64,14 @@ class InitProjectCommand extends Command
         DbHelper::fill_field($dbR, $dbW, $a_data_arr,"all",$field_def,$table_def);
 
 
+        // ------ 如果有额外的初始化数据需要insert或update的时候
+        $l_e_wai  = file_get_contents(database_path('migrations/uipps_init_insert.sql'));
+        $l_e_tmpl = file_get_contents(database_path('migrations/tmpl_design_init_insert.sql'));
+        if ($l_e_wai) {
+            // insert或update一些初始数据
+            DbHelper::execDbWCreateInsertUpdate($dbW, $l_e_tmpl . "\r\n ". $l_e_wai, array("INSERT INTO ","REPLACE INTO ","UPDATE "));
+        }
+
         $this->info(date('Y-m-d H:i:s') . ' Done!' . self::NEW_LINE_CHAR);
         return 1;
     }

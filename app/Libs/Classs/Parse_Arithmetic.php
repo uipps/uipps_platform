@@ -185,10 +185,7 @@ class Form
                 $l_rlt = $dbR->query_plan($l_sql,false);
                 $l_err = $dbR->errorInfo();
 
-                if (PEAR::isError($l_rlt)) {
-                    echo var_export($dbR->errorInfo(), true). " error sql:" .$dbR->getSQL() ." FILE:".__FILE__." LINE:".__LINE__.NEW_LINE_CHAR;
-                    return ;
-                }
+
 
                 if ($l_err[1]>0){
                     // sql有错误，则返回，中止后续执行
@@ -253,7 +250,7 @@ class Form
             $l_rlt = $dbR->query_plan($l_sql,false);
             $l_err = $dbR->errorInfo();
 
-            if (PEAR::isError($l_rlt)) {
+            if (!$l_rlt) {
                 echo var_export($dbR->errorInfo(), true). " error sql:" .$dbR->getSQL() ." FILE:".__FILE__." LINE:".__LINE__.NEW_LINE_CHAR;
             }else {
                 // 算法可以自己添加外来的算法
@@ -471,7 +468,7 @@ class Application
                 $l_rlt = $dbR->query_plan($l_sql);
                 $l_err = $dbR->errorInfo();
 
-                if (PEAR::isError($l_rlt)) {
+                if (!$l_rlt) {
                     echo var_export($dbR->errorInfo(), true). " error sql:" .$dbR->getSQL() ." FILE:".__FILE__." LINE:".__LINE__.NEW_LINE_CHAR;
                 }
 
@@ -556,7 +553,7 @@ class Application
      * @param array  $a_vals 字段信息数组
      * 其他参数参考别的文档
      */
-    function PostInPage(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
+    public static function PostInPage(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie){
         $l_err = array();
         // 首先将算法解析为二维数组
         $l_arr = Parse_Arithmetic::parse_like_ini_file($a_vals["arithmetic"], true);
@@ -1130,7 +1127,7 @@ class Parse_SQL
         $dbR = new DBR($GLOBALS['cfg']['SYSTEM_DB_DSN_NAME_R']);  // 连项目本身， 去获取项目名称等数据
         $dbR->table_name = TABLENAME_PREF."project";
         $l_p_arr = $dbR->getAlls("","id,name_cn");
-        if (PEAR::isError($l_p_arr)) {
+        if (!$l_p_arr) {
             echo var_export($dbR->errorInfo(), true). " error sql:" .$dbR->getSQL() ." FILE:".__FILE__." LINE:".__LINE__.NEW_LINE_CHAR;
             return array();
         }
@@ -1146,7 +1143,7 @@ class Parse_SQL
         $l_p_id += 0;
         if ($l_p_id>0) {
             $l_p_arr = $dbR->getOne("where id=".$l_p_id);
-            if (PEAR::isError($l_p_arr)) {
+            if (!$l_p_arr) {
                 echo var_export($dbR->errorInfo(), true). " error sql:" .$dbR->getSQL() ." FILE:".__FILE__." LINE:".__LINE__.NEW_LINE_CHAR;
                 return array();
             }
@@ -1451,7 +1448,7 @@ class Parse_Arithmetic
         return $l_arr;
     }
     // 内部使用的方法，仅限于上面对于字符串的处理
-    function func1(&$l_arr, $l_k, $a_2erwei){
+    public static function func1(&$l_arr, $l_k, $a_2erwei){
         if ("\r\n"==substr($l_arr[$l_k], -2)) {
             $l_arr[$l_k] = substr($l_arr[$l_k], 0, -2);
         }else if ("\n"==substr($l_arr[$l_k], -1)) {
@@ -1465,7 +1462,7 @@ class Parse_Arithmetic
     }
 
     // 填充字段的类型和长度，便于呈现下拉框, 通常要强制性执行替换字段类型为enum
-    function fillInselect(&$a_arr,$a_key,$l_rlt,$a_force=true, $a_field_type="enum"){
+    public static function fillInselect(&$a_arr,$a_key,$l_rlt,$a_force=true, $a_field_type="enum"){
         if (!empty($l_rlt) || $a_force) {
             //$l_fi_ty = strtoupper($a_arr["f_info"][$a_key]["type"]);
             //if (false!==strpos( $l_fi_ty,"INT") || in_array($l_fi_ty, array("FLOAT","DOUBLE","DECIMAL")) ) $l_tmp = array("0"=>"0");
@@ -1510,7 +1507,7 @@ class Parse_Arithmetic
 
 
     // 将字符串中的中文变量替换为相应的数值, 是解析算法中需要用到的 ParseArithmetic
-    function PA_ReplaceCN2Value($a_str, $a_rlt, $a_f_arr){
+    public static function PA_ReplaceCN2Value($a_str, $a_rlt, $a_f_arr){
 
         // 有别名的以后再处理，????将最简单的先实现了。
         // 依据sql出来的结果进行相应字段值的替换
@@ -1532,7 +1529,7 @@ class Parse_Arithmetic
     }
 
     // 较其他方法，最后多了一个l_arr的参数
-    function eval_code(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie,$l_arr){
+    public static function eval_code(&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie,$l_arr){
         $l_func = preg_replace('/\W/', "_", basename(__FILE__) . "_" .$a_arr['t_def']['p_id']."_" .$a_vals["t_id"]."_".$a_key."_". utime());
         $l_func_str = pinzhuangFunctionStr($l_arr, $l_func, '&$a_arr,$a_key,$a_vals,&$actionMap,&$actionError,&$request,&$response,$form,$get,$cookie');
         if ((isset($GLOBALS['cfg']['log_all']) && $GLOBALS['cfg']['log_all']) || file_exists($GLOBALS['cfg']['LOG_PATH'] . '/log_all')) {
@@ -1569,7 +1566,7 @@ class Parse_Arithmetic
 
     // expr=${所属专题} ne '' || ${所属专题2} ne '' 这样的语句判断其真伪, 需要用到下面的
     // if ( 今日看点 == '今日看点' ) 和 if ('今日看点' == '今日看点' ) 两个表达式均为真。有无引号均可
-    function eval_expr($a_expr,$a_key,$a_vals,$a_allow){
+    public static function eval_expr($a_expr,$a_key,$a_vals,$a_allow){
         $l_func = preg_replace('/\W/',"_",basename(__FILE__) . "_" .$a_vals["t_id"]."_".$a_key."_".$a_allow."_". utime());
 
         if (!defined("NEW_LINE_CHAR")) {

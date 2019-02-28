@@ -247,7 +247,7 @@ function On_ColumnListForm_SelectAllClick(oForm, oSender)
 		{
 			oCheckboxColl[i].checked = oSender.checked;
 		}
-	}	
+	}
 }
 
 //-------------------------------------------------------------
@@ -264,7 +264,7 @@ function On_ColumnCategoryListForm_SelectAllClick(oForm, oSender)
 		{
 			oCheckboxColl[i].checked = oSender.checked;
 		}
-	}	
+	}
 }
 
 
@@ -343,7 +343,7 @@ function On_ColumnMenuClick(comm)
 		}
 		tURL = '/dpa/main.php?do=_edit&p_id=' + p_id + '&c_id=' + c_id + '&cc_id=' + cc_id;
 		parent.WORK.location.href = tURL;
-		
+
 	}else if(comm == "publish_cate"){
 		//发布专题栏目
 		oForm = parent.CATE.form;
@@ -378,10 +378,10 @@ function On_ColumnMenuClick(comm)
 		}
 		oForm.elements["_action"].value = "publish";
 		oForm.action = "main.php?do=document_publish";
-		oForm.target = "WORK";		
+		oForm.target = "WORK";
 		oForm.submit();
-				
-	}else if(comm == "delete_cate"){		
+
+	}else if(comm == "delete_cate"){
 		oForm = parent.CATE.form;
 		var oCheckboxColl = oForm.elements["cc_id"];
 		var bChecked = false;
@@ -415,13 +415,13 @@ function On_ColumnMenuClick(comm)
 		if(confirm("确定删除吗?") == false)
 		{
 			return false;
-		}		
+		}
 		oForm.elements["_action"].value = "delete";
-		oForm.target = "_self";		
+		oForm.target = "_self";
 		oForm.submit();
 
 	}else if(comm == "doc_list"){
-		tURL2 = '/dpa/main.php?do=document_list&p_id=' + p_id + '&c_id=' + c_id + '&t_flag=1';
+		tURL2 = '/document/list?p_id=' + p_id + '&c_id=' + c_id + '&t_flag=1';
 		parent.WORK.location.href = tURL2;
 	}else if(comm == "doc_load"){
 		tURL2 = '/dpa/main.php?do=doc_load&p_id=' + p_id + '&c_id=' + c_id;

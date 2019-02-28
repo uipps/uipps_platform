@@ -11,7 +11,7 @@
 function action_onclick(cgi_url,form_name,radio_name,action)
 {
 	len = form_name.elements.length;
-	
+
 	for(index=0; index < len; index++ )
 	{
 		if(form_name.elements[index].name == radio_name)
@@ -24,7 +24,7 @@ function action_onclick(cgi_url,form_name,radio_name,action)
 			if(len != null)
 			{
 				for(var i=0;i<len;i++)
-				{			
+				{
 					check = obj[i].checked;
 					if(check == true)
 					{
@@ -60,7 +60,7 @@ function action_onclick(cgi_url,form_name,radio_name,action)
 		{
 			cgi_url = cgi_url + "&action=" + action + "&id=" + radio_id;
 			window.self.open(cgi_url,"_self");
-			return true;	
+			return true;
 		}
 	}
 	else
@@ -133,7 +133,7 @@ function PlusQueryClick(a_id){
   <input type="hidden" name="sql_where" value="<!--{$sql_where}-->" />
   <table border="0" width="100%" cellspacing="2" cellpadding="0">
     <tr>
-      <td width="50%" nowrap align=left><input type='button' onClick="action_onclick('main.php?do=loginlog_del',self.document.myform,'id','del');return false" value="删 除">
+      <td width="50%" nowrap align=left><input type='button' onClick="action_onclick('/loginlog/del',self.document.myform,'id','del');return false" value="删 除">
       </td>
       <td><div class="setPages">每页显示: <input type="text" name="pagesize_form" size="6" /> 条 <input type="submit" value="查 询" /></div></td>
     </tr>

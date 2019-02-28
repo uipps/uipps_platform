@@ -232,10 +232,10 @@ sql=select CONCAT(username,"-",nickname),id from user order by id' where name_en
 
 -- ALTER TABLE  `user` ADD  `status_` ENUM(  'use',  'stop',  'test',  'del',  'scrap' ) NOT NULL DEFAULT  'use' COMMENT  '状态, 使用、停用等';
 
-ALTER TABLE  `user_proj_privileges` ADD  `status_` ENUM(  'use',  'stop',  'test',  'del',  'scrap' ) NOT NULL DEFAULT  'use' COMMENT  '状态, 使用、停用等';
+-- ALTER TABLE  `user_proj_privileges` ADD  `status_` ENUM(  'use',  'stop',  'test',  'del',  'scrap' ) NOT NULL DEFAULT  'use' COMMENT  '状态, 使用、停用等';
 
-ALTER TABLE  `user_tempdef_privileges` ADD  `status_` ENUM(  'use',  'stop',  'test',  'del',  'scrap' ) NOT NULL DEFAULT  'use' COMMENT  '状态, 使用、停用等';
+-- ALTER TABLE  `user_tempdef_privileges` ADD  `status_` ENUM(  'use',  'stop',  'test',  'del',  'scrap' ) NOT NULL DEFAULT  'use' COMMENT  '状态, 使用、停用等';
 
-ALTER TABLE  `user_doc_privileges` ADD  `status_` ENUM(  'use',  'stop',  'test',  'del',  'scrap' ) NOT NULL DEFAULT  'use' COMMENT  '状态, 使用、停用等';
+-- ALTER TABLE  `user_doc_privileges` ADD  `status_` ENUM(  'use',  'stop',  'test',  'del',  'scrap' ) NOT NULL DEFAULT  'use' COMMENT  '状态, 使用、停用等';
 
 

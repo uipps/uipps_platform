@@ -31,7 +31,7 @@
   <!--{$l_other}-->
   <tr style='display:inline' id='id_project_add_1'>
     <td><!--begin-->
-      <form method="post" action="main.php?do=<!--{$type_name}-->_<!--{$action}-->" name="myform" id="myform" enctype="multipart/form-data">
+      <form method="post" action="/<!--{$type_name}-->/<!--{$action}-->" name="myform" id="myform" enctype="multipart/form-data">
         <!--{$parent_ids_input_hidden}-->
         <input type="hidden" name="_token" value="<!--{$get_csrf_token}-->">
         <input type="hidden" name="do" value="<!--{$do}-->" />

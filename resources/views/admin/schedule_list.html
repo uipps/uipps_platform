@@ -10,7 +10,7 @@
 	{
 		var spec = "?";
 		if(-1!= cgi_url.indexOf("?"))spec = "&";
-	
+
 		my_form.action=cgi_url;
 		my_form._action.value=_action;
 		if(_action =="insert")
@@ -27,8 +27,8 @@
 			for(index=0; index < len; index++ )
 			{
 				if((my_form.elements[index].name == "id" && _action == 'update') ||
-					 (my_form.elements[index].name == "id" && _action == 'delete') ||	
-					 (my_form.elements[index].name == "id" && _action == 'start') ||	
+					 (my_form.elements[index].name == "id" && _action == 'delete') ||
+					 (my_form.elements[index].name == "id" && _action == 'start') ||
 					 (my_form.elements[index].name == "id" && _action == 'stop'))
 				{
 					var obj = my_form.elements["id"];
@@ -70,7 +70,7 @@
 						{
 							//my_form.elements["do"].value="schedule_edit";
 							my_form.submit();
-    						return true;							
+    						return true;
 						}
 						else
 						{
@@ -95,7 +95,7 @@
 				alert("请先选择一个任务");
 				return false;
 			}
-		} 
+		}
 	}
 
 function PlusQueryClick(a_id){
@@ -110,7 +110,7 @@ function PlusQueryClick(a_id){
 <body topmargin="5" leftmargin="5" bgcolor="#f2faff">
 <table border=0 bgcolor=#306e9f width="100%" cellspacing="0" cellpadding="3">
   <tr>
-    <td nowrap style="text-align:left; color:#FFFFFF">当前位置: <a href='main.php?do=schedule_list' style="color:#FFF">计划任务</a> >
+    <td nowrap style="text-align:left; color:#FFFFFF">当前位置: <a href='/schedule/list' style="color:#FFF">计划任务</a> >
       <!--{$nav}--></td>
   </tr>
 </table>
@@ -119,9 +119,9 @@ function PlusQueryClick(a_id){
   <input type="hidden" name="do" value="<!--{$do}-->" />
   <input type="hidden" name="<!--{$flag}-->" value="<!--{$p}-->" />
   <input type="hidden" name="<!--{$pagesize_flag}-->" value="<!--{$pagesize}-->" />
-  
+
   <input type="hidden" name="sql_where" value="<!--{$sql_where}-->" />
-  
+
     <tr>
       <td>搜索:
         <select name="search_field_1">
@@ -159,7 +159,7 @@ function PlusQueryClick(a_id){
   <input type="hidden" name="do" value="<!--{$do}-->" />
   <input type="hidden" name="<!--{$flag}-->" value="<!--{$p}-->" />
   <input type="hidden" name="<!--{$pagesize_flag}-->" value="<!--{$pagesize}-->" />
-  
+
   <input type="hidden" name="sql_where" value="<!--{$sql_where}-->" />
   <table border=0 cellpadding=0 cellspacing=0 width=100%>
     <tr>
@@ -167,11 +167,11 @@ function PlusQueryClick(a_id){
     </tr>
     <tr>
       <td height=24 align=left><input type=hidden name="_action" value="select">
-        <input type=button value="增 加" onClick="actionclick(self.document.myform,'insert','main.php?do=schedule_step1');return false;">
-        <input type=button value="修 改" onClick="actionclick(self.document.myform,'update','main.php?do=schedule_step1');return false;">
-        <input type=button value="删 除" onClick="actionclick(self.document.myform,'delete','main.php?do=schedule_del');return false;">
-        <input type=button value="启 动" onClick="actionclick(self.document.myform,'start', 'main.php?do=schedule_edit');return true;">
-        <input type=button value="停 止" onClick="actionclick(self.document.myform,'stop',  'main.php?do=schedule_edit');return true;">
+        <input type=button value="增 加" onClick="actionclick(self.document.myform,'insert','/schedule/step1');return false;">
+        <input type=button value="修 改" onClick="actionclick(self.document.myform,'update','/schedule/step1');return false;">
+        <input type=button value="删 除" onClick="actionclick(self.document.myform,'delete','/schedule/del');return false;">
+        <input type=button value="启 动" onClick="actionclick(self.document.myform,'start', '/schedule/edit');return true;">
+        <input type=button value="停 止" onClick="actionclick(self.document.myform,'stop',  '/schedule/edit');return true;">
       </td>
     </tr>
     <tr>
