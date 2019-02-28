@@ -11,15 +11,18 @@ class MysqlR extends MysqlDB
         if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"101")) echo $sql.NEW_LINE_CHAR;
         $this->sql = $sql;
 
-        $dbo =& $this->dbo;$this->setCharset();
+        /*$dbo =& $this->dbo;$this->setCharset();
         if($this->assoc) {
             $dbo->setOption('portability',MDB2_PORTABILITY_FIX_ASSOC_FIELD_NAMES);
             $dbo->setFetchMode(MDB2_FETCHMODE_ASSOC);
         }
         else $dbo->setFetchMode(MDB2_FETCHMODE_DEFAULT);
-        $row = $dbo->queryOne($sql);
-
-        return $row;
+        $row = $dbo->queryOne($sql);*/
+        $row = collect($this->dbo->select($sql))->toArray();
+        if ($row && isset($row[0])) {
+            return cArray::ObjectToArray($row[0]);
+        }
+        return [];
     }
     /**
      * 取一行(一维数组)
@@ -31,7 +34,8 @@ class MysqlR extends MysqlDB
         global $SHOW_SQL;
         if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"102")) echo $sql.NEW_LINE_CHAR;
         $this->sql = $sql;
-        $row = collect($this->dbo->select($sql))->toArray();
+        $row = collect($this->dbo->select($sql))->toArray();//print_r($row);
+        //$row = collect($this->dbo->statement($sql))->toArray();print_r($row);
         if ($row && isset($row[0])) {
             return cArray::ObjectToArray($row[0]);
         }
@@ -48,15 +52,18 @@ class MysqlR extends MysqlDB
         if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"103")) echo $sql.NEW_LINE_CHAR;
         $this->sql = $sql;
 
-        $dbo =& $this->dbo;$this->setCharset();
+        /*$dbo =& $this->dbo;$this->setCharset();
         if($this->assoc) {
             $dbo->setOption('portability',MDB2_PORTABILITY_FIX_ASSOC_FIELD_NAMES);
             $dbo->setFetchMode(MDB2_FETCHMODE_ASSOC);
         }
         else $dbo->setFetchMode(MDB2_FETCHMODE_DEFAULT);
-        $data = $dbo->queryCol($sql);
-
-        return $data;
+        $data = $dbo->queryCol($sql);*/
+        $row = collect($this->dbo->select($sql))->toArray();//print_r($row);
+        if ($row && isset($row[0])) {
+            return cArray::ObjectToArray($row[0]);
+        }
+        return [];
     }
     /**
      * 取多行(二维数组)
@@ -78,6 +85,7 @@ class MysqlR extends MysqlDB
         else $dbo->setFetchMode(MDB2_FETCHMODE_DEFAULT);
         $data = $dbo->queryAll($sql);*/
         $row = collect($this->dbo->select($sql))->toArray();
+        //$row = collect($this->dbo->statement($sql))->toArray();
         $data = cArray::ObjectToArray($row);
         return $data;
     }
@@ -88,17 +96,10 @@ class MysqlR extends MysqlDB
      * @param resource result set
      */
     public function CountResultRows(&$rs){
-        return $rs->numRows();
+        return $rs->affectingStatement();
+        //return $rs->numRows();
     }
-    /**
-     * 取到最后一次操作所影响的行数
-     * @access public
-     * @return integer
-     */
-    public function CountAffectedRows(){
-        $dbo =& $this->dbo;
-        return $dbo->_affectedRows($dbo->getConnection());
-    }
+
 
     /**
      * 取一行
@@ -122,16 +123,18 @@ class MysqlR extends MysqlDB
      * @param string $sql sql
      * @return resource|boolean
      */
-    public function &Query($sql){
-        $dbo =& $this->dbo;  // 兼容php4的做法
+    public function Query($sql){
+        //$dbo =& $this->dbo;  // 兼容php4的做法
         //echo "\r\n---- " . __FUNCTION__ . " ----"."\r\n";
         // 事先判断 查询语句是否是 select ，不是就返回false
         $sql = ltrim($sql);$this->sql = $sql;
-        $prex = strtolower(substr($sql,0,4));
+        /*$prex = strtolower(substr($sql,0,4));
         if ($prex==="sele" || $prex==="desc" || $prex==="show"){
             $this->setCharset();
             return $dbo->query($sql);
         }
         else return false; // 非select操作的被禁止
+        */
+        return $this->dbo->statement($sql);
     }
 }

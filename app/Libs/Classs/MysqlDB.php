@@ -52,8 +52,9 @@ class MysqlDB
         }
     }
     public function errorInfo($error = null){
-        $dbo =& $this->dbo;
-        return $dbo->errorInfo($error);
+        return 1;
+        //$dbo =& $this->dbo;
+        //return $dbo->errorInfo($error);
     }
     /**
      * 设置当前的 schema
@@ -87,107 +88,17 @@ class MysqlDB
     public function GetCurrentSchema(){
         return $this->dbo->getDatabaseName();
     }
-    /**
-     * 取一个值
-     * @access public
-     * @param string $sql example : select field_a from table_a Limit 1
-     * @return mixed
-     */
-    public function GetOne($sql){
-        global $SHOW_SQL;
-        if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"101")) echo $sql.NEW_LINE_CHAR;
-        $this->sql = $sql;
 
-        $dbo =& $this->dbo;$this->setCharset();
-        if($this->assoc) {
-            $dbo->setOption('portability',MDB2_PORTABILITY_FIX_ASSOC_FIELD_NAMES);
-            $dbo->setFetchMode(MDB2_FETCHMODE_ASSOC);
-        }
-        else $dbo->setFetchMode(MDB2_FETCHMODE_DEFAULT);
-        $row = $dbo->queryOne($sql);
-
-        return $row;
-    }
-    /**
-     * 取一行(一维数组)
-     * @access public
-     * @param string $sql example : select field_a from table_a Limit 1
-     * @return array| false
-     */
-    public function GetRow($sql){
-        global $SHOW_SQL;
-        if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"102")) echo $sql.NEW_LINE_CHAR;
-        $this->sql = $sql;
-
-        $dbo =& $this->dbo;$this->setCharset();
-        if($this->assoc) {
-            $dbo->setOption('portability',MDB2_PORTABILITY_FIX_ASSOC_FIELD_NAMES);
-            $dbo->setFetchMode(MDB2_FETCHMODE_ASSOC);
-        }
-        else $dbo->setFetchMode(MDB2_FETCHMODE_DEFAULT);
-        $row = $dbo->queryRow($sql);
-
-        return $row;
-    }
-    /**
-     * 取一列(一维数组)
-     * @access public
-     * @param string $sql sql语句
-     * @return array
-     */
-    public function GetCol($sql){
-        global $SHOW_SQL;
-        if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"103")) echo $sql.NEW_LINE_CHAR;
-        $this->sql = $sql;
-
-        $dbo =& $this->dbo;$this->setCharset();
-        if($this->assoc) {
-            $dbo->setOption('portability',MDB2_PORTABILITY_FIX_ASSOC_FIELD_NAMES);
-            $dbo->setFetchMode(MDB2_FETCHMODE_ASSOC);
-        }
-        else $dbo->setFetchMode(MDB2_FETCHMODE_DEFAULT);
-        $data = $dbo->queryCol($sql);
-
-        return $data;
-    }
-    /**
-     * 取多行(二维数组)
-     * @access public
-     * @param string $sql
-     * @return array
-     */
-    public function GetPlan($sql){
-        global $SHOW_SQL;
-        if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"104")) echo $sql.NEW_LINE_CHAR;
-        $this->sql = $sql;
-
-        $dbo =& $this->dbo;$this->setCharset();
-        if($this->assoc) {
-            $dbo->setOption('portability',MDB2_PORTABILITY_FIX_ASSOC_FIELD_NAMES);
-            $dbo->setFetchMode(MDB2_FETCHMODE_ASSOC);
-        }
-        else $dbo->setFetchMode(MDB2_FETCHMODE_DEFAULT);
-        $data = $dbo->queryAll($sql);
-
-        return $data;
-    }
     // --------------- 很少使用的 public method ----------------- //
-    /**
-     * 取得结果集的行数
-     * @access public
-     * @param resource result set
-     */
-    public function CountResultRows(&$rs){
-        return $rs->numRows();
-    }
     /**
      * 取到最后一次操作所影响的行数
      * @access public
      * @return integer
      */
     public function CountAffectedRows(){
-        $dbo =& $this->dbo;
-        return $dbo->_affectedRows($dbo->getConnection());
+        return $this->dbo->affectingStatement();
+        //$dbo =& $this->dbo;
+        //return $dbo->_affectedRows($dbo->getConnection());
     }
 
     /**
@@ -206,24 +117,6 @@ class MysqlDB
             return $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
         }
     }
-    /**
-     * 执行一条读取查询命令
-     * @access private
-     * @param string $sql sql
-     * @return resource|boolean
-     */
-    public function &Query($sql){
-        $dbo =& $this->dbo;  // 兼容php4的做法
-        //echo "\r\n---- " . __FUNCTION__ . " ----"."\r\n";
-        // 事先判断 查询语句是否是 select ，不是就返回false
-        $sql = ltrim($sql);$this->sql = $sql;
-        $prex = strtolower(substr($sql,0,4));
-        if ($prex==="sele" || $prex==="desc" || $prex==="show"){
-            $this->setCharset();
-            return $dbo->query($sql);
-        }
-        else return false; // 非select操作的被禁止
-    }
 
     /**
      * 获取sql语句
@@ -235,7 +128,8 @@ class MysqlDB
     }
 
     public function setCharset($charset = null){
-        $dbo =& $this->dbo;
+        return 1;
+        /*$dbo =& $this->dbo;
         if ("" == $charset){
             // 空的时候
             if ("utf8"==strtolower($GLOBALS['cfg']['db_character'])) $dbo->setCharset("utf8", $dbo->getConnection());//mysql_query("set names utf8;");// 数据库字符编码转换问题
@@ -244,7 +138,7 @@ class MysqlDB
             // 指定的时候
             if (in_array($charset, array("utf8","gbk","latin1"))) $dbo->setCharset($charset, $dbo->getConnection());
             else $dbo->setCharset("latin1", $dbo->getConnection());
-        }
+        }*/
     }
 
     public function Disconnect(&$dbo){

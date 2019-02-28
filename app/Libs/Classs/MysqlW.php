@@ -26,7 +26,7 @@ class MysqlW extends MysqlDB
         $sql = "insert into {$tablename} ( $ziduan ) values ( $vals )";$this->sql = $sql;
         global $SHOW_SQL;
         if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"201")) echo $sql.NEW_LINE_CHAR;
-        $affected =& $this->exec($sql);
+        $affected = $this->dbo->statement($sql);
         return $affected;
     }
     /**
@@ -50,7 +50,8 @@ class MysqlW extends MysqlDB
         $sql = "delete from {$tablename} $condition $limit ";$this->sql = $sql;
         global $SHOW_SQL;
         if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"202")) echo $sql.NEW_LINE_CHAR;
-        $affected =& $this->exec($sql);
+        //$affected =& $this->exec($sql);
+        $affected = $this->dbo->statement($sql);
         return $affected;
     }
     /**
@@ -72,7 +73,8 @@ class MysqlW extends MysqlDB
         $sql .= " where {$condition}";$this->sql = $sql;
         global $SHOW_SQL;
         if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"203")) echo $sql.NEW_LINE_CHAR;
-        $affected =& $this->exec($sql);
+        //$affected =& $this->exec($sql);
+        $affected = $this->dbo->statement($sql);
         return $affected;
     }
 
@@ -88,14 +90,11 @@ class MysqlW extends MysqlDB
         //$this->setCharset();// 兼容php4的做法
         $sql = ltrim($sql);
         $this->sql = $sql;
-        $affected = $this->dbo->insert($sql);
+        //$affected = $this->dbo->insert($sql);
+        $affected = $this->dbo->statement($sql);
         return $affected;
     }
-    public function Query($sql){
-        // 调用的时候为了兼容其他地方
-        $affected =& $this->exec($sql);
-        return $affected;
-    }
+
     /**
      * 用于注册，为保证用户唯一性，验证用户是否存在需要在主库进行，而不是去从库查询信息
      *
@@ -103,20 +102,7 @@ class MysqlW extends MysqlDB
      * @return unknown
      */
     public function Query_master_select($sql){
-        // 事先判断 查询语句是否是 update ，不是就返回false
-        $sql = ltrim($sql);$this->sql = $sql;
-        global $SHOW_SQL;
-        if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"204")) echo $sql.NEW_LINE_CHAR;
-
-        $dbo =& $this->dbo;$this->setCharset();
-        if($this->assoc) {
-            $dbo->setOption('portability',MDB2_PORTABILITY_FIX_ASSOC_FIELD_NAMES);
-            $dbo->setFetchMode(MDB2_FETCHMODE_ASSOC);
-        }
-        else $dbo->setFetchMode(MDB2_FETCHMODE_DEFAULT);
-        $row = $dbo->queryRow($sql);
-
-        return $row;
+        return $this->Query($sql);
     }
 
 }
