@@ -369,53 +369,57 @@ class DbHelper{
     // 自动填充 table_def 表
     public static function fill_table(&$dbR, &$dbW, $data_arr, $tbl_name="all", $f_def="field_def", $t_def="table_def", $p_id=0, $no_table=array()){
         $if_repair = true;
-        if (""!=$tbl_name) {
-            // 先获取所有的表
-            $all_table = $dbR->getDBTbls();
-            //if ("all"==$tbl_name) {
-            // 循环插入
-            if (!empty($all_table)){
-                foreach ($all_table as $l_table){
-                    // 如果是特定的或者是全部则允许通过
-                    if ($l_table["Name"] == $tbl_name || "all"==$tbl_name) {
-                        if (!in_array($l_table["Name"],$no_table)) {
-                            $l_comment = trim($l_table["Comment"]);
-                            if(""!=$l_comment){
-                                $l_data_arr = array("description"=>$l_comment);// 表的注释部分写入描述字段中去
-                            }else{
-                                $l_data_arr = array();
-                            }
-                            DbHelper::ins2table_def($dbR,$dbW,array_merge($l_data_arr,$data_arr), $l_table["Name"], $f_def, $t_def, $p_id);
-                        }
-                    }
-                }
-                // end
+        if (""==$tbl_name ) {
+            return null;
+        }
 
-                if ($if_repair) {
-                    // 还需要进行修复, 对于废弃的表需要删除或改为废弃状态，当前直接删除
-                    // 对于在字段定义表中属于多余表的那些字段，统统删除
-                    $dbR->table_name = $t_def;
-                    $l_old_tbls = $dbR->getAlls("where p_id = $p_id and status_='use' order by id");
-                    $l_old_tbls = cArray::Index2KeyArr($l_old_tbls, array("key"=>"name_eng", "value"=>"name_eng"));
-                    $all_table = cArray::Index2KeyArr($all_table, array("key"=>"Name", "value"=>"Name"));
-                    $l_duo = array_diff($l_old_tbls,$all_table);  // 在old中，但不在实际的表结构中
-                    // 多出的字段需要删除或修改为废弃状态
-                    foreach ($l_duo as $l_tbl){
-                        $l_row = $dbR->getOne("where p_id = $p_id and name_eng = '".$l_tbl."' and status_='use' ");
+        // 先获取所有的表
+        $all_table = $dbR->getDBTbls();
+        if (!$all_table){
+            return null;
+        }
 
-                        if (!empty($l_row)) {
-                            $dbW->table_name = $t_def;
-                            //$dbW->delOne(array("id"=>$l_row["id"]),"id");
-                            $dbW->updateOne(array('status_'=>'del'), "id=".$l_row["id"]);
-                            // 同时还需要删除字段定义表中的该表的所有字段
-                            $dbW->table_name = $f_def;
-                            //$dbW->delOne(array("t_id"=>$l_row["id"]),"t_id");
-                            $dbW->updateOne(array('status_'=>'del'), "t_id=".$l_row["id"]);
-                        }
+        foreach ($all_table as $l_table){
+            // 如果是特定的或者是全部则允许通过
+            if ($l_table["Name"] == $tbl_name || "all"==$tbl_name) {
+                if (!in_array($l_table["Name"],$no_table)) {
+                    $l_comment = trim($l_table["Comment"]);
+                    if(""!=$l_comment){
+                        $l_data_arr = array("description"=>$l_comment);// 表的注释部分写入描述字段中去
+                    }else{
+                        $l_data_arr = array();
                     }
+                    DbHelper::ins2table_def($dbR,$dbW,array_merge($l_data_arr,$data_arr), $l_table["Name"], $f_def, $t_def, $p_id);
                 }
             }
         }
+        // end
+
+        if ($if_repair) {
+            // 还需要进行修复, 对于废弃的表需要删除或改为废弃状态，当前直接删除
+            // 对于在字段定义表中属于多余表的那些字段，统统删除
+            $dbR->table_name = $t_def;
+            $l_old_tbls = $dbR->getAlls("where p_id = $p_id and status_='use' order by id");
+            $l_old_tbls = cArray::Index2KeyArr($l_old_tbls, array("key"=>"name_eng", "value"=>"name_eng"));
+            $all_table = cArray::Index2KeyArr($all_table, array("key"=>"Name", "value"=>"Name"));
+            $l_duo = array_diff($l_old_tbls,$all_table);  // 在old中，但不在实际的表结构中
+            // 多出的字段需要删除或修改为废弃状态
+            foreach ($l_duo as $l_tbl){
+                $l_row = $dbR->getOne("where p_id = $p_id and name_eng = '".$l_tbl."' and status_='use' ");
+
+                if (!empty($l_row)) {
+                    $dbW->table_name = $t_def;
+                    //$dbW->delOne(array("id"=>$l_row["id"]),"id");
+                    $dbW->updateOne(array('status_'=>'del'), "id=".$l_row["id"]);
+                    // 同时还需要删除字段定义表中的该表的所有字段
+                    $dbW->table_name = $f_def;
+                    //$dbW->delOne(array("t_id"=>$l_row["id"]),"t_id");
+                    $dbW->updateOne(array('status_'=>'del'), "t_id=".$l_row["id"]);
+                }
+            }
+        }
+
+
         return null;
     }
 
@@ -423,7 +427,7 @@ class DbHelper{
     public static function ins2table_def(&$dbR, &$dbW, $a_data_arr, $a_tablename, $f_def="field_def", $t_def="table_def",$p_id=0){
         $name_eng = $a_tablename;   //
         $name_cn = $name_eng;      // 暂时用英文的或者用表注释
-        if(isset($a_data_arr["description"]) && ""!=$a_data_arr["description"]) $name_cn = $a_data_arr["description"];
+        if(isset($a_data_arr["description"]) && $a_data_arr["description"]) $name_cn = $a_data_arr["description"];
 
         $_SESSION = session()->all();
         $creator = 1;
@@ -502,66 +506,39 @@ class DbHelper{
 
         $dbW->table_name = $f_def;
         // 循环插入
-        if (!empty($all_field)) {
-            foreach ($all_field as $l_arr){
-                $name_eng   = strtolower($l_arr["Field"]);   // 很特殊的key Tables_in_auto
-                $name_cn   = $name_eng;     // 暂时用英文的
-                $l_jiben = DbHelper::getFieldDefBixu($l_arr);
-                if (false!==strpos($l_jiben["type"],"text")) $l_jiben["f_type"] = "Form::TextArea";  // 增加一个数据
+        if (!$all_field) {
+            return ;
+        }
 
-                // 如果字段有Comment信息，则将中文名替换为描述的前部分
-                if (array_key_exists("Comment",$l_arr)) {
-                    $l_comment = trim($l_arr["Comment"]);
-                    if(""!=$l_comment){
-                        $l_jiben["description"] = $l_comment;// 字段的注释部分写入描述字段中去
-                        // 同时将中文名使用描述信息的前半部分
-                        $l_tmp = preg_split("/[,.:; ]/",$l_comment,-1,PREG_SPLIT_NO_EMPTY);// 暂时只能用半角符号。测试发现全角标点符号，。：；经常匹配出乱码，导致入库sql报错而影响入库
-                        if (""!=trim($l_tmp[0])) $name_cn = trim($l_tmp[0]);
-                    }
+        foreach ($all_field as $l_arr) {
+            $name_eng   = strtolower($l_arr["Field"]);   // 很特殊的key Tables_in_auto
+            $name_cn   = $name_eng;     // 暂时用英文的
+            $l_jiben = DbHelper::getFieldDefBixu($l_arr);
+            if (false!==strpos($l_jiben["type"],"text")) $l_jiben["f_type"] = "Form::TextArea";  // 增加一个数据
+
+            // 如果字段有Comment信息，则将中文名替换为描述的前部分
+            if (array_key_exists("Comment",$l_arr)) {
+                $l_comment = trim($l_arr["Comment"]);
+                if($l_comment) {
+                    $l_jiben["description"] = $l_comment;// 字段的注释部分写入描述字段中去
+                    // 同时将中文名使用描述信息的前半部分
+                    $l_tmp = preg_split("/[,.:; ]/",$l_comment,-1,PREG_SPLIT_NO_EMPTY);// 暂时只能用半角符号。测试发现全角标点符号，。：；经常匹配出乱码，导致入库sql报错而影响入库
+                    if (""!=trim($l_tmp[0])) $name_cn = trim($l_tmp[0]);
                 }
+            }
 
-                if($l_db_row = $dbW->getExistorNot("t_id = $t_id  and name_eng='".$name_eng."' and status_ = 'use' ")){
-                    // 进行修复，只修改同表结构相关的字段
-                    if ($if_repair) {
-                        $data_arr = array(
-                            "mender"     => convCharacter($_SESSION["user"]["id"],true),
-                            "menddate"    => date("Y-m-d"),
-                            "mendtime"      => date("H:i:s"),
-                            "name_cn"     => $name_cn
-                        );
-                        $data_arr = array_merge($data_arr,$l_jiben);
-                        $dbW->table_name = $f_def;
-                        $dbW->updateOne($data_arr, "id=".$l_db_row["id"]);
-                        $l_err = $dbW->errorInfo();
-                        if ($l_err[1]>0){
-                            // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
-                            echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " sql: ". $dbW->getSQL() ." _err:" . var_export($l_err, TRUE);
-                            //
-                        }
-                    }
-                    //echo "t_id = $t_id  and name_eng='".$name_eng."' exist!".NEW_LINE_CHAR;
-                    continue;
-                } else {
-                    // 不存在则插入数据库中
+            if($l_db_row = $dbW->getExistorNot("t_id = $t_id  and name_eng='".$name_eng."' and status_ = 'use' ")){
+                // 进行修复，只修改同表结构相关的字段
+                if ($if_repair) {
                     $data_arr = array(
-                        "creator"     => convCharacter($_SESSION["user"]["id"],true),
-                        "createdate"    => date("Y-m-d"),
-                        "createtime"    => date("H:i:s"),
-                        "default"       => '',
-                        "menddate"      => date("Y-m-d"),
-                        "t_id"          => $t_id,
-                        "name_eng"     => trim($name_eng),
+                        "mender"     => convCharacter($_SESSION["user"]["id"],true),
+                        "menddate"    => date("Y-m-d"),
+                        "mendtime"      => date("H:i:s"),
                         "name_cn"     => $name_cn
                     );
-                    $l_data_arr = array();
-                    if (array_key_exists($name_eng,$a_data_arr) && is_array($a_data_arr[$name_eng])) {
-                        $l_data_arr = $a_data_arr[$name_eng];
-                    }else {
-                        if (1==$l_depth) $l_data_arr = $a_data_arr;
-                    }
-
-                    $data_arr = array_merge($data_arr,$l_jiben,$l_data_arr);  // 外面给出的数据可修改里面的参数
-                    $last_id = $dbW->insertOne($data_arr);
+                    $data_arr = array_merge($data_arr,$l_jiben);
+                    $dbW->table_name = $f_def;
+                    $dbW->updateOne($data_arr, "id=".$l_db_row["id"]);
                     $l_err = $dbW->errorInfo();
                     if ($l_err[1]>0){
                         // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
@@ -569,9 +546,39 @@ class DbHelper{
                         //
                     }
                 }
-                usleep(300);
+                //echo "t_id = $t_id  and name_eng='".$name_eng."' exist!".NEW_LINE_CHAR;
+                continue;
+            } else {
+                // 不存在则插入数据库中
+                $data_arr = array(
+                    "creator"     => convCharacter($_SESSION["user"]["id"],true),
+                    "createdate"    => date("Y-m-d"),
+                    "createtime"    => date("H:i:s"),
+                    "default"       => '',
+                    "menddate"      => date("Y-m-d"),
+                    "t_id"          => $t_id,
+                    "name_eng"     => trim($name_eng),
+                    "name_cn"     => $name_cn
+                );
+                $l_data_arr = array();
+                if (array_key_exists($name_eng,$a_data_arr) && is_array($a_data_arr[$name_eng])) {
+                    $l_data_arr = $a_data_arr[$name_eng];
+                }else {
+                    if (1==$l_depth) $l_data_arr = $a_data_arr;
+                }
+
+                $data_arr = array_merge($data_arr,$l_jiben,$l_data_arr);  // 外面给出的数据可修改里面的参数
+                $last_id = $dbW->insertOne($data_arr);
+                $l_err = $dbW->errorInfo();
+                if ($l_err[1]>0){
+                    // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
+                    echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " sql: ". $dbW->getSQL() ." _err:" . var_export($l_err, TRUE);
+                    //
+                }
             }
+            usleep(300);
         }
+
     }
 
     // 通过父级id数组，逐级获取并最终获取到最后一级的数据
