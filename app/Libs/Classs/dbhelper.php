@@ -367,83 +367,72 @@ class DbHelper{
     }
 
     // 自动填充 table_def 表
-    public static function fill_table($p_arr, $data_arr, $tbl_name="all", $f_def="field_def", $t_def="table_def", $p_id=0, $no_table=array()){
+    public static function fill_table(&$dbR, &$dbW, $data_arr, $tbl_name="all", $f_def="field_def", $t_def="table_def", $p_id=0, $no_table=array()){
         $if_repair = true;
-
-        if ('' == $tbl_name || !isset($p_arr['db_name'])) {
-            return ;
-        }
-
-        // 先获取所有的表
-        self::getConfigInfoByProjectData($p_arr);
-        $all_table = self::getDBTbls($p_arr);
-        if (!$all_table){
-            return ;
-        }
-        //print_r($all_table);exit;
-
-        // 循环插入
-        foreach ($all_table as $l_table){
-            // 如果是特定的或者是全部则允许通过
-            if ($l_table["Name"] == $tbl_name || "all"==$tbl_name) {
-                if (!in_array($l_table["Name"],$no_table)) {
-                    $l_comment = trim($l_table["Comment"]);
-                    if('' != $l_comment) {
-                        $l_data_arr = array("description"=>$l_comment);// 表的注释部分写入描述字段中去
-                    }else{
-                        $l_data_arr = array();
+        if (""!=$tbl_name) {
+            // 先获取所有的表
+            $all_table = $dbR->getDBTbls();
+            //if ("all"==$tbl_name) {
+            // 循环插入
+            if (!empty($all_table)){
+                foreach ($all_table as $l_table){
+                    // 如果是特定的或者是全部则允许通过
+                    if ($l_table["Name"] == $tbl_name || "all"==$tbl_name) {
+                        if (!in_array($l_table["Name"],$no_table)) {
+                            $l_comment = trim($l_table["Comment"]);
+                            if(""!=$l_comment){
+                                $l_data_arr = array("description"=>$l_comment);// 表的注释部分写入描述字段中去
+                            }else{
+                                $l_data_arr = array();
+                            }
+                            DbHelper::ins2table_def($dbR,$dbW,array_merge($l_data_arr,$data_arr), $l_table["Name"], $f_def, $t_def, $p_id);
+                        }
                     }
-                    DbHelper::ins2table_def($p_arr, array_merge($l_data_arr,$data_arr), $l_table["Name"], $f_def, $t_def, $p_id);
                 }
-            }
-        }
-        // end
-        $connect_name = self::getConnectName($p_arr);
+                // end
 
-        if ($if_repair) {
-            // 还需要进行修复, 对于废弃的表需要删除或改为废弃状态，当前直接删除
-            // 对于在字段定义表中属于多余表的那些字段，统统删除
-            //$dbR->table_name = $t_def;
-           // $l_old_tbls = $dbR->getAlls("where p_id = $p_id and status_='use' order by id");
-            $l_old_tbls = collect(DB::connection($connect_name)->table($t_def)->where(['p_id'=>$p_id, 'status_'=>'use'])->orderBy('id')->get())->toArray();
-            $l_old_tbls = cArray::Index2KeyArr($l_old_tbls, array("key"=>"name_eng", "value"=>"name_eng"));
-            $all_table = cArray::Index2KeyArr($all_table, array("key"=>"Name", "value"=>"Name"));
-            $l_duo = array_diff($l_old_tbls,$all_table);  // 在old中，但不在实际的表结构中
-            // 多出的字段需要删除或修改为废弃状态
-            if ($l_duo) {
-                foreach ($l_duo as $l_tbl) {
-                    //$l_row = $dbR->getOne("where p_id = $p_id and name_eng = '" . $l_tbl . "' and status_='use' ");
-                    $l_row = collect(DB::connection($connect_name)->table($t_def)->where(['p_id'=>$p_id, 'name_eng'=>$l_tbl, 'status_'=>'use'])->first())->toArray();
-                    if ($l_row) {
-                        DB::connection($connect_name)->table($t_def)->where('id', $l_row['id'])->update(['status_' => 'del']);
-                        // 同时还需要删除字段定义表中的该表的所有字段
-                        DB::connection($connect_name)->table($f_def)->where('t_id', $l_row['id'])->update(['status_' => 'del']);
+                if ($if_repair) {
+                    // 还需要进行修复, 对于废弃的表需要删除或改为废弃状态，当前直接删除
+                    // 对于在字段定义表中属于多余表的那些字段，统统删除
+                    $dbR->table_name = $t_def;
+                    $l_old_tbls = $dbR->getAlls("where p_id = $p_id and status_='use' order by id");
+                    $l_old_tbls = cArray::Index2KeyArr($l_old_tbls, array("key"=>"name_eng", "value"=>"name_eng"));
+                    $all_table = cArray::Index2KeyArr($all_table, array("key"=>"Name", "value"=>"Name"));
+                    $l_duo = array_diff($l_old_tbls,$all_table);  // 在old中，但不在实际的表结构中
+                    // 多出的字段需要删除或修改为废弃状态
+                    foreach ($l_duo as $l_tbl){
+                        $l_row = $dbR->getOne("where p_id = $p_id and name_eng = '".$l_tbl."' and status_='use' ");
+
+                        if (!empty($l_row)) {
+                            $dbW->table_name = $t_def;
+                            //$dbW->delOne(array("id"=>$l_row["id"]),"id");
+                            $dbW->updateOne(array('status_'=>'del'), "id=".$l_row["id"]);
+                            // 同时还需要删除字段定义表中的该表的所有字段
+                            $dbW->table_name = $f_def;
+                            //$dbW->delOne(array("t_id"=>$l_row["id"]),"t_id");
+                            $dbW->updateOne(array('status_'=>'del'), "t_id=".$l_row["id"]);
+                        }
                     }
                 }
             }
         }
+        return null;
     }
 
     // 往表定义表中插入数据
-    public static function ins2table_def($p_arr, $a_data_arr, $a_tablename, $f_def="field_def", $t_def="table_def",$p_id=0){
-        self::getConfigInfoByProjectData($p_arr);
-        $connect_name = self::getConnectName($p_arr);
-        //$rlt = collect(DB::connection($connect_name)->select($sql))->toArray();
+    public static function ins2table_def(&$dbR, &$dbW, $a_data_arr, $a_tablename, $f_def="field_def", $t_def="table_def",$p_id=0){
+        $name_eng = $a_tablename;   //
+        $name_cn = $name_eng;      // 暂时用英文的或者用表注释
+        if(isset($a_data_arr["description"]) && ""!=$a_data_arr["description"]) $name_cn = $a_data_arr["description"];
 
         $_SESSION = session()->all();
         $creator = 1;
         if (isset($_SESSION['user']) && $_SESSION['user'] && isset($_SESSION['user']['id'])) {
             $creator = $_SESSION['user']['id'];
         }
-
-        $name_eng = $a_tablename;   //
-        $name_cn = $name_eng;      // 暂时用英文的或者用表注释
-        if(isset($a_data_arr["description"]) && ''!=$a_data_arr["description"]) $name_cn = $a_data_arr["description"];
-
-        // 查询table_def中是否有已经添加过
-        $rlt = DB::connection($connect_name)->table($t_def)->where('name_eng', $name_eng)->first();
-        //print_r($rlt);exit;
-        if($rlt){
+        $dbW->table_name = $t_def;
+        print_r($dbW->getExistorNot("name_eng='".$name_eng."'"));
+        if($dbW->getExistorNot("name_eng='".$name_eng."'")){
             // 表如果存在是否需要进行修复???? 对于tpl_type等的修改基于什么呢？如何获取这样的数据呢？
             // 暂时先不更新存在中的数据表
         } else {
@@ -451,100 +440,87 @@ class DbHelper{
             $data_arr = array(
                 "p_id"        => $p_id,
                 "field_def_table"=> $f_def,
-                "creator"     => convCharacter($creator, true),
+                "creator"     => convCharacter($creator,true),
                 "createdate"    => date("Y-m-d"),
                 "createtime"    => date("H:i:s"),
+                "menddate"      => date("Y-m-d"),
+                "js_code_add_edit"      => '',
                 "name_eng"     => trim($name_eng),
-                "name_cn"     => convCharacter($name_cn, true)
+                "name_cn"     => convCharacter($name_cn,true)
             );
             $data_arr = array_merge($data_arr,$a_data_arr);  // 外面给出的数据可修改里面的参数
-            $last_id = DB::connection($connect_name)->table($t_def)->insertGetId($data_arr);
+            if ($last_id = $dbW->insertOne($data_arr)) {
+                // $last_id = $dbW->LastID();
+                var_dump($last_id);
+            }else {
+                echo $dbW->getSQL();
+                echo "insert error!";
+                print_r($dbW->errorInfo());
+            }
         }
         usleep(300);
-        return 1;
+        return $dbW->errorInfo();
     }
 
     // 自动填充 field_def 表
-    public static function fill_field($p_arr, $data_arr, $want_tbl="all", $f_def="field_def", $t_def="table_def", $if_repair=true){
+    public static function fill_field(&$dbR, &$dbW, $data_arr, $want_tbl="all", $f_def="field_def", $t_def="table_def", $if_repair=true){
         if ('' == $want_tbl) {
             return 0;
         }
 
-        // 先获取所有的表
-        self::getConfigInfoByProjectData($p_arr);
-        $connect_name = self::getConnectName($p_arr);
-        //print_r(\Config::get('database.connections'));
-
         // 自动完成所有表的导入，包括自身也需要导入
-        $_tbls = [];
-        if ('all' == $want_tbl) {
-            $_tbls = collect(DB::connection($connect_name)->table($t_def)->get())->toArray();
-        } else {
-            //$_tbl = $dbR->getOne("where name_eng = '$want_tbl'");
-            $_tbl = collect(DB::connection($connect_name)->table($t_def)->where('name_eng', $want_tbl)->first())->toArray();
-            if ($_tbl)
-                $_tbls = array($_tbl);
+        $dbR->table_name = $t_def;
+        if ("all"==$want_tbl) {
+            $_tbls = $dbR->getAlls();
+        }else {
+            $_tbl = $dbR->getOne("where name_eng = '$want_tbl'");
+            $_tbls = array($_tbl);
         }
-        //echo __LINE__ . "\r\n";
-
         // 需要for 循环
-        foreach ($_tbls as $_tbl) {
-            if ($_tbl->id > 0) {
-                DbHelper::ins2field_def($p_arr, $data_arr, $_tbl->id,$f_def,$t_def,$if_repair);
+        foreach ($_tbls as $_tbl){
+            if ($_tbl["id"]>0) {
+                DbHelper::ins2field_def($dbR,$dbW,$data_arr,$_tbl["id"],$f_def,$t_def,$if_repair);
             }
         }
         return 1;
     }
 
     // 往字段定义表中插入数据
-    public static function ins2field_def($p_arr, $a_data_arr, $t_id=0, $f_def="field_def", $t_def="table_def",$if_repair=true,$delete_duo_field=false){
+    public static function ins2field_def(&$dbR, &$dbW, $a_data_arr, $t_id=0, $f_def="field_def", $t_def="table_def",$if_repair=true,$delete_duo_field=false){
         // 在 table_def 中的 id
-
-        self::getConfigInfoByProjectData($p_arr);
-        $connect_name = self::getConnectName($p_arr);
-        //$dbR->table_name = $t_def;
-        //$_tbl_name = $dbR->getOne("where id = $t_id");
-        $_tbl_name = collect(DB::connection($connect_name)->table($t_def)->where('id', $t_id)->first())->toArray();
-        $all_field = self::getTblFields($p_arr, $_tbl_name['name_eng']);
-        if (!$all_field) {
-            return 0;
-        }
+        $dbR->table_name = $t_def;
+        $_tbl_name = $dbR->getOne("where id = $t_id");
+        $all_field = $dbR->getTblFields($_tbl_name["name_eng"]);
 
         $_SESSION = session()->all();
-        if ('cli' == php_sapi_name()) {
-            if (!isset($_SESSION['user'])) {
-                $_SESSION['user'] = ['id' => 1];
-            }
+        if ('cli' == php_sapi_name() && !isset($_SESSION['user'])) {
+            $_SESSION['user'] = ['id' => 1];
         }
+
         // 获取数组的维度
         $l_depth=cString_num::get_array_depth($a_data_arr);
 
-        //$dbW->table_name = $f_def;
+        $dbW->table_name = $f_def;
         // 循环插入
-
-            foreach ($all_field as $l_arr) {
-                $name_eng   = strtolower($l_arr['Field']);   // 很特殊的key Tables_in_auto
+        if (!empty($all_field)) {
+            foreach ($all_field as $l_arr){
+                $name_eng   = strtolower($l_arr["Field"]);   // 很特殊的key Tables_in_auto
                 $name_cn   = $name_eng;     // 暂时用英文的
                 $l_jiben = DbHelper::getFieldDefBixu($l_arr);
-                if (false!==strpos($l_jiben['type'],'text')) {
-                    $l_jiben['f_type'] = 'Form::TextArea'; // 增加一个数据
-                }
+                if (false!==strpos($l_jiben["type"],"text")) $l_jiben["f_type"] = "Form::TextArea";  // 增加一个数据
 
                 // 如果字段有Comment信息，则将中文名替换为描述的前部分
-                if (array_key_exists('Comment',$l_arr)) {
-                    $l_comment = trim($l_arr['Comment']);
-                    if($l_comment) {
-                        $l_jiben['description'] = $l_comment;// 字段的注释部分写入描述字段中去
+                if (array_key_exists("Comment",$l_arr)) {
+                    $l_comment = trim($l_arr["Comment"]);
+                    if(""!=$l_comment){
+                        $l_jiben["description"] = $l_comment;// 字段的注释部分写入描述字段中去
                         // 同时将中文名使用描述信息的前半部分
                         $l_tmp = preg_split("/[,.:; ]/",$l_comment,-1,PREG_SPLIT_NO_EMPTY);// 暂时只能用半角符号。测试发现全角标点符号，。：；经常匹配出乱码，导致入库sql报错而影响入库
-                        if (''!=trim($l_tmp[0])) $name_cn = trim($l_tmp[0]);
+                        if (""!=trim($l_tmp[0])) $name_cn = trim($l_tmp[0]);
                     }
                 }
 
-                //$l_db_row = $dbW->getExistorNot("t_id = $t_id  and name_eng='".$name_eng."' and status_ = 'use' ");
-                $sql_where = ['t_id' => $t_id, 'name_eng'=>$name_eng, 'status_'=>'use'];
-                $l_db_row = collect(DB::connection($connect_name)->table($f_def)->where($sql_where)->first())->toArray();;
-                if($l_db_row) {
+                if($l_db_row = $dbW->getExistorNot("t_id = $t_id  and name_eng='".$name_eng."' and status_ = 'use' ")){
                     // 进行修复，只修改同表结构相关的字段
                     if ($if_repair) {
                         $data_arr = array(
@@ -554,14 +530,13 @@ class DbHelper{
                             "name_cn"     => $name_cn
                         );
                         $data_arr = array_merge($data_arr,$l_jiben);
-                        //$dbW->table_name = $f_def;
-                        //$dbW->updateOne($data_arr, "id=".$l_db_row["id"]);
-                        try {
-                            DB::connection($connect_name)->table($f_def)->where('id', $l_db_row['id'])->update($data_arr);
-                        } catch (\Exception $e) {
-                            echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__. " Line: ". __LINE__."\n" .
-                                //" sql: ". $dbW->getSQL() .
-                                " _err:" . var_export($e->getMessage(), TRUE);
+                        $dbW->table_name = $f_def;
+                        $dbW->updateOne($data_arr, "id=".$l_db_row["id"]);
+                        $l_err = $dbW->errorInfo();
+                        if ($l_err[1]>0){
+                            // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
+                            echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " sql: ". $dbW->getSQL() ." _err:" . var_export($l_err, TRUE);
+                            //
                         }
                     }
                     //echo "t_id = $t_id  and name_eng='".$name_eng."' exist!".NEW_LINE_CHAR;
@@ -573,6 +548,7 @@ class DbHelper{
                         "createdate"    => date("Y-m-d"),
                         "createtime"    => date("H:i:s"),
                         "default"       => '',
+                        "menddate"      => date("Y-m-d"),
                         "t_id"          => $t_id,
                         "name_eng"     => trim($name_eng),
                         "name_cn"     => $name_cn
@@ -585,14 +561,17 @@ class DbHelper{
                     }
 
                     $data_arr = array_merge($data_arr,$l_jiben,$l_data_arr);  // 外面给出的数据可修改里面的参数
-                    $last_id = DB::connection($connect_name)->table($f_def)->insertGetId($data_arr);
+                    $last_id = $dbW->insertOne($data_arr);
+                    $l_err = $dbW->errorInfo();
+                    if ($l_err[1]>0){
+                        // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
+                        echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " sql: ". $dbW->getSQL() ." _err:" . var_export($l_err, TRUE);
+                        //
+                    }
                 }
                 usleep(300);
             }
-
-        // 还需要进行修复, 对于废弃的字段需要删除或改为废弃状态，当前直接删除，可以准备着update语句
-        //  万万不能进行自动的更新或删除。这个只是一时使用，长远的根本不需要这样做。
-        return 1;
+        }
     }
 
     // 通过父级id数组，逐级获取并最终获取到最后一级的数据

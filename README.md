@@ -18,7 +18,7 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
 - `php artisan make:auth`
 - `php artisan migrate:fresh`
 - `php artisan db:seed --class=project`
-- `php artisan crontab fill_db_table_field uipps_platform`
+- `php artisan initproject InitTableField`
 - 登录后台：http://host.uipps.com/admin   帐号：admin  密码：admin
 
 

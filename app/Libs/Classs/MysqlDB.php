@@ -52,7 +52,7 @@ class MysqlDB
         }
     }
     public function errorInfo($error = null){
-        return 1;
+        return [0,0];
         //$dbo =& $this->dbo;
         //return $dbo->errorInfo($error);
     }
@@ -139,6 +139,27 @@ class MysqlDB
             if (in_array($charset, array("utf8","gbk","latin1"))) $dbo->setCharset($charset, $dbo->getConnection());
             else $dbo->setCharset("latin1", $dbo->getConnection());
         }*/
+    }
+
+    /**
+     * 执行一条读取查询命令
+     * @access private
+     * @param string $sql sql
+     * @return resource|boolean
+     */
+    public function Query($sql){
+        //$dbo =& $this->dbo;  // 兼容php4的做法
+        //echo "\r\n---- " . __FUNCTION__ . " ----"."\r\n";
+        // 事先判断 查询语句是否是 select ，不是就返回false
+        $sql = ltrim($sql);$this->sql = $sql;
+        /*$prex = strtolower(substr($sql,0,4));
+        if ($prex==="sele" || $prex==="desc" || $prex==="show"){
+            $this->setCharset();
+            return $dbo->query($sql);
+        }
+        else return false; // 非select操作的被禁止
+        */
+        return collect($this->dbo->select($sql))->toArray();
     }
 
     public function Disconnect(&$dbo){

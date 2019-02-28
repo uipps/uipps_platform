@@ -2,6 +2,9 @@
 define('TABLENAME_PREF', env('DB_PREFIX'));
 $GLOBALS['cfg']['WEB_DOMAIN'] = 'uipps.com';
 
+$GLOBALS['cfg']['__LIMIT__'] = '__LIMIT__';   // 条数限制
+$GLOBALS['cfg']['__OFFSET__'] = '__OFFSET__'; // 起始位置
+
 $GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
 $GLOBALS['cfg']['db_character'] = env('db_character', 'utf8');
 $GLOBALS['cfg']['out_character'] = env('out_character', 'utf8');

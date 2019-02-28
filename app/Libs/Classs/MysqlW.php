@@ -26,7 +26,7 @@ class MysqlW extends MysqlDB
         $sql = "insert into {$tablename} ( $ziduan ) values ( $vals )";$this->sql = $sql;
         global $SHOW_SQL;
         if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"201")) echo $sql.NEW_LINE_CHAR;
-        $affected = $this->dbo->statement($sql);
+        $affected = $this->dbo->insert($sql);
         return $affected;
     }
     /**

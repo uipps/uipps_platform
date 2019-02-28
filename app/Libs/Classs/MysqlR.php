@@ -117,24 +117,4 @@ class MysqlR extends MysqlDB
             return $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
         }
     }
-    /**
-     * 执行一条读取查询命令
-     * @access private
-     * @param string $sql sql
-     * @return resource|boolean
-     */
-    public function Query($sql){
-        //$dbo =& $this->dbo;  // 兼容php4的做法
-        //echo "\r\n---- " . __FUNCTION__ . " ----"."\r\n";
-        // 事先判断 查询语句是否是 select ，不是就返回false
-        $sql = ltrim($sql);$this->sql = $sql;
-        /*$prex = strtolower(substr($sql,0,4));
-        if ($prex==="sele" || $prex==="desc" || $prex==="show"){
-            $this->setCharset();
-            return $dbo->query($sql);
-        }
-        else return false; // 非select操作的被禁止
-        */
-        return $this->dbo->statement($sql);
-    }
 }

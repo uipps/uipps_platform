@@ -318,7 +318,7 @@ class cString_num
 class cString_SQL
 {
     // 解析url字符串中显示的字段
-    public function decodestr2sql($a_str){
+    public static function decodestr2sql($a_str){
         $a_str = trim( urldecode($a_str) );
         if (""==$a_str) return $a_str;
 
@@ -334,7 +334,7 @@ class cString_SQL
      * @param array $data_arr
      * @param array or string: $a_exist_a, 如果是数组，则只单纯的字段而已
      */
-    public function getUniExist($data_arr,$a_exist_a){
+    public static function getUniExist($data_arr,$a_exist_a){
         // 是否存在,拼装唯一性条件
         $a_exist_c = "";
         $i=0;
@@ -356,7 +356,7 @@ class cString_SQL
      * @param array $ar
      * @return string
      */
-    public function FmtFieldValArr2Str(&$ar, $a_sep=" and ", $addcount = false){
+    public static function FmtFieldValArr2Str(&$ar, $a_sep=" and ", $addcount = false){
         $sql = 1;
         if (!is_array($ar)||empty($ar)) {  // 确保$ar为非空数组
             return $sql;
