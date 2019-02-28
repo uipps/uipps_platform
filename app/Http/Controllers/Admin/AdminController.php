@@ -158,9 +158,16 @@ class AdminController extends Controller
     }
 
     public function GetTemplateListJS(Request $a_request) {
+        // 检查是否登录
+        $l_auth = $this->userService->ValidatePerm($a_request);
+        $_SESSION = session()->all();
+        if (!$l_auth || !isset($_SESSION['user']) || !$_SESSION['user']) {
+            return redirect('/admin/login');
+        }
+
         $request = $a_request->all();
         //print_r($request);exit;
-        $_SESSION = session()->all();
+        //$_SESSION = session()->all();
         $GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
 
         $dbR = new DBR();
