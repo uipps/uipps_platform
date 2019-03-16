@@ -21,7 +21,7 @@ class UIBI {
 
         $sign = self::getSign();  // UIBI 提供，目前使用此
 
-        $password   = $a_uinfo["password"];
+        $password   = $a_uinfo["pwd"];
         $md5pass    = array_key_exists("md5pass",$a_uinfo)?$a_uinfo["md5pass"]:false;
         $uid      = $a_uinfo["id"];
 

@@ -12,7 +12,7 @@ use App\Services\BaseService;
 class UserService extends BaseService
 {
     protected $_sid = null;
-    protected $_fields = ['id','username','password','nickname','email','g_id','is_admin','if_super','expired']; // 'proj_priv',
+    protected $_fields = ['id','username','pwd','nickname','email','g_id','if_super','expired']; // 'proj_priv',
     protected $_cookie_sid_domain = '';
     protected $_cookie_sid_path   = '/';
     protected $_cookie_sid_expire = 315360000;  // 十年时间 3650*24*3600
@@ -74,7 +74,7 @@ class UserService extends BaseService
         if (isset($params['md5pass']) && $params['md5pass']) { // 前端md5加密过
             $md5_pass = self::getMd5Password($password, 1);
         }
-        if ($md5_pass != $l_user['password']) {
+        if ($md5_pass != $l_user['pwd']) {
             ErrorMsg::FillResponseAndLog($responseDto, ErrorMsg::PASSWORD_ERROR);
             return $responseDto;
         }

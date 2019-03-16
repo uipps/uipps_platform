@@ -6,7 +6,7 @@
  * @package  Laravel
  * @author   Taylor Otwell <taylor@laravel.com>
  */
-
+error_reporting(E_ALL & ~ (E_STRICT | E_NOTICE | E_DEPRECATED)); ini_set('display_errors', 1);
 define('LARAVEL_START', microtime(true));
 
 /*
