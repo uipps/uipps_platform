@@ -22,11 +22,11 @@ CREATE TABLE IF NOT EXISTS `table_def` (
   `bendi_uri` varchar(255) default NULL COMMENT '本地URI, 没有提供则继承自project的',
   `js_verify_add_edit` enum('TRUE','FALSE') NOT NULL default 'FALSE' COMMENT '是否js验证, 某张表中添加、修改记录的时候',
   `js_code_add_edit` mediumtext COMMENT 'js验证代码, 某张表中添加、修改记录的时候',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name_eng` (`p_id`,`name_eng`),
   KEY `idx_cdt` (`createdate`,`createtime`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='表定义表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='表定义表';
 
 
 CREATE TABLE IF NOT EXISTS `field_def` (
@@ -56,11 +56,11 @@ CREATE TABLE IF NOT EXISTS `field_def` (
   `list_order` smallint(5) NOT NULL default '1000' COMMENT '显示顺序',
   `source` enum('db','grab','none') NOT NULL default 'none' COMMENT '来源',
   `description` varchar(255) default NULL COMMENT '描述',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `ind_2` (`t_id`,`name_eng`),
   KEY `t_id` (`t_id`,`list_order`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='字段定义表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='字段定义表';
 
 
 CREATE TABLE IF NOT EXISTS `dpps_tmpl_design` (
@@ -80,12 +80,12 @@ CREATE TABLE IF NOT EXISTS `dpps_tmpl_design` (
   `tmpl_expr` text COMMENT '执行条件, 只有满足此表达式条件才执行发布, 必须是PHP表达式(如:${是否发往首页) == "yes" && ${栏目名称} == "国内")',
   `description` text COMMENT '描述',
   `status_` enum('use','stop','test','del','scrap') NOT NULL default 'use' COMMENT '状态, 使用、停用等',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   PRIMARY KEY  (`id`),
   KEY `idx_cdt` (`createdate`,`createtime`),
   KEY `idx_mdt` (`menddate`,`mendtime`),
   KEY `tbl_id` (`tbl_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='模板设计表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='模板设计表';
 
 
 --ALTER TABLE `dpps_field_def` CHANGE `type` `type` ENUM( 'VARCHAR', 'TINYINT', 'TEXT', 'DATE', 'SMALLINT', 'MEDIUMINT', 'INT', 'BIGINT', 'FLOAT', 'DOUBLE', 'DECIMAL', 'DATETIME', 'TIMESTAMP', 'TIME', 'YEAR', 'CHAR', 'TINYBLOB', 'TINYTEXT', 'BLOB', 'MEDIUMBLOB', 'MEDIUMTEXT', 'LONGBLOB', 'LONGTEXT', 'ENUM', 'SET', 'BIT', 'BOOL', 'BINARY', 'VARBINARY' ) CHARACTER SET utf8 NOT NULL DEFAULT 'VARCHAR' COMMENT '字段数据类型',

@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `aups_t001` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f001` text COMMENT '内容',
   `aups_f002` varchar(255) default NULL COMMENT '图片1',
   `aups_f003` varchar(255) default NULL COMMENT '标题1',
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `aups_t001` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='页面碎片';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='页面碎片';
 
 -- --------------------------------------------------------
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `aups_t002` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f012` varchar(200) default NULL COMMENT '文档标题',
   `aups_f013` varchar(200) default NULL COMMENT '副标题',
   `aups_f014` varchar(200) default NULL COMMENT '来源',
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `aups_t002` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='正文页';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='正文页';
 
 -- --------------------------------------------------------
 
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `aups_t003` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f070` varchar(200) default NULL COMMENT '栏目名称',
   `aups_f071` smallint(3) unsigned default NULL COMMENT '级别',
   `aups_f072` varchar(50) default NULL COMMENT '英文缩写',
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `aups_t003` (
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`),
   KEY `name_cn_jibie` (`aups_f071`,`aups_f070`,`aups_f072`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='栏目配置';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='栏目配置';
 
 --
 -- 导出表中的数据 `aups_t003`
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `aups_t004` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f079` varchar(200) default NULL COMMENT '媒体名称',
   `aups_f080` varchar(200) default NULL COMMENT '链接',
   `aups_f081` text COMMENT '备注',
@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS `aups_t004` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='媒体配置';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='媒体配置';
 
 --
 -- 导出表中的数据 `aups_t004`
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `aups_t005` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f084` varchar(255) default NULL COMMENT '说明',
   `aups_f085` mediumtext COMMENT '代码',
   `aups_f086` mediumtext COMMENT '备份',
@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `aups_t005` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='CSS模板';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='CSS模板';
 
 -- --------------------------------------------------------
 
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `aups_t006` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f087` varchar(255) default NULL COMMENT '说明',
   `aups_f088` mediumtext COMMENT '代码',
   `aups_f089` mediumtext COMMENT '备份',
@@ -263,7 +263,7 @@ CREATE TABLE IF NOT EXISTS `aups_t006` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='JS模板';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='JS模板';
 
 -- --------------------------------------------------------
 
@@ -287,7 +287,7 @@ CREATE TABLE IF NOT EXISTS `aups_t007` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f090` varchar(255) default NULL COMMENT '栏目名称',
   `aups_f097` varchar(255) default NULL COMMENT '栏目名称',
   PRIMARY KEY  (`id`),
@@ -298,7 +298,7 @@ CREATE TABLE IF NOT EXISTS `aups_t007` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='栏目页';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='栏目页';
 
 --
 -- 导出表中的数据 `aups_t007`
@@ -326,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `aups_t008` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f099` varchar(255) NOT NULL default 'yes' COMMENT '专题是否显示',
   `aups_f100` varchar(255) default '/zt/1.shtml' COMMENT '专题链接url',
   `aups_f101` varchar(255) default NULL COMMENT '专题名称',
@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS `aups_t008` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='专题页';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='专题页';
 
 --
 -- 导出表中的数据 `aups_t008`
@@ -379,7 +379,7 @@ CREATE TABLE IF NOT EXISTS `aups_t009` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f115` varchar(255) default NULL COMMENT '说明',
   `aups_f116` mediumtext COMMENT '内容',
   PRIMARY KEY  (`id`),
@@ -390,7 +390,7 @@ CREATE TABLE IF NOT EXISTS `aups_t009` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='功能代码';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='功能代码';
 
 --
 -- 导出表中的数据 `aups_t009`
@@ -418,7 +418,7 @@ CREATE TABLE IF NOT EXISTS `aups_t010` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   `aups_f117` mediumtext COMMENT '内容',
   `aups_f118` mediumtext COMMENT '备份',
   PRIMARY KEY  (`id`),
@@ -429,7 +429,7 @@ CREATE TABLE IF NOT EXISTS `aups_t010` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='空白模板';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='空白模板';
 
 --
 -- 导出表中的数据 `aups_t010`
@@ -457,7 +457,7 @@ CREATE TABLE IF NOT EXISTS `aups_t011` (
   `unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',
   `published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',
   `url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   PRIMARY KEY  (`id`),
   KEY `createdate` (`createdate`,`createtime`),
   KEY `menddate` (`menddate`,`mendtime`),
@@ -466,7 +466,7 @@ CREATE TABLE IF NOT EXISTS `aups_t011` (
   KEY `status_` (`status_`),
   KEY `published_1` (`published_1`),
   KEY `url_1` (`url_1`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='频道首页';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='频道首页';
 
 --
 -- 导出表中的数据 `aups_t011`

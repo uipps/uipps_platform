@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `dpps_host_backend_reg` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `host_label` (`host_label`),
   UNIQUE KEY `host_name` (`host_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='后台主机信息';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='后台主机信息';
 
 --
 -- 导出表中的数据 `dpps_host_backend_reg`
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `dpps_host_reg` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `host_label` (`host_label`),
   UNIQUE KEY `host_name` (`host_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='主机信息';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='主机信息';
 
 --
 -- 导出表中的数据 `dpps_host_reg`
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `dpps_loginlog` (
   `id` int(10) unsigned NOT NULL auto_increment COMMENT '自增ID',
   `username` varchar(100) NOT NULL COMMENT '用户名',
   `nickname` varchar(100) default NULL COMMENT '昵称',
-  `logindate` timestamp NOT NULL COMMENT '登录时间',
+  `logindate` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登录时间',
   `clientip` varchar(15) default NULL COMMENT '客户端IP',
   `serverip` varchar(15) default NULL COMMENT '服务器IP',
   `succ_or_not` enum('y','n') NOT NULL default 'n' COMMENT '登录成功如否',
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `dpps_loginlog` (
   PRIMARY KEY  (`id`),
   KEY `idx_logindate` (`logindate`),
   KEY `idx_login` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='登录日志';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='登录日志';
 
 --
 -- 导出表中的数据 `dpps_loginlog`
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `dpps_project` (
   KEY `search_order` (`search_order`),
   KEY `list_order` (`list_order`),
   KEY `pg_id` (`parent_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='全部项目';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='全部项目';
 
 -- --------------------------------------------------------
 
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `dpps_schedule` (
   `server_timezone` tinyint(1) NOT NULL default '8' COMMENT '服务器时区',
   `description` text COMMENT '描述',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='计划任务';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='计划任务';
 
 --
 -- 导出表中的数据 `dpps_schedule`
@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `dpps_user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `login` (`username`),
   UNIQUE KEY `username` (`nickname`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- --------------------------------------------------------
 
@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `dpps_user_doc_privileges` (
   `list_self_doc_priv` enum('T','F') NOT NULL default 'F' COMMENT '自身文档的list权限',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_db_tbl` (`u_id`,`suoshuxiangmu_id`,`suoshubiao_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户的文档权限';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户的文档权限';
 
 --
 -- 导出表中的数据 `dpps_user_doc_privileges`
@@ -281,7 +281,7 @@ CREATE TABLE IF NOT EXISTS `dpps_user_proj_privileges` (
   `role` enum('ENGINEER','PRODUCTOR','EDITOR') NOT NULL default 'EDITOR' COMMENT '角色',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_project` (`u_id`,`suoshuxiangmu_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户的项目权限';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户的项目权限';
 
 --
 -- 导出表中的数据 `dpps_user_proj_privileges`
@@ -309,7 +309,7 @@ CREATE TABLE IF NOT EXISTS `dpps_user_tempdef_privileges` (
   `list_self_doc_priv` enum('T','F') NOT NULL default 'F' COMMENT '显示自身文档的权限',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_db_tbl` (`u_id`,`suoshuxiangmu_id`,`suoshubiao_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户的模板权限';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户的模板权限';
 
 --
 -- 导出表中的数据 `dpps_user_tempdef_privileges`

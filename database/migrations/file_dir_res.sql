@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `dir` (
   `o_execable` enum('TRUE','FALSE') default 'TRUE',
   `description` text,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `file` (
   `id` int(10) unsigned NOT NULL default '0',
@@ -48,19 +48,19 @@ CREATE TABLE IF NOT EXISTS `file` (
   `o_execable` enum('TRUE','FALSE') default 'TRUE',
   `description` text,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `file_db` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `content` longblob NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `grp` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `grp` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `grp_user` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `grp_user` (
   `u_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `g_u` (`g_id`,`u_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `res_sync` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `res_sync` (
   `web_server_url_prefix` varchar(255) NOT NULL default '',
   `description` text,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `user_priv` (
   `id` int(10) unsigned NOT NULL default '0' COMMENT '用户id，非自增',
@@ -117,4 +117,4 @@ CREATE TABLE IF NOT EXISTS `user_priv` (
   `o_write_default` enum('TRUE','FALSE') NOT NULL default 'TRUE',
   `o_exec_default` enum('TRUE','FALSE') NOT NULL default 'TRUE',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

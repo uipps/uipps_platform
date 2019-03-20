@@ -16,16 +16,16 @@ CREATE TABLE IF NOT EXISTS `dpps_grab_article_list` (
   `atype` varchar(100) default NULL COMMENT '类型',
   `status_` enum('in','doing','complete','empty','del','scrap','arti_inter_fail') NOT NULL default 'in' COMMENT '状态, 使用、停用等',
   `short_text` text COMMENT '内容摘要',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `url` (`parent_id`,`tbl_name_eng`,`url`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章列表数据';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章列表数据';
 
 CREATE TABLE IF NOT EXISTS `dpps_grab_artitext` (
   `id` int(11) NOT NULL COMMENT '自增ID',
   `content` text COMMENT '自增ID',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章内容表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章内容表';
 
 CREATE TABLE IF NOT EXISTS `dpps_grab_request` (
   `id` int(11) unsigned NOT NULL auto_increment COMMENT '自增ID',
@@ -52,8 +52,8 @@ CREATE TABLE IF NOT EXISTS `dpps_grab_request` (
   `arti_hidden` int(10) default NULL COMMENT '隐藏的文章数',
   `if_album` enum('0','1') NOT NULL default '0' COMMENT '是否抓取相册',
   `album_toal` int(10) default NULL COMMENT '相册总数',
-  `last_modify` timestamp NOT NULL COMMENT '最近修改时间',
+  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `request` (`p_id_to`,`t_id_to`,`url`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='抓取请求表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='抓取请求表';
 

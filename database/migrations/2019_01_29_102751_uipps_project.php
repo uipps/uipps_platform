@@ -29,10 +29,11 @@ class UippsProject extends Migration
             $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
 
             $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment('更新时间');
+            $table->timestamp('updated_at')->useCurrent()->comment('更新时间'); // Laravel 5.1.25 以后，可以使用 useCurrent()
             $table->engine = 'InnoDB';
             //$table->comment = '主机';
         });
+        DB::statement("ALTER TABLE `host_reg` CHANGE `updated_at` `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'");
         DB::statement("ALTER TABLE `host_reg` comment '主机'");
 
         // 项目
@@ -88,7 +89,7 @@ class UippsProject extends Migration
             $table->unsignedInteger('g_id')->default(0)->comment('所属组ID,角色');
             $table->unsignedInteger('parent_id')->default(0)->comment('所属父级ID');
             $table->string('username', 100)->unique()->comment('用户名');
-            $table->string('password', 100)->comment('密码');
+            $table->string('pwd', 100)->comment('密码');
             $table->string('nickname', 20)->default('')->comment('昵称');
             $table->string('mobile', 11)->default('')->comment('手机号码');
             $table->string('telephone', 20)->default('')->comment('电话');
