@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `field_def` (
   `edit_flag` enum('0','1','2','3') NOT NULL default '0' COMMENT '编辑标记',
   `is_null` enum('YES','NO') NOT NULL default 'YES' COMMENT '是否为空. YES:为空；NO:非空',
   `key` enum('','PRI','MUL','UNI','fulltext') NOT NULL default '' COMMENT '键类型. PRI：主键；‘MUL’索引；UNI唯一，fulltext：全文搜索',
-  `extra` enum('','AUTO_INCREMENT') NOT NULL default '' COMMENT '额外属性',
+  `extra` enum('','AUTO_INCREMENT','on update CURRENT_TIMESTAMP') NOT NULL default '' COMMENT '额外属性',
   `type` enum('VARCHAR','TINYINT','TEXT','DATE','SMALLINT','MEDIUMINT','INT','BIGINT','FLOAT','DOUBLE','DECIMAL','DATETIME','TIMESTAMP','TIME','YEAR','CHAR','TINYBLOB','TINYTEXT','BLOB','MEDIUMBLOB','MEDIUMTEXT','LONGBLOB','LONGTEXT','ENUM','SET','BIT','BOOL','BINARY','VARBINARY') NOT NULL default 'VARCHAR' COMMENT '字段数据类型',
   `f_type` enum('Form::CodeResult','Form::TextField','Form::Date','Form::DateTime','Form::Password','Form::TextArea','Form::HTMLEditor','Form::Select','Form::DB_Select','Form::DB_RadioGroup','Form::ImageFile','Form::File','Application::SQLResult','Application::PostInPage','Application::CrossPublish','Application::CodeResult') NOT NULL default 'Form::TextField' COMMENT '字段的算法类型',
   `length` varchar(600) default '255' COMMENT '长度',

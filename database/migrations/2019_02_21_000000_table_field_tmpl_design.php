@@ -63,7 +63,7 @@ class TableFieldTmplDesign extends Migration
             $table->enum('edit_flag', ['0','1','2','3'])->default('0')->comment('编辑标记');
             $table->enum('is_null', ['YES','NO'])->default('YES')->comment('是否为空. YES:为空；NO:非空');
             $table->enum('key', ['','PRI','MUL','UNI','fulltext'])->default('')->comment('键类型. PRI：主键；‘MUL’索引；UNI唯一，fulltext：全文搜索');
-            $table->enum('extra', ['','AUTO_INCREMENT'])->default('')->comment('额外属性');
+            $table->enum('extra', ['','AUTO_INCREMENT','on update CURRENT_TIMESTAMP'])->default('')->comment('额外属性');
             $table->enum('type', ['VARCHAR','TINYINT','TEXT','DATE','SMALLINT','MEDIUMINT','INT','BIGINT','FLOAT','DOUBLE','DECIMAL','DATETIME','TIMESTAMP','TIME','YEAR','CHAR','TINYBLOB','TINYTEXT','BLOB','MEDIUMBLOB','MEDIUMTEXT','LONGBLOB','LONGTEXT','ENUM','SET','BIT','BOOL','BINARY','VARBINARY'])->default('VARCHAR')->comment('字段数据类型');
             $table->enum('f_type', ['Form::CodeResult','Form::TextField','Form::Date','Form::DateTime','Form::Password','Form::TextArea','Form::HTMLEditor','Form::Select','Form::DB_Select','Form::DB_RadioGroup','Form::ImageFile','Form::File','Application::SQLResult','Application::PostInPage','Application::CrossPublish','Application::CodeResult'])->default('Form::TextField')->comment('字段的算法类型');
             $table->string('length', 600)->default('255')->comment('长度');
