@@ -1,7 +1,7 @@
 <?php
 
 function convCharacterByStr($str,$tar_char="gb2312"){
-    if ("utf8"==$tar_char) {
+    if (in_array($tar_char, ['utf8', 'utf8mb4'])) {
         // 判断是否为utf8编码的，如果是则不用转换，如果不是则需要转换，多一重保险
         if (!is_utf8_encode($str)) {
             $str = iconv("GBK","UTF-8//IGNORE",$str);
@@ -26,7 +26,7 @@ function convCharacter($str,$in2db=false){
 
     if (env('out_character', 'utf8') != env('db_character', 'utf8')) {   // 字符编码相同则不用转换
         $tar_char = $in2db?$GLOBALS['cfg']['db_character']:$GLOBALS['cfg']['out_character'];
-        if ("utf8"==$tar_char) {
+        if (in_array($tar_char, ['utf8', 'utf8mb4'])) {
             // 判断是否为utf8编码的，如果是则不用转换，如果不是则需要转换，多一重保险
             if (!is_utf8_encode($str)) {
                 $new_str = iconv("GBK","UTF-8//IGNORE",$str);
