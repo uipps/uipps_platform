@@ -70,7 +70,7 @@ class DbHelper{
         return array('l_name'=>$l_name,'dsn'=>$dsn);
     }
 
-    public function getAutocreamentDbname($a_proj, $a_f_name="db_name", $a_data=array(), $a_default=''){
+    public static function getAutocreamentDbname($a_proj, $a_f_name="db_name", $a_data=array(), $a_default=''){
         if (''==$a_default) $a_default = $GLOBALS['cfg']['DB_DEFALUT_TYPE'];
 
         // 如果提交了数据库连接信息$a_data，则需要联合这些信息判断，防止人为没有注册的数据库存在。今后完善之

@@ -6,7 +6,9 @@ use App\Http\Controllers\AddController;
 use App\Services\Admin\UserService;
 use Illuminate\Http\Request;
 use DBR;
+use DBW;
 use Parse_Arithmetic;
+use DbHelper;
 
 class ProjectAddController extends AddController
 {
@@ -28,10 +30,10 @@ class ProjectAddController extends AddController
         $actionMap = [];
         $actionError = [];
         $response = [];
-        $form = [];
-        $get = [];
-        $cookie = [];
-        $files = [];
+        $form = $a_request->post();
+        $get = $a_request->query();
+        $cookie = $a_request->cookie();
+        $files = $a_request->file();
 
         $request = $a_request->all();
         $request['do'] = 'project_add';
@@ -112,6 +114,7 @@ class ProjectAddController extends AddController
             Parse_Arithmetic::parse_for_list_form($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
             // 各个项目自动检测，对于没有填写的采用默认值，默认为null的则剔除该项目
             $data_arr = DbHelper::getInsertArrByFormFieldInfo($form, $arr["f_info"], false);
+
             // 如果返回有错误，则退出
             if (array_key_exists("___ERR___", $data_arr)) {
                 $response['html_content'] = date("Y-m-d H:i:s") . "field empty: ". var_export($data_arr["___ERR___"], TRUE);

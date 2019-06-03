@@ -1,5 +1,7 @@
 <?php
-define('NEW_LINE_CHAR', "\r\n");
+//namespace app\Libs\Classs;
+
+if (!defined('NEW_LINE_CHAR')) define('NEW_LINE_CHAR', "\r\n");
 
 class DBR extends MysqlR
 {

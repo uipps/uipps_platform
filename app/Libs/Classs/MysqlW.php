@@ -36,7 +36,7 @@ class MysqlW extends MysqlDB
      */
     public function LastID(){
         $dbo =& $this->dbo;
-        return $dbo->lastInsertID();
+        return $dbo->getPdo()->lastInsertId();
     }
     /**
      * 彻底删除记录，谨慎操作
