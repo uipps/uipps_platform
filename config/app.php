@@ -84,7 +84,8 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     $GLOBALS['cfg']['INI_CONFIGS_PATH'] = file_exists('/Users/cf/Documents/deve/config_ini_files') ? '/Users/cf/Documents/deve/config_ini_files' : __DIR__;
     // 如果是 https会有“已阻止载入混合活动内容”的风险
     //if (isset($_SERVER['SERVER_PORT']) && 443 == $_SERVER['SERVER_PORT']) $GLOBALS['cfg']['RES_WEBPATH_PREF'] = 'https://img3.' .$GLOBALS['cfg']['WEB_DOMAIN']. '/'; else
-    $GLOBALS['cfg']['RES_WEBPATH_PREF'] = '//img3.' .$GLOBALS['cfg']['WEB_DOMAIN']. '/';
+    //$GLOBALS['cfg']['RES_WEBPATH_PREF'] = '//img3.' .$GLOBALS['cfg']['WEB_DOMAIN']. '/';
+    $GLOBALS['cfg']['RES_WEBPATH_PREF'] = '/';
     $GLOBALS['cfg']['LOG_PATH']  = "/Users/cf/logs_all/logs_dpa";
     $GLOBALS['cfg']['IFMDB2'] = true;
     $GLOBALS['cfg']['IFMYSQLI'] = false;
