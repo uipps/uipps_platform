@@ -63,9 +63,9 @@ class MysqlDB
      * @return boolean
      */
     public function SetCurrentSchema($schema ){
-        $dbo =& $this->dbo;
-        $l_rlt = $dbo->query("use ".$schema);
-        $dbo->setDatabase($schema);
+        //$dbo =& $this->dbo;
+        $l_rlt = $this->dbo->query("use ".$schema);
+        $this->dbo->setDatabase($schema);
         $this->schema = $this->GetCurrentSchema(); // 顺便切换一下数据库
         return $l_rlt;
     }
@@ -75,10 +75,10 @@ class MysqlDB
      * @access  $hidepw bool
      * @return string|array
      */
-    public function getDSN($type = 'array', $hidepw = false){
-        $dbo =& $this->dbo;
-        return $dbo->getDSN($type, $hidepw);
-    }
+//    public function getDSN($type = 'array', $hidepw = false){
+//        //$dbo =& $this->dbo;
+//        return $this->dbo->getDSN($type, $hidepw);
+//    }
 
     /**
      * 取得当前的 schema
@@ -168,4 +168,36 @@ class MysqlDB
     /*public function __destruct(){
         $this->Disconnect($this->dbo);
     }*/
+
+    public function getDsn(array $config = [])
+    {
+        //$app = new Application();
+        $app = Illuminate\Container\Container::getInstance();
+        $config = $app->make('config')->get('app');
+        if (!$config) {
+            $default = $app['config']['database.default'];
+            $connections = $this->app['config']['database.connections'];
+            $config = $connections[$default];
+        }
+        return $this->hasSocket($config)
+            ? $this->getSocketDsn($config)
+            : $this->getHostDsn($config);
+    }
+    protected function hasSocket(array $config)
+    {
+        return isset($config['unix_socket']) && ! empty($config['unix_socket']);
+    }
+    protected function getSocketDsn(array $config)
+    {
+        return "mysql:unix_socket={$config['unix_socket']};dbname={$config['database']}";
+    }
+    protected function getHostDsn(array $config)
+    {
+        extract($config, EXTR_SKIP);
+
+        return isset($port)
+            ? "mysql:host={$host};port={$port};dbname={$database}"
+            : "mysql:host={$host};dbname={$database}";
+    }
+
 }

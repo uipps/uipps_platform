@@ -39,6 +39,10 @@ class ProjectController extends ListController
         $dbR = new DBR();
         $dbR->table_name = $table_name = "project";
 
+        //\DB::connection();
+        $dsn = $dbR->getDsn();
+        print_r($dsn);
+
 
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
         $TBL_def = env('DB_PREFIX') . env('TABLE_DEF');
@@ -56,11 +60,12 @@ class ProjectController extends ListController
 
         // 需要加入权限限制所能查看的数据表
         if (1!=$_SESSION['user']['if_super']){
-            $l_ps = UserPrivilege::getSqlInProjectByPriv();
+            $l_ps = \UserPrivilege::getSqlInProjectByPriv();
             if (''!=$l_ps) $arr['default_sqlwhere'] = "where id in ($l_ps)";
             else $arr['default_sqlwhere'] = 'where id<0 ';  // 将获取不到任何数据, 如果么有权限的话
         }
         $this->Init($request, $arr); // 初始化一下, 需要用到的数据的初始化动作,在parent::之前调用
+
 
         parent::getFieldsInfo($arr);
         if(!array_key_exists("f_info",$arr)) {

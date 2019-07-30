@@ -53,9 +53,9 @@ class DBR extends MysqlR
      *
      * @return string or bool
      */
-    public function getSQL(){
-        return parent::getSQL();
-    }
+//    public function getSQL(){
+//        return parent::getSQL();
+//    }
 
     public function getTblFields($table_name=null,$FULL='FULL',$assoc=true){
         if(null==$table_name) $table_name = $this->table_name;
@@ -177,5 +177,10 @@ class DBR extends MysqlR
         $sql = "SHOW DATABASES";
         //$this->assoc = $assoc;
         return parent::GetPlan($sql);
+    }
+
+    public function __call($method, $parameters)
+    {
+        return $this->dbo->$method($parameters);
     }
 }
