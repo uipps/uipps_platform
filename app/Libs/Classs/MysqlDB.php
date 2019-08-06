@@ -173,10 +173,11 @@ class MysqlDB
     {
         //$app = new Application();
         $app = Illuminate\Container\Container::getInstance();
-        $config = $app->make('config')->get('app');
+        //$config = $app->make('config')->get('app');
+        //$config = $app->make('config')->get('database.default');
         if (!$config) {
             $default = $app['config']['database.default'];
-            $connections = $this->app['config']['database.connections'];
+            $connections = $app['config']['database.connections'];
             $config = $connections[$default];
         }
         return $this->hasSocket($config)
@@ -195,9 +196,26 @@ class MysqlDB
     {
         extract($config, EXTR_SKIP);
 
-        return isset($port)
-            ? "mysql:host={$host};port={$port};dbname={$database}"
-            : "mysql:host={$host};dbname={$database}";
+        // 检查是否有主从分离配置
+        if (isset($config['write']))
+            extract($config['write'], EXTR_SKIP);
+
+        // 兼容数据库中的设置db_host, db_sock, db_name, db_port
+        if (isset($db_host) && isset($db_name) && isset($db_port))
+            return (3306 == $db_port || '' == $db_port)
+                ? "mysql:host={$db_host};dbname={$db_name}"
+                : "mysql:host={$db_host};port={$db_port};dbname={$db_name}";
+
+        if (isset($host) && $host && isset($database) && $database) {
+            if (!isset($port) || '' == $port || 3306 == $port)
+                return "mysql:host={$host};dbname={$database}";
+            else
+                return  "mysql:host={$host};port={$port};dbname={$database}";
+        }
+
+        if (isset($db_sock) && trim($db_sock))
+            return "mysql:unix_socket={$db_sock};dbname={$db_name}";
+        return ''; // 这种情况应该不存在
     }
 
 }

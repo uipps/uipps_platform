@@ -39,9 +39,8 @@ class ProjectController extends ListController
         $dbR = new DBR();
         $dbR->table_name = $table_name = "project";
 
-        //\DB::connection();
-        $dsn = $dbR->getDsn();
-        print_r($dsn);
+        $dsn = $dbR->getDsn(); // mysql:host=127.0.0.1;port=3307;dbname=uipps_platform
+        //print_r($dsn);
 
 
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
