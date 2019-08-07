@@ -1064,6 +1064,7 @@ class DbHelper{
         if (!is_array($p_arr)) {
             throw new \Exception('Invalid array p_arr');
         }
+        if (!isset($p_arr["db_port"]) || '' == $p_arr["db_port"]) $p_arr["db_port"] = 3306; // 补充默认端口，统一格式
         if (array_key_exists("db_pwd", $p_arr)) {
             $dsn = "mysql://".$p_arr["db_user"].":".$p_arr["db_pwd"]."@".$p_arr["db_host"].":".$p_arr["db_port"]."/".$p_arr["db_name"];
         } else if (array_key_exists("db_pass", $p_arr)) {

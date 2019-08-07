@@ -28,7 +28,7 @@ class AddController extends Controller
         // 先去表定义表找对应的table_id，
         $dbR = $a_arr["dbR"];
         $dbR->table_name = $a_arr["TBL_def"];
-        $t_info = $dbR->getOne(" where name_eng='".$a_arr["table_name"]."' ", '*', true);
+        $t_info = $dbR->getOne(" where name_eng='".$a_arr["table_name"]."' ");
         if ($t_info) {
             $t_id = $t_info["id"];
         }else {

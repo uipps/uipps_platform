@@ -39,7 +39,7 @@ class TemplateController extends ListController
 
 
         $dbR = new DBR();
-        $table_name = TABLENAME_PREF."table_def";
+        $table_name = env('DB_PREFIX') . env('TABLE_DEF');//TABLENAME_PREF."table_def";
 
         // 获取发布主机列表 , 用于ui
         $a_p_self_ids = array(
@@ -50,8 +50,8 @@ class TemplateController extends ListController
         //print_r($p_self_info);
 
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
-        $TBL_def = TABLENAME_PREF."table_def";
-        $FLD_def = TABLENAME_PREF."field_def";
+        $TBL_def = env('DB_PREFIX') . env('TABLE_DEF');// TABLENAME_PREF."table_def";
+        $FLD_def = env('DB_PREFIX') . env('FIELD_DEF'); // TABLENAME_PREF."field_def";
 
 
         $arr = array();
