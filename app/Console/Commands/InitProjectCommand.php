@@ -1,5 +1,5 @@
 <?php
-
+// php artisan InitProject InitProjectTableField
 namespace App\Console\Commands;
 
 use App\Services\Admin\ProjectService;
@@ -27,8 +27,8 @@ class InitProjectCommand extends Command
         var_dump($data);
     }
 
-    // 填充table_def,field_def数据 php artisan crontab fill_db_table_field uipps_platform
-    private function InitTableField($request) {
+    // table_def,field_def数据
+    private function InitProjectTableField($request) {
         // 主要参数是db_name=grab&if_repair
         // 主要功能是创建数据库（如果数据库存在则按照项目特点进行补充和修正）、数据表和字段
         // 具备修复功能，保持同真实数据表一致的功能
@@ -55,6 +55,9 @@ class InitProjectCommand extends Command
             $this->info(date('Y-m-d H:i:s') . ' db_name is error!! '. self::NEW_LINE_CHAR);
             return 0;
         }
+        $this->info(__FILE__ . ' ' . __LINE__ );
+        echo __FILE__ . ' ' . __LINE__ . self::NEW_LINE_CHAR;
+        print_r($l_tmp);exit;
         $dbW = new DBW();
         $table_def = 'table_def';
         $field_def = 'field_def';
