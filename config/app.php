@@ -1,5 +1,5 @@
 <?php
-define('TABLENAME_PREF', env('DB_PREFIX'));
+define('TABLENAME_PREF', env('DB_PREFIX', 'dpps_'));
 $GLOBALS['cfg']['WEB_DOMAIN'] = 'uipps.com';
 
 $GLOBALS['cfg']['__LIMIT__'] = '__LIMIT__';   // 条数限制
@@ -169,7 +169,6 @@ $GLOBALS['cfg']['DB_FIELD_DEFALUT_TYPE']   = 'aups_f';
 $GLOBALS['cfg']['LOG_CONF_FILE'] = $GLOBALS['cfg']['PATH_RUNTIME'] . '/configs/log4php.properties';
 
 // 表相关
-define('TABLENAME_PREF',"dpps_");
 $GLOBALS['cfg']['TABLENAME_USER']      = "user";
 $GLOBALS['cfg']['TABLENAME_LOGINLOG'] = "loginlog";
 define('NEW_LINE_CHAR',"\r\n");
