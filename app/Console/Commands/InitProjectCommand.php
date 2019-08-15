@@ -1,5 +1,5 @@
 <?php
-// php artisan InitProject InitProjectTableField
+// php F:/develope/php/www/uipps_platform/artisan InitProject InitTableField
 namespace App\Console\Commands;
 
 use App\Services\Admin\ProjectService;
@@ -27,13 +27,26 @@ class InitProjectCommand extends Command
         var_dump($data);
     }
 
+    // 设置参数接口
+    protected function getArguments()
+    {
+        return [
+            ['action', InputArgument::REQUIRED],
+            ['p1', InputArgument::OPTIONAL],
+            ['p2', InputArgument::OPTIONAL],
+            ['project_type', InputArgument::OPTIONAL],
+        ];
+    }
+
     // table_def,field_def数据
-    private function InitProjectTableField($request) {
+    private function InitTableField($request) {
         // 主要参数是db_name=grab&if_repair
         // 主要功能是创建数据库（如果数据库存在则按照项目特点进行补充和修正）、数据表和字段
         // 具备修复功能，保持同真实数据表一致的功能
         $this->info(date('Y-m-d H:i:s') . ' begin to process:' . self::NEW_LINE_CHAR);
-        \DB::statement('drop table if exists migrations'); // 删除迁移库
+        $dbW = new DBW();
+        //$dbW->statement('drop table if exists migrations'); // 这样写其实也可以
+        $dbW->exec('drop table if exists migrations'); // 删除迁移库
 
         $_SESSION = session()->all();
         $creator = 1;
@@ -55,10 +68,6 @@ class InitProjectCommand extends Command
             $this->info(date('Y-m-d H:i:s') . ' db_name is error!! '. self::NEW_LINE_CHAR);
             return 0;
         }
-        $this->info(__FILE__ . ' ' . __LINE__ );
-        echo __FILE__ . ' ' . __LINE__ . self::NEW_LINE_CHAR;
-        print_r($l_tmp);exit;
-        $dbW = new DBW();
         $table_def = 'table_def';
         $field_def = 'field_def';
         $a_data_arr = array("source"=>'db',"creator"=>$creator);  // 能在外部增加字段的
@@ -80,15 +89,5 @@ class InitProjectCommand extends Command
     }
 
 
-    // 设置参数接口
-    protected function getArguments()
-    {
-        return [
-            ['action', InputArgument::REQUIRED],
-            ['p1', InputArgument::OPTIONAL],
-            ['p2', InputArgument::OPTIONAL],
-            ['pro_type', InputArgument::OPTIONAL],
-        ];
-    }
 
 }
