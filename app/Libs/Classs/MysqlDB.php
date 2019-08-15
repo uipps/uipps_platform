@@ -218,4 +218,9 @@ class MysqlDB
         return ''; // 这种情况应该不存在
     }
 
+    public function __call($method, $parameters)
+    {
+        //return $this->dbo->$method($parameters); // 报错“Array to string conversion”
+        return call_user_func_array([$this->dbo, $method], $parameters);
+    }
 }

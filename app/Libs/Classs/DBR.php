@@ -178,9 +178,4 @@ class DBR extends MysqlR
         //$this->assoc = $assoc;
         return parent::GetPlan($sql);
     }
-
-    public function __call($method, $parameters)
-    {
-        return $this->dbo->$method($parameters);
-    }
 }
