@@ -1,5 +1,6 @@
 <?php
-
+// php F:/develope/php/www/uipps_platform/artisan crontabCommand getProjectList
+// php artisan crontab fill_db_table_field uipps_platform
 namespace App\Console\Commands;
 
 use App\Services\Admin\ProjectService;

@@ -20,7 +20,7 @@ class TableFieldTmplDesign extends Migration
             $table->string('name_eng', 200)->comment('英文名称');
             $table->string('name_cn', 200)->comment('中文名称');
             $table->enum('tbl_type', ['00', '01', '02'])->default('00')->comment('表类型');
-            $table->string('field_def_table', 200)->default('field_def')->comment('字段定义表, 暂未支持');
+            $table->string('field_def_table', 32)->default('field_def')->comment('字段定义表, 暂未支持，默认是field_def');
             $table->string('creator', 100)->default('')->comment('创建者');
             $table->date('createdate')->comment('创建日期');
             $table->time('createtime')->default('00:00:00')->comment('创建时间');

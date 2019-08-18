@@ -43,6 +43,8 @@ class UippsProject extends Migration
             $table->enum('type', ['SYSTEM','CMS','PHP_PROJECT','NORMAL','PUB','RES','GRAB'])->default('CMS')->comment('项目类型');
             $table->unsignedInteger('parent_id')->default(0)->comment('所属父级ID');
             $table->unsignedInteger('table_field_xiangmu_id')->default(0)->comment('字段定义表所属项目ID, 0:表示所属项目, 外来的项目可能不是0');
+            $table->string('table_def_table', 32)->default('')->comment('表定义表的数据表名');
+            $table->string('field_def_table', 32)->default('')->comment('字段定义表的数据表名, 与字段定义表中的field_def_table不冲突');
             $table->string('creator', 100)->default('')->comment('创建者');
             $table->string('mender', 100)->default('')->comment('修改者');
             // 主库
