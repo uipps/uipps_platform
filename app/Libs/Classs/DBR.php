@@ -67,23 +67,22 @@ class DBR extends MysqlR
     // 依据数据表结构，获取添加数据时候的字段和默认值，分为必选和全字段
     public function getInSertArr($table_name=null){
         $arr = $this->getTblFields($table_name);
+        if (!$arr)
+            return array([],[]);
 
         $fields_full           = array();
         $fields_bixu           = array();
-
         // 重新
-        if (!empty($arr)) {
-            foreach ($arr as $row ) {
-                $l_field = trim($row["Field"]);
-                $l_v = ("NULL"==$row["Default"])?"":convCharacter($row["Default"],true);
+        foreach ($arr as $row ) {
+            $l_field = trim($row["Field"]);
+            $l_v = ("NULL"==$row["Default"])?"":convCharacter($row["Default"],true);
 
-                // 必须的字段单独用数组存放, 排除掉自增和timestamp
-                if ("NO"==strtoupper($row["Null"]) && "auto_increment"!=strtolower($row["Extra"]) && "timestamp" != strtolower($row["Type"])) {
-                    $fields_bixu[$l_field] = $l_v;
-                }
-
-                $fields_full[$l_field] = $l_v;
+            // 必须的字段单独用数组存放, 排除掉自增和timestamp
+            if ("NO"==strtoupper($row["Null"]) && "auto_increment"!=strtolower($row["Extra"]) && "timestamp" != strtolower($row["Type"])) {
+                $fields_bixu[$l_field] = $l_v;
             }
+
+            $fields_full[$l_field] = $l_v;
         }
 
         return array($fields_full,$fields_bixu);

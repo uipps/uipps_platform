@@ -17,6 +17,17 @@ class CrontabCommand extends Command
     protected $name = 'CrontabCommand';
     protected $description = '后台定时脚本';
 
+    // 设置参数接口
+    protected function getArguments()
+    {
+        return [
+            ['action', InputArgument::REQUIRED],
+            ['db_name', InputArgument::OPTIONAL],
+            ['project_info', InputArgument::OPTIONAL],
+            ['project_type', InputArgument::OPTIONAL],
+        ];
+    }
+
     public function handle()
     {
         $argvList = $this->argument();
@@ -35,7 +46,7 @@ class CrontabCommand extends Command
         $p_list = $projectService->getProjectList($params);
         //print_r($p_list);
 
-        $orderId = $params['p1'];
+        $orderId = $params['db_name'];
         //$order = \App\Repositories\Delivery\DeliveryRepository::a();
         echo $orderId;
         // TODO
@@ -56,11 +67,16 @@ class CrontabCommand extends Command
         }
 
         // 参数检验可以放到validate中去，先放到此处检验一下。
-        if (!array_key_exists('p1', $request)) {
+        if (!array_key_exists('db_name', $request)) {
             $this->info(date('Y-m-d H:i:s') . ' db_name must not be empty!! '. self::NEW_LINE_CHAR);
             return 0;
         }
-        /*if (!array_key_exists('db_pwd', $request)) {
+        /*
+        if (!isset($request['project_info']) || !$request['project_info'] || !json_decode($request['project_info'])) {
+            $this->info(date('Y-m-d H:i:s') . ' project_info is empty, can\'t create new project!' . self::NEW_LINE_CHAR);
+            return 0;
+        }
+        if (!array_key_exists('db_pwd', $request)) {
             $this->info(date('Y-m-d H:i:s') . ' db_pwd must not be empty!! '. self::NEW_LINE_CHAR);
             return 0;
         }
@@ -86,9 +102,9 @@ class CrontabCommand extends Command
         // 调试信息字符串
         $l_str = '';
 
-        if (isset($proj_list[$request['p1']]) && $proj_list[$request['p1']]) {
+        if (isset($proj_list[$request['db_name']]) && $proj_list[$request['db_name']]) {
             // 项目增加以及修改项目联合起来，建表、创建字段，添加数据。修改表结构
-            $p_arr = $proj_list[$request['p1']];
+            $p_arr = $proj_list[$request['db_name']];
             //print_r($p_arr);exit;
             if ( !array_key_exists('table_name',$request) ) {
                 // 如果不存在，则需要进行必要的表修补
@@ -106,56 +122,66 @@ class CrontabCommand extends Command
 //                //print_r($l_data_arr);
 //                DbHelper::fill_field($dbR,$dbW,$l_data_arr,$request['table_name'],TABLENAME_PREF.'field_def',TABLENAME_PREF.'table_def', $request['if_repair']);
             }
-        } else {
-            // 项目表中没有此项目的话，则需要入库一下，同时创建一个数据库
-            $dbR = new \DBR();
-            // 自动获取默认数组
-            $l_ins_arr = $dbR->getInSertArr();
-            $data_arr = $l_ins_arr[1];  // 只需要必须的字段
-            //print_r($data_arr);
 
-            // 需要在外部修改一下
-            $data_arr['name_cn']   = array_key_exists('name_cn',$request)?$request['name_cn']:$request['db_name'];
-            $data_arr['type']    = $request['pro_type'];
-            $data_arr['db_name']  = $request['db_name'];
-            $data_arr['db_pwd']    = array_key_exists('db_pwd',$request)?$request['db_pwd']:$l_srv_db_dsn['password'];
-            if (array_key_exists('db_port',$request)) $data_arr['db_port'] = $request['db_port'];
-
-            // 系统本身不应该在此处默认的dbr连接信息的数据库中
-            //if ('SYSTEM'!=strtoupper($request['pro_type'])) {
-            $dbW = new \DBW();
-            $l_err = $dbW->errorInfo();
-            if ($l_err[1]>0){
-                // 数据库连接失败后
-                $response['html_content'] = date('Y-m-d H:i:s') . ' 出错了， 错误信息： ' . $l_err[2]. '.';
-                $response['ret'] = array('ret'=>1,'msg'=>$l_err[1]);
-                return null;
-            }
-            $dbW->table_name = TABLENAME_PREF.'project';
-            $dbW->insertOne($data_arr);
-            $l_err = $dbW->errorInfo();
-            if ($l_err[1]>0){
-                // sql有错误，后面的就不用执行了。
-                $response['html_content'] = self::NEW_LINE_CHAR . date('Y-m-d H:i:s') . ' FILE: '.__FILE__.' '. ' FUNCTION: '.__FUNCTION__.' Line: '. __LINE__ . ' SQL: '.$dbW->getSQL().', _arr:' . var_export($l_err, TRUE);
-                $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
-                return null;
-            }
-            $pid = $dbW->LastID();
-            if ($pid>0) {
-                $data_arr['id'] = $pid;  // 该项目id, 创建记录成功才会有此项
-            }
-            //}else {
-            // 还需要补充几个可能没有提供的数据
-            //$data_arr['db_host']   = array_key_exists('db_host',$request)?$request['db_host']:$l_srv_db_dsn['hostspec'];
-            //$data_arr['db_port']   = array_key_exists('db_port',$request)?$request['db_port']:$l_srv_db_dsn['port'];
-            //$data_arr['db_user']   = array_key_exists('db_user',$request)?$request['db_user']:$l_srv_db_dsn['username'];
-            //}
-
-            // 增加项目记录成功后，需要创建相应的数据库和建立相应的数据表以及填充必要的数据
-            // 依据项目的类型，确定需要建立哪几张基本表，后续需要在这个成功的基础上进行????
-            $rlt = DbHelper::createDBandBaseTBL($data_arr);
-
+            $this->info(date('Y-m-d H:i:s') . ' Done!' . self::NEW_LINE_CHAR);
+            return 1;
         }
+        if (!isset($request['project_info']) || !$request['project_info'] || !json_decode($request['project_info'])) {
+            $this->info(date('Y-m-d H:i:s') . ' project_info is empty, can\'t create new project!' . self::NEW_LINE_CHAR);
+            return 0;
+        }
+        $tmp = json_decode($request['project_info']);
+        $request = array_merge($tmp, $request);
+
+        // 项目表中没有此项目的话，则需要入库一下，同时创建一个数据库
+        $dbR = new \DBR();
+        $l_srv_db_dsn = $dbR->getDSN("array");
+        // 自动获取默认数组
+        $l_ins_arr = $dbR->getInSertArr();
+        $data_arr = $l_ins_arr[1];  // 只需要必须的字段
+        //print_r($data_arr);
+
+        // 需要在外部修改一下
+        $data_arr['name_cn']   = array_key_exists('name_cn',$request)?$request['name_cn']:$request['db_name'];
+        $data_arr['type']    = $request['pro_type'];
+        $data_arr['db_name']  = $request['db_name'];
+        $data_arr['db_pwd']    = array_key_exists('db_pwd',$request)?$request['db_pwd']:$l_srv_db_dsn['password'];
+        if (array_key_exists('db_port',$request)) $data_arr['db_port'] = $request['db_port'];
+
+        // 系统本身不应该在此处默认的dbr连接信息的数据库中
+        //if ('SYSTEM'!=strtoupper($request['pro_type'])) {
+        $dbW = new \DBW();
+//        $l_err = $dbW->errorInfo();
+//        if ($l_err[1]>0){
+//            // 数据库连接失败后
+//            $response['html_content'] = date('Y-m-d H:i:s') . ' 出错了， 错误信息： ' . $l_err[2]. '.';
+//            $response['ret'] = array('ret'=>1,'msg'=>$l_err[1]);
+//            return null;
+//        }
+        $dbW->table_name = TABLENAME_PREF.'project';
+        $pid = $dbW->insertOne($data_arr);
+        //$l_err = $dbW->errorInfo();
+        if ($pid <= 0){
+            // sql有错误，后面的就不用执行了。
+            $response['html_content'] = self::NEW_LINE_CHAR . date('Y-m-d H:i:s') . ' FILE: '.__FILE__.' '. ' FUNCTION: '.__FUNCTION__.' Line: '. __LINE__ . ' SQL: '.$dbW->getSQL().', _arr:' . var_export($l_err, TRUE);
+            $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+            return null;
+        }
+        //$pid = $dbW->LastID();
+        //if ($pid>0) {
+        $data_arr['id'] = $pid;  // 该项目id, 创建记录成功才会有此项
+        //}
+        //}else {
+        // 还需要补充几个可能没有提供的数据
+        //$data_arr['db_host']   = array_key_exists('db_host',$request)?$request['db_host']:$l_srv_db_dsn['hostspec'];
+        //$data_arr['db_port']   = array_key_exists('db_port',$request)?$request['db_port']:$l_srv_db_dsn['port'];
+        //$data_arr['db_user']   = array_key_exists('db_user',$request)?$request['db_user']:$l_srv_db_dsn['username'];
+        //}
+
+        // 增加项目记录成功后，需要创建相应的数据库和建立相应的数据表以及填充必要的数据
+        // 依据项目的类型，确定需要建立哪几张基本表，后续需要在这个成功的基础上进行????
+        $rlt = DbHelper::createDBandBaseTBL($data_arr);
+
         $this->info(date('Y-m-d H:i:s') . ' Done!' . self::NEW_LINE_CHAR);
         return 1;
     }
@@ -188,18 +214,6 @@ class CrontabCommand extends Command
         echo $content;
         file_put_contents($l_path . '/' .$l_file, $content); // 覆盖原文件
         return 3;
-    }
-
-
-    // 设置参数接口
-    protected function getArguments()
-    {
-        return [
-            ['action', InputArgument::REQUIRED],
-            ['p1', InputArgument::OPTIONAL],
-            ['db_pwd', InputArgument::OPTIONAL],
-            ['pro_type', InputArgument::OPTIONAL],
-        ];
     }
 
 }
