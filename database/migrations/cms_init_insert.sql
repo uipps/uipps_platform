@@ -32,9 +32,9 @@ INSERT INTO `aups_t011` (`id`, `url_1`) VALUES
 
 -- dpps_tmpl_design 表，理论上有多少张表就应该有多少个模板设计的初始值，即每张表发布什么样的可视化文件出来
 -- 对于大多项目来说非e.ni9ni.com/xiangmu/的二级域名来说需要将 ), '/${_PROJECT_db_name}/ 替换为 ), '/
-INSERT INTO `dpps_tmpl_design` (`id`, `tbl_id`, `creator`, `createdate`, `createtime`, `default_url`, `default_html`, `status_`) VALUES
-(1,  (select id from dpps_table_def where name_eng='aups_t001'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/page/${YYYY}${mm}${dd}/${id}.shtml', '${内容}', 'use'),
-(2,  (select id from dpps_table_def where name_eng='aups_t002'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${栏目路径}/${YYYY}${mm}${dd}/${HH}${ii}${id}.shtml', '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+INSERT INTO `tmpl_design` (`id`, `tbl_id`, `creator`, `createdate`, `createtime`, `default_url`, `default_html`, `status_`) VALUES
+(1,  (select id from table_def where name_eng='aups_t001'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/page/${YYYY}${mm}${dd}/${id}.shtml', '${内容}', 'use'),
+(2,  (select id from table_def where name_eng='aups_t002'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${栏目路径}/${YYYY}${mm}${dd}/${HH}${ii}${id}.shtml', '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--[${_PROJECT_id},${_PROJECT_TABLE_id},${id}] published at ${_SYSTEM_date} ${_SYSTEM_time} by ${_USER_id}-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -204,11 +204,11 @@ function doZoom(l_type) {
 <!--#include virtual="/ssi/footer.ssi"-->
 </body>
 </html>', 'use'),
-(3,  (select id from dpps_table_def where name_eng='aups_t003'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${_PROJECT_TABLE_id}/${YYYY}/${mm}${dd}/${id}.shtml', '${栏目名称}', 'use'),
-(4,  (select id from dpps_table_def where name_eng='aups_t004'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${_PROJECT_TABLE_id}/${YYYY}/${mm}${dd}/${id}.shtml', '${媒体名称}', 'use'),
-(5,  (select id from dpps_table_def where name_eng='aups_t005'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/css/${YYYY}/${mm}${dd}/${id}.css', '${代码}', 'use'),
-(6,  (select id from dpps_table_def where name_eng='aups_t006'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/js/${YYYY}/${mm}${dd}/${id}.js', '${代码}', 'use'),
-(7,  (select id from dpps_table_def where name_eng='aups_t007'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${栏目路径}/index.shtml', '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+(3,  (select id from table_def where name_eng='aups_t003'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${_PROJECT_TABLE_id}/${YYYY}/${mm}${dd}/${id}.shtml', '${栏目名称}', 'use'),
+(4,  (select id from table_def where name_eng='aups_t004'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${_PROJECT_TABLE_id}/${YYYY}/${mm}${dd}/${id}.shtml', '${媒体名称}', 'use'),
+(5,  (select id from table_def where name_eng='aups_t005'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/css/${YYYY}/${mm}${dd}/${id}.css', '${代码}', 'use'),
+(6,  (select id from table_def where name_eng='aups_t006'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/js/${YYYY}/${mm}${dd}/${id}.js', '${代码}', 'use'),
+(7,  (select id from table_def where name_eng='aups_t007'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${栏目路径}/index.shtml', '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--[${_PROJECT_id},${_PROJECT_TABLE_id},${id}] published at ${_SYSTEM_date} ${_SYSTEM_time} by ${_USER_id}-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -343,7 +343,7 @@ function doZoom(l_type) {
 </body>
 </html>
 ', 'use'),
-(8,  (select id from dpps_table_def where name_eng='aups_t008'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/topic/${专题英文名}/index.shtml', '${head区}
+(8,  (select id from table_def where name_eng='aups_t008'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/topic/${专题英文名}/index.shtml', '${head区}
 ${顶通}
 ${通栏01}
 ${通栏02}
@@ -355,36 +355,36 @@ ${通栏07}
 ${通栏08}
 ${通栏09}
 ${通栏10}', 'use'),
-(9,  (select id from dpps_table_def where name_eng='aups_t009'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${_PROJECT_TABLE_id}/funccode/${id}.shtml', '${内容}', 'use'),
-(10, (select id from dpps_table_def where name_eng='aups_t010'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/blank/${YYYY}${mm}${dd}/${id}.shtml', '${内容}', 'use'),
-(11, (select id from dpps_table_def where name_eng='aups_t011'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/index.shtml', '首页', 'use');
+(9,  (select id from table_def where name_eng='aups_t009'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/${_PROJECT_TABLE_id}/funccode/${id}.shtml', '${内容}', 'use'),
+(10, (select id from table_def where name_eng='aups_t010'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/blank/${YYYY}${mm}${dd}/${id}.shtml', '${内容}', 'use'),
+(11, (select id from table_def where name_eng='aups_t011'), "admin", DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), '/${_PROJECT_db_name}/index.shtml', '首页', 'use');
 
 
 -- 字段定义表中的数据, 分为表自身以及表以外的算法：表以外的直接insert；表自身的则需要通过程序进行检验哪些字段的字段类型、算法、排序(list_order)、七大基本属性等
 -- 第一张表 aups_t001 页面碎片字段更新id,last_modify无需更新，没有特别的算法.只需要更新如下的几个字段
-update `dpps_field_def` set `f_type`='Form::TextArea' where `name_eng`='aups_f001' and `t_id` = (select id from dpps_table_def where name_eng='aups_t001');
-update `dpps_field_def` set `f_type`='Form::ImageFile' where `name_eng`='aups_f002' and `t_id` = (select id from dpps_table_def where name_eng='aups_t001');
-update `dpps_field_def` set `f_type`='Form::ImageFile' where `name_eng`='aups_f005' and `t_id` = (select id from dpps_table_def where name_eng='aups_t001');
-update `dpps_field_def` set `f_type`='Form::ImageFile' where `name_eng`='aups_f008' and `t_id` = (select id from dpps_table_def where name_eng='aups_t001');
-update `dpps_field_def` set `list_order`='1001' where `name_eng`='aups_f011' and `t_id` = (select id from dpps_table_def where name_eng='aups_t001');
-update `dpps_field_def` set `list_order`='2' where `name_eng`='url_1' and `t_id` = (select id from dpps_table_def where name_eng='aups_t001');
+update `field_def` set `f_type`='Form::TextArea' where `name_eng`='aups_f001' and `t_id` = (select id from table_def where name_eng='aups_t001');
+update `field_def` set `f_type`='Form::ImageFile' where `name_eng`='aups_f002' and `t_id` = (select id from table_def where name_eng='aups_t001');
+update `field_def` set `f_type`='Form::ImageFile' where `name_eng`='aups_f005' and `t_id` = (select id from table_def where name_eng='aups_t001');
+update `field_def` set `f_type`='Form::ImageFile' where `name_eng`='aups_f008' and `t_id` = (select id from table_def where name_eng='aups_t001');
+update `field_def` set `list_order`='1001' where `name_eng`='aups_f011' and `t_id` = (select id from table_def where name_eng='aups_t001');
+update `field_def` set `list_order`='2' where `name_eng`='url_1' and `t_id` = (select id from table_def where name_eng='aups_t001');
 -- 第一张表无表外字段
 -- 第一张表 end
 
 -- *注: [新增字段creator、url_1的字段类型和算法在后面统一进行更新]
 
 -- 第二张表 aups_t002 需要更新的字段属性
-update `dpps_field_def` set `list_order`='10' where `name_eng`='aups_f012' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `list_order`='20' where `name_eng`='aups_f013' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
-sql=select CONCAT({媒体名称},"-",{英文缩写}),{媒体名称} from {媒体配置} order by {显示顺序}',`list_order`='30' where `name_eng`='aups_f014' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `list_order`='40' where `name_eng`='aups_f015' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `list_order`='50' where `name_eng`='aups_f016' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `list_order`='60' where `name_eng`='aups_f017' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `list_order`='70' where `name_eng`='aups_f018' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `list_order`='80' where `name_eng`='aups_f019' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `list_order`='90' where `name_eng`='aups_f020' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::Select',`arithmetic`=',
+update `field_def` set `list_order`='10' where `name_eng`='aups_f012' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `list_order`='20' where `name_eng`='aups_f013' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
+sql=select CONCAT({媒体名称},"-",{英文缩写}),{媒体名称} from {媒体配置} order by {显示顺序}',`list_order`='30' where `name_eng`='aups_f014' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `list_order`='40' where `name_eng`='aups_f015' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `list_order`='50' where `name_eng`='aups_f016' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `list_order`='60' where `name_eng`='aups_f017' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `list_order`='70' where `name_eng`='aups_f018' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `list_order`='80' where `name_eng`='aups_f019' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `list_order`='90' where `name_eng`='aups_f020' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::Select',`arithmetic`=',
 1,1
 2,2
 3,3
@@ -438,19 +438,19 @@ update `dpps_field_def` set `f_type`='Form::Select',`arithmetic`=',
 51,51
 52,52
 53,53
-54,54' where `name_eng`='aups_f032' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::DB_RadioGroup',`arithmetic`='[query]
-sql=select {说明},id from {功能代码}' where `name_eng`='aups_f041' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::Select',`arithmetic`='是,1
-否,0',`list_order`='1100' where `name_eng`='aups_f055' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::HTMLEditor',`list_order`='1100' where `name_eng`='aups_f056' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
-sql=select {栏目名称},{栏目名称} from {栏目配置} where {级别}=1 order by id',`list_order`='1110' where `name_eng`='aups_f057' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
+54,54' where `name_eng`='aups_f032' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::DB_RadioGroup',`arithmetic`='[query]
+sql=select {说明},id from {功能代码}' where `name_eng`='aups_f041' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::Select',`arithmetic`='是,1
+否,0',`list_order`='1100' where `name_eng`='aups_f055' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::HTMLEditor',`list_order`='1100' where `name_eng`='aups_f056' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
+sql=select {栏目名称},{栏目名称} from {栏目配置} where {级别}=1 order by id',`list_order`='1110' where `name_eng`='aups_f057' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
 sql=select concat({栏目名称},"-",{英文缩写}),{栏目名称} from {栏目配置} where {级别}=2 order by {显示顺序}
 [add_select]
-,',`list_order`='1120' where `name_eng`='aups_f058' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
+,',`list_order`='1120' where `name_eng`='aups_f058' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
 sql=select {专题名称},{专题英文名} from {专题页} where {专题英文名}<>'''' order by {创建日期} desc
 
 [Child]
@@ -460,8 +460,8 @@ sql=select {子栏目名称},{子栏目顺序} from {专题子栏目页} where {
 enabled=true
 
 [add_select]
-,',`list_order`='1130' where `name_eng`='aups_f059' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::Select',`arithmetic`=',
+,',`list_order`='1130' where `name_eng`='aups_f059' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::Select',`arithmetic`=',
 1,1
 2,2
 3,3
@@ -501,8 +501,8 @@ update `dpps_field_def` set `f_type`='Form::Select',`arithmetic`=',
 37,37
 38,38
 39,39
-40,40',`list_order`='1140' where `name_eng`='aups_f060' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
+40,40',`list_order`='1140' where `name_eng`='aups_f060' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
 sql=select {专题名称},{专题英文名} from {专题页} where {专题英文名}<>'''' order by {创建日期} desc
 
 [Child]
@@ -512,8 +512,8 @@ sql=select {子栏目名称},{子栏目顺序} from {专题子栏目页} where {
 enabled=true
 
 [add_select]
-,',`list_order`='1150' where `name_eng`='aups_f061' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::Select',`arithmetic`=',
+,',`list_order`='1150' where `name_eng`='aups_f061' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::Select',`arithmetic`=',
 1,1
 2,2
 3,3
@@ -553,27 +553,27 @@ update `dpps_field_def` set `f_type`='Form::Select',`arithmetic`=',
 37,37
 38,38
 39,39
-40,40',`list_order`='1160' where `name_eng`='aups_f062' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::File',`list_order`='1170' where `name_eng`='aups_f063' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::ImageFile',`list_order`='1180' where `name_eng`='aups_f064' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::ImageFile',`arithmetic`='[conf]
+40,40',`list_order`='1160' where `name_eng`='aups_f062' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::File',`list_order`='1170' where `name_eng`='aups_f063' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::ImageFile',`list_order`='1180' where `name_eng`='aups_f064' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::ImageFile',`arithmetic`='[conf]
 CheckRun=true
 DefaultMark=0
 DefaultPosition=9
 
 [mark]
 财经LOGO=/home/publish/projects/gsps/conf/finance_logo.png
-财经LOGO-白底=/home/publish/projects/gsps/conf/finance_logo2.png',`list_order`='1190' where `name_eng`='aups_f065' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `list_order`='1200' where `name_eng`='aups_f066' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::TextArea',`arithmetic`='[Search]
+财经LOGO-白底=/home/publish/projects/gsps/conf/finance_logo2.png',`list_order`='1190' where `name_eng`='aups_f065' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `list_order`='1200' where `name_eng`='aups_f066' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::TextArea',`arithmetic`='[Search]
 Enabled=true
 CGI=http://pub.ni9ni.com:8080/cgi-bin/search/do_rel_result_new.cgi
-Param=mode{"按标题"=>"按标题","按全文"=>"按全文","按标题或全文"=>"按标题或全文"}',`list_order`='1210' where `name_eng`='aups_f067' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `list_order`='1230' where `name_eng`='aups_f068' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
-update `dpps_field_def` set `f_type`='Form::Select',`arithmetic`='是,yes
-否,no',`list_order`='1250' where `name_eng`='aups_f069' and `t_id` = (select id from dpps_table_def where name_eng='aups_t002');
+Param=mode{"按标题"=>"按标题","按全文"=>"按全文","按标题或全文"=>"按标题或全文"}',`list_order`='1210' where `name_eng`='aups_f067' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `list_order`='1230' where `name_eng`='aups_f068' and `t_id` = (select id from table_def where name_eng='aups_t002');
+update `field_def` set `f_type`='Form::Select',`arithmetic`='是,yes
+否,no',`list_order`='1250' where `name_eng`='aups_f069' and `t_id` = (select id from table_def where name_eng='aups_t002');
 -- 第二张表的表外字段及其属性
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f021',`name_cn`='栏目显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f021',`name_cn`='栏目显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 select {栏目名称},{链接},{所属栏目},{级别} from {栏目配置}
 
 [code]<?php
@@ -605,7 +605,7 @@ if ($l_rlt){
 }
 
 return $html;',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f022',`name_cn`='子栏目显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::SQLResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f022',`name_cn`='子栏目显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::SQLResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 select {栏目名称},{链接} from {栏目配置} where {级别}=''2'' and {栏目名称}=''${所属子栏目}'' limit 1
 
 [code]<?php
@@ -622,25 +622,25 @@ if($name != '''' && $link != '''' && $subject == ''''){
 
 [html]
 $html',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f023',`name_cn`='相关发布-栏目页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1,post_2
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f023',`name_cn`='相关发布-栏目页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1,post_2
 
 [post_1]
 where={栏目页}:{栏目名称}=''${所属栏目}''
 
 [post_2]
 where={栏目页}:{栏目名称}=''${所属子栏目}''',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f024',`name_cn`='相关发布-专题页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='INT',`f_type`='Application::PostInPage',`length`='11',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f024',`name_cn`='相关发布-专题页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='INT',`f_type`='Application::PostInPage',`length`='11',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
 
 [post_1]
 expr=''${所属专题}'' != "" || ''${所属专题2}'' != ""
 where={专题页}:{专题英文名}=''${所属专题}'' || {专题英文名}=''${所属专题2}''',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f025',`name_cn`='文档标题-编码',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f025',`name_cn`='文档标题-编码',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $title_encode = ''${文档标题}'';
 
 [html]
 $title_encode',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f026',`name_cn`='正文显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f027',`name_cn`='压缩图片130',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f026',`name_cn`='正文显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f027',`name_cn`='压缩图片130',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 
 [code]<?php
 
@@ -651,12 +651,12 @@ $newpic = "<a href=''$doc_url'' target=''_blank''><img src=''$img_url'' border=1
 
 [html]
 $newpic',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f028',`name_cn`='正文页图片推荐',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f028',`name_cn`='正文页图片推荐',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
 
 [post_1]
 expr=''${所属子栏目}'' == ''今日看点'' && ''${推荐小图}'' != ''''
 where={页面碎片}:id=5',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f029',`name_cn`='专题显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f029',`name_cn`='专题显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 select {专题名称},{专题英文名},{专题是否显示} from {专题页}
 
 [code]<?php
@@ -681,34 +681,34 @@ if ($l_rlt) {
 }
 
 return $html;',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f030',`name_cn`='专题子栏目显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f030',`name_cn`='专题子栏目显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 
 [code]<?php
 $html='''';
 
 [html]
 $html',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f031',`name_cn`='相关发布-专题子栏目页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f031',`name_cn`='相关发布-专题子栏目页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
 
 [post_1]
 expr=''${所属专题}'' != '''' || ''${所属专题2}'' != ''''
 where={专题子栏目页}:({所属专题}=''${所属专题}'' && {子栏目顺序}=''${所属专题子栏目}'') || ({所属专题}=''${所属专题2}'' && {子栏目顺序}=''${所属专题子栏目2}'')',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f033',`name_cn`='相关发布-封面秀',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f033',`name_cn`='相关发布-封面秀',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
 
 [post_1]
 expr=''${期号}'' != ""
 where={封面秀}:{媒体名称}=''${来源}'' && {期号}=''${期号}''',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f034',`name_cn`='标题显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f034',`name_cn`='标题显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $title=''${文档标题}'';
 
 [html]
 $title',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f035',`name_cn`='相关发布-财经首页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f035',`name_cn`='相关发布-财经首页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
 
 [post_1]
 expr=''${权重}'' >= 80
 where={财经首页}:id=1',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f036',`name_cn`='相关发布-理财首页2',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1,post_2,post_3,post_4,post_5,post_6
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f036',`name_cn`='相关发布-理财首页2',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1,post_2,post_3,post_4,post_5,post_6
 
 [post_1]
 expr=''${权重}'' >= 80 && ''${所属栏目}'' == ''理财''
@@ -733,7 +733,7 @@ where={理财首页2}:id=1
 [post_6]
 expr=''${权重}'' >= 80 && ''${所属栏目}'' == ''理财课堂''
 where={理财首页2}:id=1',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f037',`name_cn`='相关发布-证券首页2',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1,post_2
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f037',`name_cn`='相关发布-证券首页2',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1,post_2
 
 [post_1]
 expr=''${权重}'' >= 80 && ''${所属栏目}'' == ''证券''
@@ -742,12 +742,12 @@ where={证券首页2}:id=1
 [post_2]
 expr=''${权重}'' >= 80 && ''${所属栏目}'' == ''全球股市''
 where={证券首页2}:id=1',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f038',`name_cn`='相关发布-评论首页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f038',`name_cn`='相关发布-评论首页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
 
 [post_1]
 expr=''${权重}'' >= 80 && ''${所属栏目}'' == ''评论''
 where={评论首页}:id=1',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f039',`name_cn`='评论显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f039',`name_cn`='评论显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $html = "";
 $if_display = ''${是否显示评论}'';
 if ($if_display != "no")
@@ -758,12 +758,12 @@ if ($if_display != "no")
 
 [html]
 $html',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f040',`name_cn`='新版正文显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f040',`name_cn`='新版正文显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $html = ''${正文}'';
 
 [html]
 $html',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f042',`name_cn`='股票相关显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f042',`name_cn`='股票相关显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $content = ''${正文}'';
 $title = ''${文档标题}'';
 $html1 = "";
@@ -772,12 +772,12 @@ $html3 = "";
 
 [html]
 $html1',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f043',`name_cn`='更多新闻',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f043',`name_cn`='更多新闻',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $html= '''';
 
 [html]
 $html',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f044',`name_cn`='发往正文页小表',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CrossPublish',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[options]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f044',`name_cn`='发往正文页小表',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CrossPublish',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[options]
 disabled=no
 mode=link
 daemon=no
@@ -813,12 +813,12 @@ template=正文页小表
 视频链接=视频链接
 附件=附件
 附注=附注',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f045',`name_cn`='关键词',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f045',`name_cn`='关键词',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $keylist = ''${主题词}'';
 
 [html]
 $keylist',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f046',`name_cn`='评论条数显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f046',`name_cn`='评论条数显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $html = "";
 $if_display = ''${是否显示评论}'';
 if ($if_display != "no")
@@ -829,7 +829,7 @@ if ($if_display != "no")
 
 [html]
 $html',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f047',`name_cn`='来源显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f047',`name_cn`='来源显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $ms = ''${来源}'';
 $rms = ''${其他来源}'';
 
@@ -840,7 +840,7 @@ if ($ms != '''') {
 }
 
 return $media;',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f048',`name_cn`='发往MSN股票正文页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CrossPublish',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[options]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f048',`name_cn`='发往MSN股票正文页',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CrossPublish',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[options]
 disabled=no
 mode=clode
 daemon=no
@@ -870,7 +870,7 @@ template=正文页
 图注=图注
 期号=期号
 视频链接=视频链接',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f049',`name_cn`='免责声明',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f049',`name_cn`='免责声明',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $media = ''${来源}'';
 $othermedia =''${其他来源}'';
 
@@ -882,7 +882,7 @@ if (''原创'' != $media) {
 }
 
 return $html;',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f051',`name_cn`='栏目路径',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f051',`name_cn`='栏目路径',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 select {保存路径},{栏目名称},{级别} from {栏目配置} limit 1
 
 [code]<?php
@@ -929,13 +929,13 @@ if ('''' == $column_path )
 
 [html]
 $column_path',`exec_mode`='0',`list_order`='1022',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f052',`name_cn`='文档URL-编码',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f052',`name_cn`='文档URL-编码',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 $url = "http://finance.ni9ni.com${文档URL}";
 $url_encode = urlencode($url);
 
 [html]
 $url_encode',`exec_mode`='0',`list_order`='1033',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f053',`name_cn`='相关发布-图片首页2',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1,post_2
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f053',`name_cn`='相关发布-图片首页2',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='200',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1,post_2
 
 [post_1]
 expr=(''${所属栏目}'' == ''历史'' || ''${所属子栏目}'' == ''证券要闻'' || ''${所属子栏目}'' == ''股民纪事'' || ''${所属子栏目}'' == ''股市声音'') && ''${推荐小图}'' != ''''
@@ -944,7 +944,7 @@ where={图片首页2}:id=1
 [post_2]
 expr=(''${所属子栏目}'' == ''理财故事'' || ''${所属子栏目}'' == ''财子佳人'' || ''${所属子栏目}'' == ''富豪轶事'' || ''${所属子栏目}'' == ''奢侈品'' || ''${所属子栏目}'' == ''白领小资'' || ''${所属子栏目}'' == ''中产精英'' || ''${所属子栏目}'' == ''收藏'') && ''${推荐小图}'' != ''''
 where={图片首页2}:id=1',`exec_mode`='0',`list_order`='1034',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t002'),`name_eng`='aups_f054',`name_cn`='相关报道显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t002'),`name_eng`='aups_f054',`name_cn`='相关报道显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='200',`attribute`='',`unit`='',`default`='[code]<?php
 $html = ''${相关报道}'';
 
 [html]
@@ -952,11 +952,11 @@ $html',`status_`='use',`arithmetic`='',`exec_mode`='0',`list_order`='1040',`sour
 -- 第二张表 end
 
 -- 第三张表 aups_t003
-update `dpps_field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
+update `field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
 sql=select {栏目名称},{栏目名称} from {栏目配置} where {级别}=1 order by id
 
 [add_select]
-,',`list_order`='1002' where `name_eng`='aups_f078' and `t_id` = (select id from dpps_table_def where name_eng='aups_t003');
+,',`list_order`='1002' where `name_eng`='aups_f078' and `t_id` = (select id from table_def where name_eng='aups_t003');
 -- 第三张表 end
 
 -- 第四张表 aups_t004 暂无
@@ -969,11 +969,11 @@ sql=select {栏目名称},{栏目名称} from {栏目配置} where {级别}=1 or
 -- 第六张表 end
 
 -- 第七张表 aups_t007
-update `dpps_field_def` set `f_type`='Form::DB_Select',`status_`='stop',`arithmetic`='[query]
-sql=select concat({栏目名称},"-",{英文缩写}),{栏目名称} from {栏目配置} order by id',`list_order`='10' where `name_eng`='aups_f090' and `t_id` = (select id from dpps_table_def where name_eng='aups_t007');
-update `dpps_field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
-sql=select concat({栏目名称},"-",{英文缩写}),{栏目名称} from {栏目配置} order by id',`list_order`='1001' where `name_eng`='aups_f097' and `t_id` = (select id from dpps_table_def where name_eng='aups_t007');
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t007'),`name_eng`='aups_f091',`name_cn`='栏目路径',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+update `field_def` set `f_type`='Form::DB_Select',`status_`='stop',`arithmetic`='[query]
+sql=select concat({栏目名称},"-",{英文缩写}),{栏目名称} from {栏目配置} order by id',`list_order`='10' where `name_eng`='aups_f090' and `t_id` = (select id from table_def where name_eng='aups_t007');
+update `field_def` set `f_type`='Form::DB_Select',`arithmetic`='[query]
+sql=select concat({栏目名称},"-",{英文缩写}),{栏目名称} from {栏目配置} order by id',`list_order`='1001' where `name_eng`='aups_f097' and `t_id` = (select id from table_def where name_eng='aups_t007');
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t007'),`name_eng`='aups_f091',`name_cn`='栏目路径',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 select {保存路径},{栏目名称} from {栏目配置} limit 1
 
 [code]<?php
@@ -990,7 +990,7 @@ if ('''' != $column_name) {
 }
 
 return $l_path;',`exec_mode`='0',`list_order`='20',`source`='none',`description`='备注一下,' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t007'),`name_eng`='aups_f092',`name_cn`='翻页链接',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t007'),`name_eng`='aups_f092',`name_cn`='翻页链接',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 select {级别},{栏目名称} from {栏目配置} limit 1
 
 [code]<?php
@@ -1018,12 +1018,12 @@ if (1 == $level){
 }
 
 return '''';',`exec_mode`='0',`list_order`='50',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t007'),`name_eng`='aups_f093',`name_cn`='相关发布-港股动态',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t007'),`name_eng`='aups_f093',`name_cn`='相关发布-港股动态',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
 
 [post_1]
 expr=''${栏目名称}'' == ''港股动态''
 where={专题页}:id=''55''',`exec_mode`='0',`list_order`='70',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t007'),`name_eng`='aups_f094',`name_cn`='栏目关键词',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t007'),`name_eng`='aups_f094',`name_cn`='栏目关键词',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 select {关键词},{栏目名称} from {栏目配置} where {栏目名称}=''$column_name'' order by id desc limit 1
 
 [code]<?php
@@ -1040,7 +1040,7 @@ if (!empty($name)) {
 	}
 }
 return $html;',`exec_mode`='0',`list_order`='100',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t007'),`name_eng`='aups_f095',`name_cn`='新闻列表',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t007'),`name_eng`='aups_f095',`name_cn`='新闻列表',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 select {栏目配置}.{级别},{栏目配置}.{栏目名称},{正文页}.{文档标题} from {栏目配置},{正文页}
 
 [code]<?php
@@ -1092,7 +1092,7 @@ if ($column_path2) {
 
 
 return $html;',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t007'),`name_eng`='aups_f096',`name_cn`='栏目描述',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t007'),`name_eng`='aups_f096',`name_cn`='栏目描述',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[sql]
 select {描述},{栏目名称} from {栏目配置} where {栏目名称}=''$column_name'' order by id desc limit 1
 
 [code]<?php
@@ -1109,7 +1109,7 @@ if (!empty($name)) {
 }
 
 return $l_description;',`exec_mode`='0',`list_order`='1000',`source`='none',`description`='' ;
-INSERT INTO `dpps_field_def` set `t_id`=(select id from dpps_table_def where name_eng='aups_t007'),`name_eng`='aups_f098',`name_cn`='栏目名称显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t007'),`name_eng`='aups_f098',`name_cn`='栏目名称显示',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::CodeResult',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='[code]<?php
 if (''大中华经济'' == ''${栏目名称}''){
 	$column_name_display = "财经资讯";
 }else {
@@ -1119,41 +1119,41 @@ return $column_name_display;',`exec_mode`='0',`list_order`='1100',`source`='none
 -- 第七张表 end
 
 -- 第八张表 aups_t008
-update `dpps_field_def` set `f_type`='Form::Select',`arithmetic`='是,yes
-否,no',`list_order`='20' where `name_eng`='aups_f099' and `t_id` = (select id from dpps_table_def where name_eng='aups_t008');
-update `dpps_field_def` set `status_`='stop' where `name_eng`='aups_f100' and `t_id` = (select id from dpps_table_def where name_eng='aups_t008');
+update `field_def` set `f_type`='Form::Select',`arithmetic`='是,yes
+否,no',`list_order`='20' where `name_eng`='aups_f099' and `t_id` = (select id from table_def where name_eng='aups_t008');
+update `field_def` set `status_`='stop' where `name_eng`='aups_f100' and `t_id` = (select id from table_def where name_eng='aups_t008');
 -- 第八张表 end
 
 -- 第九张表 aups_t009 暂无
 -- 第九张表 end
 
 -- 1) 创建时间统一更新
-update `dpps_field_def` set `list_order`='1' where `name_eng`='id';
-update `dpps_field_def` set `list_order`='1051' where `name_eng`='creator';
-update `dpps_field_def` set `list_order`='1052' where `name_eng`='createdate';
-update `dpps_field_def` set `list_order`='1053' where `name_eng`='createtime';
-update `dpps_field_def` set `list_order`='1054' where `name_eng`='mender';
-update `dpps_field_def` set `list_order`='1055' where `name_eng`='menddate';
-update `dpps_field_def` set `list_order`='1056' where `name_eng`='mendtime';
-update `dpps_field_def` set `list_order`='1060' where `name_eng`='expireddate';
-update `dpps_field_def` set `list_order`='1061' where `name_eng`='audited';
-update `dpps_field_def` set `list_order`='1062' where `name_eng`='status_' and t_id not in (select id from dpps_table_def where name_eng in ('dpps_field_def','dpps_table_def','dpps_tmpl_design'));
-update `dpps_field_def` set `list_order`='1063' where `name_eng`='flag';
-update `dpps_field_def` set `list_order`='1064' where `name_eng`='arithmetic';
-update `dpps_field_def` set `list_order`='1065' where `name_eng`='unicomment_id';
-update `dpps_field_def` set `list_order`='1999' where `name_eng`='published_1';
-update `dpps_field_def` set `list_order`='2000' where `name_eng`='url_1' and t_id not in (select id from dpps_table_def where name_eng in ('aups_t001'));
-update `dpps_field_def` set `list_order`='2012' where `name_eng`='last_modify';
-update  dpps_field_def set `creator`='admin' where creator='0';
-update  dpps_field_def set `createdate`=DATE_FORMAT(NOW(),'%Y-%m-%d') where createdate='0000-00-00';
-update  dpps_field_def set `createtime`=DATE_FORMAT(NOW(),'%H:%i:%s') where createtime='00:00:00';
+update `field_def` set `list_order`='1' where `name_eng`='id';
+update `field_def` set `list_order`='1051' where `name_eng`='creator';
+update `field_def` set `list_order`='1052' where `name_eng`='createdate';
+update `field_def` set `list_order`='1053' where `name_eng`='createtime';
+update `field_def` set `list_order`='1054' where `name_eng`='mender';
+update `field_def` set `list_order`='1055' where `name_eng`='menddate';
+update `field_def` set `list_order`='1056' where `name_eng`='mendtime';
+update `field_def` set `list_order`='1060' where `name_eng`='expireddate';
+update `field_def` set `list_order`='1061' where `name_eng`='audited';
+update `field_def` set `list_order`='1062' where `name_eng`='status_' and t_id not in (select id from table_def where name_eng in ('field_def','table_def','tmpl_design'));
+update `field_def` set `list_order`='1063' where `name_eng`='flag';
+update `field_def` set `list_order`='1064' where `name_eng`='arithmetic';
+update `field_def` set `list_order`='1065' where `name_eng`='unicomment_id';
+update `field_def` set `list_order`='1999' where `name_eng`='published_1';
+update `field_def` set `list_order`='2000' where `name_eng`='url_1' and t_id not in (select id from table_def where name_eng in ('aups_t001'));
+update `field_def` set `list_order`='2012' where `name_eng`='last_modify';
+update  field_def set `creator`='admin' where creator='0';
+update  field_def set `createdate`=DATE_FORMAT(NOW(),'%Y-%m-%d') where createdate='0000-00-00';
+update  field_def set `createtime`=DATE_FORMAT(NOW(),'%H:%i:%s') where createtime='00:00:00';
 
 -- 2) 非三张基本表
 --   a) 更新字段creator、url_1的字段类型 和 算法 :
-update  dpps_field_def set `f_type`='Form::CodeResult', `arithmetic`='[html]
+update  field_def set `f_type`='Form::CodeResult', `arithmetic`='[html]
 $_SESSION["user"]["username"]' where name_eng='creator';
 
-update  dpps_field_def set `f_type`='Form::CodeResult', `list_order`=2000, `arithmetic`='[code]<?php
+update  field_def set `f_type`='Form::CodeResult', `list_order`=2000, `arithmetic`='[code]<?php
 // 该字段的名称为 $a_key;
 $l_tmpl_design_arr = array();
 if (isset($a_arr["t_def"]["tmpl_design"][0]["default_field"])) {

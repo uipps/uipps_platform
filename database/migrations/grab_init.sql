@@ -149,7 +149,7 @@ update `dpps_field_def` set `list_order`='1055' where `name_eng`='menddate';
 update `dpps_field_def` set `list_order`='1056' where `name_eng`='mendtime';
 update `dpps_field_def` set `list_order`='1060' where `name_eng`='expireddate';
 update `dpps_field_def` set `list_order`='1061' where `name_eng`='audited';
-update `dpps_field_def` set `list_order`='1062' where `name_eng`='status_' and t_id not in (select id from dpps_table_def where name_eng in ('dpps_field_def','dpps_table_def','dpps_tmpl_design'));
+update `dpps_field_def` set `list_order`='1062' where `name_eng`='status_' and t_id not in (select id from dpps_table_def where name_eng in ('dpps_field_def','dpps_table_def','tmpl_design'));
 update `dpps_field_def` set `list_order`='1063' where `name_eng`='flag';
 update `dpps_field_def` set `list_order`='1064' where `name_eng`='arithmetic';
 update `dpps_field_def` set `list_order`='1065' where `name_eng`='unicomment_id';

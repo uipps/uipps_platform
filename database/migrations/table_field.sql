@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `field_def` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='字段定义表';
 
 
-CREATE TABLE IF NOT EXISTS `dpps_tmpl_design` (
+CREATE TABLE IF NOT EXISTS `tmpl_design` (
   `id` int(10) unsigned NOT NULL auto_increment COMMENT '自增ID',
   `tbl_id` int(10) unsigned NOT NULL COMMENT '所属表ID',
   `creator` varchar(100) NOT NULL default '0' COMMENT '创建者',

@@ -48,7 +48,7 @@ class UippsProject extends Migration
             $table->string('creator', 100)->default('')->comment('创建者');
             $table->string('mender', 100)->default('')->comment('修改者');
             // 主库
-            $table->string('db_host', 50)->default('localhost')->comment('数据库主机');
+            $table->string('db_host', 50)->default('127.0.0.1')->comment('数据库主机');
             $table->string('db_name', 50)->default('')->comment('数据库名称, 英文名称');
             $table->unsignedInteger('db_port')->default(3306)->comment('数据库端口');
             $table->string('db_user', 20)->default('root')->comment('数据库用户名');

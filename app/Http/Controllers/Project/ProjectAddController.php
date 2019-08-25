@@ -119,6 +119,7 @@ class ProjectAddController extends AddController
             if (array_key_exists("___ERR___", $data_arr)) {
                 $response['html_content'] = date("Y-m-d H:i:s") . "field empty: ". var_export($data_arr["___ERR___"], TRUE);
                 //$response['ret'] = array('ret'=>1);
+                \Log::info($response['html_content']);
                 return $response['html_content'];
             }
             // 自动填充几个数据，关于创建者、时间的字段. 首先确保数据表有这些字段

@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `dpps_project` (
   `mender` varchar(100) default NULL COMMENT '修改者',
   `menddate` date default NULL COMMENT '修改日期',
   `mendtime` time default NULL COMMENT '修改时间',
-  `db_host` varchar(50) NOT NULL default 'localhost' COMMENT '数据库主机',
+  `db_host` varchar(50) NOT NULL default '127.0.0.1' COMMENT '数据库主机',
   `db_name` varchar(50) NOT NULL default '' COMMENT '数据库名称, 英文名称',
   `db_port` int(11) NOT NULL default '3306' COMMENT '数据库端口',
   `db_user` varchar(20) NOT NULL default 'root' COMMENT '数据库用户名',

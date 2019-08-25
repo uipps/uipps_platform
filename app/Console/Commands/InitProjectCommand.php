@@ -72,8 +72,8 @@ class InitProjectCommand extends Command
         $field_def = 'field_def';
         $a_data_arr = array("source"=>'db',"creator"=>$creator);  // 能在外部增加字段的
 
-        DbHelper::fill_table($dbR, $dbW, $a_data_arr,"all",$field_def,$table_def,$p_arr["id"]);
-        DbHelper::fill_field($dbR, $dbW, $a_data_arr,"all",$field_def,$table_def);
+        DbHelper::fill_table($p_arr, $a_data_arr,"all",$field_def,$table_def,$p_arr["id"]);
+        DbHelper::fill_field($p_arr, $a_data_arr,"all",$field_def,$table_def);
 
 
         // ------ 如果有额外的初始化数据需要insert或update的时候
@@ -81,7 +81,7 @@ class InitProjectCommand extends Command
         $l_e_tmpl = file_get_contents(database_path('migrations/tmpl_design_init_insert.sql'));
         if ($l_e_wai) {
             // insert或update一些初始数据
-            DbHelper::execDbWCreateInsertUpdate($dbW, $l_e_tmpl . "\r\n ". $l_e_wai, array("INSERT INTO ","REPLACE INTO ","UPDATE "));
+            DbHelper::execDbWCreateInsertUpdate($p_arr, $l_e_tmpl . "\r\n ". $l_e_wai, array("INSERT INTO ","REPLACE INTO ","UPDATE "));
         }
 
         $this->info(date('Y-m-d H:i:s') . ' Done!' . self::NEW_LINE_CHAR);

@@ -7,7 +7,7 @@
 -- 表的初始数据 begin
 -- 向用户表user中添加初始用户robot和admin,grab 向项目表project中添加初始数据
 -- INSERT INTO `user` (`id`, `g_id`, `parent_id`, `username`, `pwd`, `nickname`, `mobile`, `telephone`, `email`, `fixed`, `locked`, `stat_priv`, `admin`, `expired`, `description`, `badPwdStr`, `lastPwdChange`, `isIPLimit`, `if_super`) VALUES (1, 0, 0, 'robot', '21232f297a57a5a743894a0e4a801fc3', '后台机器人', '18601357705', '18601357705', 'cheng@ni9ni.com', 'T', 'F', '02', 'T', '0000-00-00 00:00:00', 'Robot,alias,nickname', '', '1228703174', 'F', '1'),(2, 0, 1, 'admin', '21232f297a57a5a743894a0e4a801fc3', '超级管理员', '18601357705', '18601357705', 'cheng@ni9ni.com', 'T', 'F', '02', 'T', '0000-00-00 00:00:00', 'Administrator', '', '1228703174', 'F', '1'),(3, 0, 1, 'grab', '21232f297a57a5a743894a0e4a801fc3', '抓取机器人', '18601357705', '18601357705', 'cheng@ni9ni.com', 'T', 'F', '02', 'T', '0000-00-00 00:00:00', 'Grab', '', '1228703174', 'T', '0');
--- INSERT INTO `project` (`id`, `name_cn`, `type`, `parent_id`, `db_host`, `db_name`, `db_port`, `db_user`, `db_pwd`, `db_timeout`, `db_sock`, `if_use_slave`, `slave_db_host`, `slave_db_name`, `slave_db_port`, `slave_db_user`, `slave_db_pwd`, `slave_db_timeout`, `slave_db_sock`, `if_use_slave2`, `slave2_db_host`, `slave2_db_name`, `slave2_db_port`, `slave2_db_user`, `slave2_db_pwd`, `slave2_db_timeout`, `slave2_db_sock`, `if_daemon_pub`, `daemon_pub_cgi`, `status_`, `search_order`, `list_order`, `if_hide`, `description`, `host_id`, `res_pub_map`) VALUES (1, '通用发布系统', 'SYSTEM', 0, 'localhost', 'dpa', 3307, 'root', 'eswine_db1', 0, NULL, 'n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'no', NULL, 'use', 0, 0, 'no', NULL, 0, 0);
+-- INSERT INTO `project` (`id`, `name_cn`, `type`, `parent_id`, `db_host`, `db_name`, `db_port`, `db_user`, `db_pwd`, `db_timeout`, `db_sock`, `if_use_slave`, `slave_db_host`, `slave_db_name`, `slave_db_port`, `slave_db_user`, `slave_db_pwd`, `slave_db_timeout`, `slave_db_sock`, `if_use_slave2`, `slave2_db_host`, `slave2_db_name`, `slave2_db_port`, `slave2_db_user`, `slave2_db_pwd`, `slave2_db_timeout`, `slave2_db_sock`, `if_daemon_pub`, `daemon_pub_cgi`, `status_`, `search_order`, `list_order`, `if_hide`, `description`, `host_id`, `res_pub_map`) VALUES (1, '通用发布系统', 'SYSTEM', 0, '127.0.0.1', 'dpa', 3307, 'root', 'eswine_db1', 0, NULL, 'n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'no', NULL, 'use', 0, 0, 'no', NULL, 0, 0);
 
 -- 表的初始数据 end
 
@@ -27,7 +27,7 @@ sql=select CONCAT(id,"-",name_cn),id from project order by id
 update  field_def set `f_type`='Form::DB_Select', `arithmetic`='[query]
 sql=select CONCAT(id,"-",name_cn),id from project order by id
 [add_select]
--所在项目,默认此项-,0' where name_eng='table_field_xiangmu_id' and t_id = (select id from table_def where name_eng='project');
+-所在项目-,0' where name_eng='table_field_xiangmu_id' and t_id = (select id from table_def where name_eng='project');
 
 --   b) 更新数据类型 :
 -- SELECT * FROM `field_def`  where name_eng='db_pwd' and t_id = (select id from table_def where name_eng='project')

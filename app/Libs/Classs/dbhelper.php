@@ -229,10 +229,11 @@ class DbHelper{
     }
 
     //
-    public static function execDbWCreateInsertUpdate(&$dbW, $a_sql, $a_spe_arr=array("CREATE ","INSERT INTO ","UPDATE ","REPLACE INTO ")){
+    public static function execDbWCreateInsertUpdate($p_arr, $a_sql, $a_spe_arr=array("CREATE ","INSERT INTO ","UPDATE ","REPLACE INTO ")){
         // 换另外一种更合理的算法
         $a_sql = cString::lineDelBySpe($a_sql,"--");  // 仅仅去掉行注释
-        $a_sql = str_replace('ON UPDATE CURRENT_TIMESTAMP',DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),$a_sql);  // 替换掉其中的ON UPDATE CURRENT_TIMESTAMP为特定字符串执行sql的时候然后替换回来，因为里面还有sql关键词'update '
+        $a_sql = str_ireplace('ON UPDATE CURRENT_TIMESTAMP',DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),$a_sql);  // 替换掉其中的ON UPDATE CURRENT_TIMESTAMP为特定字符串执行sql的时候然后替换回来，因为里面还有sql关键词'update '
+        $dbW = new DBW($p_arr);
 
         if (!empty($a_spe_arr)) {
             $l_str = implode("|",$a_spe_arr);
@@ -250,14 +251,14 @@ class DbHelper{
         // 然后逐一执行
         foreach ($l_arr as $l_sql) {
             if (""!=trim($l_sql)) {
-                $l_sql = str_replace(DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),'ON UPDATE CURRENT_TIMESTAMP',$l_sql);  // sql字符串复原
-                $dbW->Query($l_sql);
-                $l_err = $dbW->errorInfo();
-                if ($l_err[1]>0){
+                $l_sql = str_ireplace(DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),'ON UPDATE CURRENT_TIMESTAMP',$l_sql);  // sql字符串复原
+                try{
+                    $dbW->exec($l_sql);//$l_err = $dbW->errorInfo();
+                }catch (\Exception $l_err) {
                     // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
-                    echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . "sql: $l_sql,  _arr:" . var_export($l_err, TRUE);
+                    echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . "sql: $l_sql,  _arr:" . $l_err->getCode() . ' '. var_export($l_err->getMessage(), TRUE);
                     exit;
-                    return $l_err[2];
+                    //return $l_err[2];
                 }
             }
         }
@@ -266,7 +267,7 @@ class DbHelper{
     /*public static function execDbWCreateInsertUpdate(&$data_arr, $a_sql='', $a_spe_arr=array("CREATE ","INSERT INTO ","UPDATE ","REPLACE INTO ")){
         // 换另外一种更合理的算法
         $a_sql = cString::lineDelBySpe($a_sql,"--");  // 仅仅去掉行注释
-        $a_sql = str_replace('ON UPDATE CURRENT_TIMESTAMP',DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),$a_sql);  // 替换掉其中的ON UPDATE CURRENT_TIMESTAMP为特定字符串执行sql的时候然后替换回来，因为里面还有sql关键词'update '
+        $a_sql = str_ireplace('ON UPDATE CURRENT_TIMESTAMP',DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),$a_sql);  // 替换掉其中的ON UPDATE CURRENT_TIMESTAMP为特定字符串执行sql的时候然后替换回来，因为里面还有sql关键词'update '
 
         $l_arr = [];
         if (!empty($a_spe_arr)) {
@@ -286,7 +287,7 @@ class DbHelper{
         // 然后逐一执行
         foreach ($l_arr as $l_sql) {
             if (""!=trim($l_sql)) {
-                $l_sql = str_replace(DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),'ON UPDATE CURRENT_TIMESTAMP',$l_sql);  // sql字符串复原
+                $l_sql = str_ireplace(DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),'ON UPDATE CURRENT_TIMESTAMP',$l_sql);  // sql字符串复原
                 $connect_name = self::getConnectName($data_arr);
                 $rlt = DB::connection($connect_name)->insert($l_sql);
             }
@@ -366,12 +367,12 @@ class DbHelper{
                         if (is_array($l_arr["length"])) {
                             // 数组中找不到空值则说明有错
                             if (!in_array("", $l_arr["length"])) {
-                                $data_arr["___ERR___"][] = $l_arr["name_eng"];
+                                $data_arr["___ERR___"][] = __FILE__ . ' ' . __LINE__ . ' ' . $l_arr["name_eng"];
                             }
                         }else {
                             // 枚举串中找不到空值则说明有错
                             if ( false===strpos( $l_arr["length"], "''")) {
-                                $data_arr["___ERR___"][] = $l_arr["name_eng"];
+                                $data_arr["___ERR___"][] = __FILE__ . ' ' . __LINE__ . ' ' . $l_arr["name_eng"];
                             }
                         }
                         // 如果是枚举型，并且有一个''的枚举项，不填写数据也不需要写该字段sql也能入库。
@@ -379,7 +380,7 @@ class DbHelper{
                     }else {
                         // 自增和时间类型的可以不用填写, 否则返回一个错误
                         if ("auto_increment"!=strtolower(trim($l_arr["extra"])) && "timestamp" != strtolower(trim($l_arr["type"]))) {
-                            $data_arr["___ERR___"][] = $l_arr["name_eng"];
+                            $data_arr["___ERR___"][] = __FILE__ . ' ' . __LINE__ . ' ' . $l_arr["name_eng"];
                         }
                     }
                 }else {
@@ -401,11 +402,13 @@ class DbHelper{
     }
 
     // 自动填充 table_def 表
-    public static function fill_table(&$dbR, &$dbW, $data_arr, $tbl_name="all", $f_def="field_def", $t_def="table_def", $p_id=0, $no_table=array()){
+    public static function fill_table($p_arr, $data_arr, $tbl_name="all", $f_def="field_def", $t_def="table_def", $p_id=0, $no_table=array()){
         $if_repair = true;
         if (""==$tbl_name ) {
             return null;
         }
+        $dbR = new DBR($p_arr);
+        $dbW = new DBW($p_arr);
 
         // 先获取所有的表
         $all_table = $dbR->getDBTbls();
@@ -501,10 +504,12 @@ class DbHelper{
     }
 
     // 自动填充 field_def 表
-    public static function fill_field(&$dbR, &$dbW, $data_arr, $want_tbl="all", $f_def="field_def", $t_def="table_def", $if_repair=true){
+    public static function fill_field($p_arr, $data_arr, $want_tbl="all", $f_def="field_def", $t_def="table_def", $if_repair=true){
         if ('' == $want_tbl) {
             return 0;
         }
+        $dbR = new DBR($p_arr);
+        $dbW = new DBW($p_arr);
 
         // 自动完成所有表的导入，包括自身也需要导入
         $dbR->table_name = $t_def;
@@ -572,11 +577,11 @@ class DbHelper{
                     );
                     $data_arr = array_merge($data_arr,$l_jiben);
                     $dbW->table_name = $f_def;
-                    $dbW->updateOne($data_arr, "id=".$l_db_row["id"]);
-                    $l_err = $dbW->errorInfo();
-                    if ($l_err[1]>0){
+                    try{
+                        $dbW->updateOne($data_arr, "id=".$l_db_row["id"]);
+                    } catch (\Exception $l_err) {
                         // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
-                        echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " sql: ". $dbW->getSQL() ." _err:" . var_export($l_err, TRUE);
+                        echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " sql: ". $dbW->getSQL() ." _err:" . $l_err->getMessage(). ' ' . var_export($l_err->getMessage(), TRUE);
                         //
                     }
                 }
