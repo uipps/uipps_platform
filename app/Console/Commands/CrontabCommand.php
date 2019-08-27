@@ -24,7 +24,7 @@ class CrontabCommand extends Command
             ['action', InputArgument::REQUIRED],
             ['db_name', InputArgument::OPTIONAL],
             ['project_info', InputArgument::OPTIONAL],
-            ['project_type', InputArgument::OPTIONAL],
+            //['project_type', InputArgument::OPTIONAL],
         ];
     }
 
@@ -51,6 +51,29 @@ class CrontabCommand extends Command
         echo $orderId;
         // TODO
         return $p_list;
+    }
+
+    // 后台创建项目，包括主从库设置等
+    private function createProject($request) {
+        $this->info('start createProject');
+
+        if (!isset($request['db_name']) || !isset($request['project_info']) ||
+            !isset($request['project_type'])) {
+            $this->info(date('Y-m-d H:i:s') . ' project-info must not be empty!! '. self::NEW_LINE_CHAR);
+            return 0;
+        }
+        $project_info = json_decode($request['project_info'], true);
+        if (!$project_info || !isset($project_info['db_host'])) {
+            $this->info(date('Y-m-d H:i:s') . ' project-info decode error! '. self::NEW_LINE_CHAR);
+            return 0;
+        }
+
+        //$projectService = new ProjectService(new ProjectRepository());
+        //$p_list = $projectService->getProjectList($request);
+        //print_r($p_list);
+
+
+        return 1;
     }
 
     // 填充table_def,field_def数据 php artisan crontab fill_db_table_field uipps_platform
@@ -151,19 +174,11 @@ class CrontabCommand extends Command
         // 系统本身不应该在此处默认的dbr连接信息的数据库中
         //if ('SYSTEM'!=strtoupper($request['pro_type'])) {
         $dbW = new \DBW();
-//        $l_err = $dbW->errorInfo();
-//        if ($l_err[1]>0){
-//            // 数据库连接失败后
-//            $response['html_content'] = date('Y-m-d H:i:s') . ' 出错了， 错误信息： ' . $l_err[2]. '.';
-//            $response['ret'] = array('ret'=>1,'msg'=>$l_err[1]);
-//            return null;
-//        }
         $dbW->table_name = TABLENAME_PREF.'project';
         $pid = $dbW->insertOne($data_arr);
-        //$l_err = $dbW->errorInfo();
         if ($pid <= 0){
             // sql有错误，后面的就不用执行了。
-            $response['html_content'] = self::NEW_LINE_CHAR . date('Y-m-d H:i:s') . ' FILE: '.__FILE__.' '. ' FUNCTION: '.__FUNCTION__.' Line: '. __LINE__ . ' SQL: '.$dbW->getSQL().', _arr:' . var_export($l_err, TRUE);
+            $response['html_content'] = self::NEW_LINE_CHAR . date('Y-m-d H:i:s') . ' FILE: '.__FILE__.' '. ' FUNCTION: '.__FUNCTION__.' Line: '. __LINE__ . ' SQL: '.$dbW->getSQL().', _arr:' . var_export($data_arr, TRUE);
             $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
             return null;
         }
