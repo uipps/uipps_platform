@@ -105,16 +105,15 @@ class Publish
             $dbW->table_name = $arr["t_def"]["name_eng"];
             $conditon = " id = ".$arr["f_data"]["id"]." ";
             $l_data_arr = array($l_field=>$l_url);
-            $l_rlt = $dbW->updateOne($l_data_arr, $conditon);
-            $l_err = $dbW->errorInfo();
-            if ($l_err[1]>0){
+            try {
+                $l_rlt = $dbW->updateOne($l_data_arr, $conditon);
+            } catch (\Exception $l_err) {
                 // 更新失败后
-                $response['html_content'] = var_export($l_err, true). " 更新数据发生错误,sql: ". $dbW->getSQL();
+                $response['html_content'] = var_export($l_err->getMessage(), true). " 更新数据发生错误,sql: ". $dbW->getSQL();
                 return null;
             }
             $dbW = null;unset($dbW);
         }
-
     }
 
     public static function toPaging(&$arr, &$l_files, $l_tmp_arr, $a_tmpl_design, $l_local_path, $if_delete=false){

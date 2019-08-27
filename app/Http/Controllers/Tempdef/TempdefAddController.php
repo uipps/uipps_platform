@@ -139,13 +139,13 @@ class TempdefAddController extends AddController
                 // 于某字段之后添加字段,语法: ALTER TABLE `dpps_tmpl_design` ADD `default_field` VARCHAR( 60 ) NOT NULL DEFAULT 'url_1' COMMENT '发布地址存放字段, 发布成功以后得到的地址存放到哪个字段中' AFTER `content_type` ;
                 $dbW->table_name = $t_arr["name_eng"];  // 需要修改表结构的表依据t_id获取
                 $duoziduan = array($request["name_eng"]);  // 每次只增加一个字段
-                $dbW->alter_table($duoziduan, array($request["name_eng"]=>$form));  // 借助phpmyadmin并放到dbhelper进行封装
-                $l_err = $dbW->errorInfo();
-                if ($l_err[1]>0){
+                try {
+                    $dbW->alter_table($duoziduan, array($request["name_eng"]=>$form));  // 借助phpmyadmin并放到dbhelper进行封装
+                } catch (\Exception $l_err) {
                     // sql有错误，后面的就不用执行了。
-                    Log::Debug(" FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__ . " ". $dbW->getSQL() ." ". var_export($l_err,true));
+                    \Log::Debug(" FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__ . " ". $dbW->getSQL() ." ". var_export($l_err->getMessage(),true));
                     $response['html_content'] = date("Y-m-d H:i:s") . $dbW->getSQL() . " alter table err!!!!";
-                    $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                    $response['ret'] = array('ret'=>1,'msg'=>$l_err->getMessage());
                     return $response['html_content'];
                 }
             }
@@ -166,27 +166,32 @@ class TempdefAddController extends AddController
             if (array_key_exists("createdate", $arr["f_info"])) $data_arr["createdate"] = ("0000-00-00"==$data_arr["createdate"] || empty($data_arr["createdate"])) ? date("Y-m-d") : $data_arr["createdate"];
             if (array_key_exists("createtime", $arr["f_info"])) $data_arr["createtime"] = ("00:00:00"==$data_arr["createtime"] || empty($data_arr["createtime"]))   ? date("H:i:s") : $data_arr["createtime"];
             $dbW->table_name = $table_name;  // 字段定义表
-            $dbW->insertOne($data_arr);
-            $l_err = $dbW->errorInfo();
-            $fid = $dbW->LastID();  // 获取字段id
-            if ($l_err[1]>0){
-                // 创建失败后, 本需要将修改的表结构修改回来，保证事务性，时间关系，以后完善????
-                $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err,true) . $dbW->getSQL() . " insert err!!!!";
-                $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
-                return $response['html_content'];
-            }else {
-                // 添加成功以后，需要对定义的各种任务需要一一完成(即执行相应的成功后算法)
-                Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
 
-                if ($fid>0) {
-                    $response['ret'] = array('ret'=>0);
-                    $response['html_content'] = date("Y-m-d H:i:s") . " 成功添加了信息, <a href='?do=tempdef_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;  // 总是返回此结果
-                    return $response['html_content'];
-                } else {
-                    $response['html_content'] = date("Y-m-d H:i:s") . var_export($dbW->errorInfo(),true) . $dbW->getSQL() . " insert err!!!!";
-                    $response['ret'] = array('ret'=>1);
-                    return $response['html_content'];
-                }
+            try {
+                $fid = $dbW->insertOne($data_arr);
+
+
+            } catch (\Exception $l_err) {
+                //$l_err = $dbW->errorInfo();
+                //$fid = $dbW->LastID();  // 获取字段id
+
+                // 创建失败后, 本需要将修改的表结构修改回来，保证事务性，时间关系，以后完善????
+                $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err->getMessage(),true) . $dbW->getSQL() . " insert err!!!!";
+                $response['ret'] = array('ret'=>1,'msg'=>$l_err->getMessage());
+                return $response['html_content'];
+            }
+
+            // 添加成功以后，需要对定义的各种任务需要一一完成(即执行相应的成功后算法)
+            Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
+
+            if ($fid>0) {
+                $response['ret'] = array('ret'=>0);
+                $response['html_content'] = date("Y-m-d H:i:s") . " 成功添加了信息, <a href='?do=tempdef_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;  // 总是返回此结果
+                return $response['html_content'];
+            } else {
+                $response['html_content'] = date("Y-m-d H:i:s") . var_export($data_arr,true) . $dbW->getSQL() . " insert err!!!!";
+                $response['ret'] = array('ret'=>1);
+                return $response['html_content'];
             }
         }
     }

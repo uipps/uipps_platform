@@ -159,14 +159,13 @@ class TempdefEditController extends AddController
                     // 1) 修改表结构
                     $dbW->table_name = $t_arr["name_eng"];  // 需要修改表结构的表依据t_id获取
                     $duoziduan = array($request["name_eng"]);  // 每次只修改一个字段
-                    $dbW->alter_table($duoziduan, array($request["name_eng"]=>$form), $l_act);  // 借助phpmyadmin并放到dbhelper进行封装
-
-                    $l_err = $dbW->errorInfo();
-                    if ($l_err[1]>0){
+                    try {
+                        $dbW->alter_table($duoziduan, array($request["name_eng"]=>$form), $l_act);  // 借助phpmyadmin并放到dbhelper进行封装
+                    } catch (\Exception $l_err) {
                         // sql有错误，后面的就不用执行了。
-                        Log::Debug( " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__ . " ". $dbW->getSQL() ." ". var_export($l_err,true));
-                        $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err, true). ". SQL:".$dbW->getSQL() . " alter table err!!!!";
-                        $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                        \Log::Debug( " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__ . " ". $dbW->getSQL() ." ". var_export($l_err->getMessage(),true));
+                        $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err->getMessage(), true). ". SQL:".$dbW->getSQL() . " alter table err!!!!";
+                        $response['ret'] = array('ret'=>1,'msg'=>$l_err->getMessage());
                         return $response['html_content'];
                     }
                 }
@@ -193,22 +192,22 @@ class TempdefEditController extends AddController
             $dbW->table_name = $table_name;  // 字段定义表
             $conditon = " id = ".$request["id"]." ";
             cArray::delSameValue($data_arr,$arr["f_data"]);  // 剔除掉没有修改的数据项，简洁
-            $dbW->updateOne($data_arr, $conditon);
-            $l_err = $dbW->errorInfo();
-            if($l_err[1]>0){
-                $l_err = $dbW->errorInfo();
-                $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err,true). ". SQL:".$dbW->getSQL() . " 更新数据出错, <a href='?do=".$this->type_name."_edit".$arr["parent_rela"]["parent_ids_url_build_query"]."'>重新编辑</a> ";
+
+            try {
+                $dbW->updateOne($data_arr, $conditon);
+            } catch (\Exception $l_err) {
+                $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err->getMessage(),true). ". SQL:".$dbW->getSQL() . " 更新数据出错, <a href='?do=".$this->type_name."_edit".$arr["parent_rela"]["parent_ids_url_build_query"]."'>重新编辑</a> ";
                 $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
                 return $response['html_content'];  // 总是返回此结果
-            }else {
-                if ('del'==$form['status_']) return "main.php?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"];  // 删除处理直接返回到列表页面
-                // 修改成功(或未修改)以后，需要对定义的各种任务需要一一完成(即执行相应的算法)
-                Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
-
-                $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ";
-                $response['ret'] = array('ret'=>0);
-                return $response['html_content'];  // 总是返回此结果
             }
+
+            if ('del'==$form['status_']) return "main.php?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"];  // 删除处理直接返回到列表页面
+            // 修改成功(或未修改)以后，需要对定义的各种任务需要一一完成(即执行相应的算法)
+            Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
+
+            $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ";
+            $response['ret'] = array('ret'=>0);
+            return $response['html_content'];  // 总是返回此结果
         }
     }
 }

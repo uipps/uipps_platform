@@ -59,8 +59,8 @@ class UippsProject extends Migration
             // 从库
             $table->string('slave_db_host', 50)->default('')->comment('从库主机名');
             $table->string('slave_db_name', 50)->default('')->comment('从库数据库名');
-            $table->unsignedInteger('slave_db_port')->default(3306)->comment('从库端口');
-            $table->string('slave_db_user', 20)->default('root')->comment('从库用户名');
+            $table->unsignedInteger('slave_db_port')->default(0)->comment('从库端口');
+            $table->string('slave_db_user', 20)->default('')->comment('从库用户名');
             $table->string('slave_db_pwd', 20)->default('')->comment('从库密码');
             $table->unsignedInteger('slave_db_timeout')->default(0)->comment('从库超时时间');
             $table->string('slave_db_sock', 100)->default('')->comment('从库socket位置');

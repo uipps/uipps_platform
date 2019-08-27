@@ -139,25 +139,16 @@ class TemplateEditController extends AddController
             if (array_key_exists("mendtime", $arr["f_info"])) $data_arr["mendtime"] = date("H:i:s");
 
             $dbW = new DBW($arr["p_def"]);
-            $l_err = $dbW->errorInfo();
-            if ($l_err[1]>0){
-                // 数据库连接失败后
-                $response['html_content'] = date("Y-m-d H:i:s") . " 出错了， 错误信息： " . $l_err[2]. ".";
-                $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
-                return $response['html_content'];
-            }
             // 检查表名是否修改，如果表名称修改了，则需要先改表名，然后进行其他操作
             if (!empty($data_arr["name_eng"]) && $data_arr["name_eng"] != $l_rlt["name_eng"]) {
                 $data_arr["name_eng"] = trim( str_replace("`", "",$data_arr["name_eng"]) );
                 if (""!=$data_arr["name_eng"]) {
-                    $dbW->rename_table($l_rlt["name_eng"],$data_arr["name_eng"]);
-                    $l_err = $dbW->errorInfo();
-                    if ($l_err[1]>0){
-                        $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err, true). " 修改表名error,sql: ". $dbW->getSQL() .NEW_LINE_CHAR;
+                    try {
+                        $dbW->rename_table($l_rlt["name_eng"],$data_arr["name_eng"]);
+                    } catch (\Exception $l_err) {
+                        $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err->getMessage(), true). " 修改表名error,sql: ". $dbW->getSQL() .NEW_LINE_CHAR;
                         $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
                         return $response['html_content'];
-                    }else {
-                        // 修改成功以后才会进行后续操作
                     }
                 }else {
                     $data_arr["name_eng"] = $l_rlt["name_eng"];  // 将不会修改表结构
@@ -167,25 +158,26 @@ class TemplateEditController extends AddController
             $dbW->table_name = $table_name;  // 表定义表
             $conditon = " id = ".$request["id"]." ";
             cArray::delSameValue($data_arr,$l_rlt);  // 剔除掉没有修改的数据项
-            $dbW->updateOne($data_arr, $conditon);
-            $l_err = $dbW->errorInfo();
-            if($l_err[1] <=0){
-                // 修改成功(或未修改)以后，需要对定义的各种任务需要一一完成(即执行相应的算法)
-                Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
-
-                if ('del'==$form['status_']) {
-                    $response['ret'] = array('ret'=>0);
-                    //return "main.php?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"];  // 删除处理直接返回到列表页面
-                    return redirect('/'.$this->type_name.'/list?_='.$arr["parent_rela"]["parent_ids_url_build_query"]);
-                }
-                $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ";
-                $response['ret'] = array('ret'=>0);
-                return $response['html_content'];  // 总是返回此结果
-            }else {
+            try {
+                $dbW->updateOne($data_arr, $conditon);
+            } catch (\Exception $l_err) {
                 $response['html_content'] = date("Y-m-d H:i:s") . $dbW->getSQL() . " 更新数据出错, <a href='?do=".$this->type_name."_edit".$arr["parent_rela"]["parent_ids_url_build_query"]."'>重新编辑</a> ";
                 $response['ret'] = array('ret'=>0);
                 return $response['html_content'];  // 总是返回此结果
             }
+
+            // 修改成功(或未修改)以后，需要对定义的各种任务需要一一完成(即执行相应的算法)
+            Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
+
+            if ('del'==$form['status_']) {
+                $response['ret'] = array('ret'=>0);
+                //return "main.php?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"];  // 删除处理直接返回到列表页面
+                return redirect('/'.$this->type_name.'/list?_='.$arr["parent_rela"]["parent_ids_url_build_query"]);
+            }
+            $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ";
+            $response['ret'] = array('ret'=>0);
+            return $response['html_content'];  // 总是返回此结果
+
         }
     }
 }

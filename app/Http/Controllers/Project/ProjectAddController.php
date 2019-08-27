@@ -129,33 +129,30 @@ class ProjectAddController extends AddController
 
             $dbW = new DBW();
             $dbW->table_name = $table_name;
-            $dbW->insertOne($data_arr);
-            $l_err = $dbW->errorInfo();
-            if ($l_err[1]>0){
+            $pid = $dbW->insertOne($data_arr);
+            if ($pid<=0){
                 // 增加失败后
-                $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err, true). " 发生错误,sql: ". $dbW->getSQL();
+                $response['html_content'] = date("Y-m-d H:i:s") . var_export($data_arr, true). " 发生错误,sql: ". $dbW->getSQL();
                 //$response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
                 return $response['html_content'];
-            }else {
-                $pid = $dbW->LastID();
-                if ($pid>0) {
-
-                    $form["id"] = $pid;  // 该项目id, 创建记录成功才会有此项
-
-                    // 增加项目记录成功后，需要创建相应的数据库和建立相应的数据表以及填充必要的数据
-                    // 依据项目的类型，确定需要建立哪几张基本表，后续需要在这个成功的基础上进行????
-                    $rlt = DbHelper::createDBandBaseTBL($form);
-
-                    // 添加成功以后，需要对定义的各种任务需要一一完成(即执行相应的成功后算法). 创建项目的时候基本不需要此步骤
-                    // Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
-                }
-
-                // $response['html_content'] = "";
-                //return "main.php?do=project_list";  // 总是返回此结果
-                $response['html_content'] = "<script type='text/javascript'>window.parent.frames['frmMainMenu'].location.reload();window.parent.frames['frmCenter'].location.href='main.php?do=project_list';</script>".NEW_LINE_CHAR;
-                //$response['ret'] = array('ret'=>0);
-                return $response['html_content'];  // 总是返回此结果
             }
+
+            $form["id"] = $pid;  // 该项目id, 创建记录成功才会有此项
+
+            // 增加项目记录成功后，需要创建相应的数据库和建立相应的数据表以及填充必要的数据
+            // 依据项目的类型，确定需要建立哪几张基本表，后续需要在这个成功的基础上进行????
+            $rlt = DbHelper::createDBandBaseTBL($form);
+
+            // 添加成功以后，需要对定义的各种任务需要一一完成(即执行相应的成功后算法). 创建项目的时候基本不需要此步骤
+            // Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
+
+
+            // $response['html_content'] = "";
+            //return "main.php?do=project_list";  // 总是返回此结果
+            $response['html_content'] = "<script type='text/javascript'>window.parent.frames['frmMainMenu'].location.reload();window.parent.frames['frmCenter'].location.href='main.php?do=project_list';</script>".NEW_LINE_CHAR;
+            //$response['ret'] = array('ret'=>0);
+            return $response['html_content'];  // 总是返回此结果
+
         }
     }
 }

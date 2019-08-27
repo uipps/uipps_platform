@@ -177,10 +177,12 @@ class TemplateAddController extends AddController
 
                 // 创建该表
                 $dbW = new DBW($arr["p_def"]);
-                $dbW->Query($l_sql);
-                $l_err = $dbW->errorInfo();
-                if ($l_err[1]>0){
-                    $response['html_content'] = "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " l_err:" . var_export($l_err, TRUE);
+                try {
+                    $dbW->Query($l_sql);
+                } catch (\Exception $l_err) {
+                    //$l_err = $dbW->errorInfo();
+                    //if ($l_err[1]>0){
+                    $response['html_content'] = "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " l_err:" . var_export($l_err->getMessage(), TRUE);
                     $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
                     return $response['html_content'];
                 }
@@ -207,15 +209,13 @@ class TemplateAddController extends AddController
 
                 // 1) 先入表定义表
                 $dbW->table_name = $TBL_def;  // 表定义表
-                $dbW->insertOne($l_form_new);
-                $l_err = $dbW->errorInfo();
-                if ($l_err[1]>0){
+                $tid = $dbW->insertOne($l_form_new);
+                //$l_err = $dbW->errorInfo();
+                if ($tid <= 0){
                     // 数据库连接失败后
                     $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . $l_err[2]. ".";
                     $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
                     return $response['html_content'];
-                }else {
-                    $tid = $dbW->LastID();  // 获取表id
                 }
 
                 // 1.2) 模板设计表作为表定义表的延伸，也一起复制一份
@@ -233,15 +233,13 @@ class TemplateAddController extends AddController
                     $l_tmpl_design_old["createtime"] = date("H:i:s");
                     // 覆盖来源表的数据
                     $dbW->table_name = $TMPL_DESIGN_def;  // 模板设计表
-                    $dbW->insertOne($l_tmpl_design_old);
-                    $l_err = $dbW->errorInfo();
-                    if ($l_err[1]>0){
+                    $fid = $dbW->insertOne($l_tmpl_design_old);
+                    //$l_err = $dbW->errorInfo();
+                    if ($fid<=0){
                         // 数据库连接失败后
                         $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . $l_err[2]. ".";
                         $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
                         return $response['html_content'];
-                    }else {
-                        //$fid = $dbW->LastID();  // 获取表id
                     }
                 }
 
@@ -261,15 +259,12 @@ class TemplateAddController extends AddController
                     $l_field_old["createtime"] = date("H:i:s");
                     // 覆盖来源表的数据
                     $dbW->table_name = $FLD_def;  // 字段定义表
-                    $dbW->insertOne($l_field_old);
-                    $l_err = $dbW->errorInfo();
-                    if ($l_err[1]>0){
+                    $id = $dbW->insertOne($l_field_old);
+                    if ($id<=0){
                         // 数据库连接失败后
                         $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . $l_err[2]. ".";
                         $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
                         return $response['html_content'];
-                    }else {
-                        //$fid = $dbW->LastID();  // 获取表id
                     }
                     usleep(100);
                 }
@@ -280,9 +275,9 @@ class TemplateAddController extends AddController
                 // 此处仅仅限定最基本的数据表字段, 另外新增的字段在模板域中去添加。
                 $dbW = new DBW($arr["p_def"]);
                 $sql_q = "`id` int(11) unsigned NOT NULL auto_increment COMMENT '自增ID',`creator` varchar(100) NOT NULL default '0' COMMENT '创建者',`createdate` date NOT NULL default '0000-00-00' COMMENT '创建日期',`createtime` time NOT NULL default '00:00:00' COMMENT '创建时间',`mender` varchar(100) default NULL COMMENT '修改者',`menddate` date default NULL COMMENT '修改日期',`mendtime` time default NULL COMMENT '修改时间',`expireddate` date NOT NULL default '0000-00-00' COMMENT '过期日期',`audited` enum('0','1') NOT NULL default '0' COMMENT '是否审核',`status_` enum('use','stop','test','del','scrap') NOT NULL default 'use' COMMENT '状态, 使用、停用等',`flag` int(11) NOT NULL default '0' COMMENT '标示, 预留',`arithmetic` text COMMENT '文档算法, 包括发布文档列表算法, [publish_docs]1:28:1,1:28:2,,,,',`unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',`published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',`url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',`last_modify` timestamp NOT NULL COMMENT '最近修改时间', PRIMARY KEY  (`id`),KEY `createdate` (`createdate`,`createtime`),KEY `menddate` (`menddate`,`mendtime`),KEY `expireddate` (`expireddate`),KEY `audited` (`audited`),KEY `status_` (`status_`),KEY `published_1` (`published_1`),KEY `url_1` (`url_1`)";
-                $dbW->create_table($form["name_eng"], $sql_q);
-                $l_err = $dbW->errorInfo();
-                if ($l_err[1]>0){
+                try {
+                    $dbW->create_table($form["name_eng"], $sql_q);
+                } catch (\Exception $l_err) {
                     // 数据库连接失败后
                     $response['html_content'] = date("Y-m-d H:i:s") . " create_table faild! " . $l_err[2]. ".";
                     $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
@@ -305,15 +300,13 @@ class TemplateAddController extends AddController
                 if (array_key_exists("createdate", $arr["f_info"])) $data_arr["createdate"] = ("0000-00-00"==$data_arr["createdate"] || empty($data_arr["createdate"])) ? date("Y-m-d") : $data_arr["createdate"];
                 if (array_key_exists("createtime", $arr["f_info"])) $data_arr["createtime"] = ("00:00:00"==$data_arr["createtime"] || empty($data_arr["createtime"]))   ? date("H:i:s") : $data_arr["createtime"];
                 $dbW->table_name = $table_name;  // 表定义表
-                $dbW->insertOne($data_arr);
-                $l_err = $dbW->errorInfo();
-                if ($l_err[1]>0){
+                $tid = $dbW->insertOne($data_arr);
+                //$l_err = $dbW->errorInfo();
+                if ($tid<=0){
                     // 数据库连接失败后
                     $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . $l_err[2]. ".";
                     $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
                     return $response['html_content'];
-                }else {
-                    $tid = $dbW->LastID();  // 获取表id
                 }
 
                 // 2) 再入字段定义表, 将刚才创建的表自动提取字段性质并入库

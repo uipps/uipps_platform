@@ -476,31 +476,35 @@ class DbHelper{
         if($dbW->getExistorNot("name_eng='".$name_eng."'")){
             // 表如果存在是否需要进行修复???? 对于tpl_type等的修改基于什么呢？如何获取这样的数据呢？
             // 暂时先不更新存在中的数据表
-        } else {
-            // 不存在则插入数据库中
-            $data_arr = array(
-                "p_id"        => $p_id,
-                "field_def_table"=> $f_def,
-                "creator"     => convCharacter($creator,true),
-                "createdate"    => date("Y-m-d"),
-                "createtime"    => date("H:i:s"),
-                "menddate"      => date("Y-m-d"),
-                "js_code_add_edit"      => '',
-                "name_eng"     => trim($name_eng),
-                "name_cn"     => convCharacter($name_cn,true)
-            );
-            $data_arr = array_merge($data_arr,$a_data_arr);  // 外面给出的数据可修改里面的参数
-            if ($last_id = $dbW->insertOne($data_arr)) {
-                // $last_id = $dbW->LastID();
-                var_dump($last_id);
-            }else {
-                echo $dbW->getSQL();
-                echo "insert error!";
-                print_r($dbW->errorInfo());
-            }
+            usleep(300);
+            return true;
         }
+
+        // 不存在则插入数据库中
+        $data_arr = array(
+            "p_id"        => $p_id,
+            "field_def_table"=> $f_def,
+            "creator"     => convCharacter($creator,true),
+            "createdate"    => date("Y-m-d"),
+            "createtime"    => date("H:i:s"),
+            "menddate"      => date("Y-m-d"),
+            "js_code_add_edit"      => '',
+            "name_eng"     => trim($name_eng),
+            "name_cn"     => convCharacter($name_cn,true)
+        );
+        $data_arr = array_merge($data_arr,$a_data_arr);  // 外面给出的数据可修改里面的参数
+        try {
+            $last_id = $dbW->insertOne($data_arr);
+            // $last_id = $dbW->LastID();
+            var_dump($last_id);
+        } catch (\Exception $e) {
+            echo $dbW->getSQL();
+            echo "insert error!";
+            print_r($e->getMessage());
+        }
+
         usleep(300);
-        return $dbW->errorInfo();
+        return $last_id;
     }
 
     // 自动填充 field_def 表
@@ -607,11 +611,11 @@ class DbHelper{
                 }
 
                 $data_arr = array_merge($data_arr,$l_jiben,$l_data_arr);  // 外面给出的数据可修改里面的参数
-                $last_id = $dbW->insertOne($data_arr);
-                $l_err = $dbW->errorInfo();
-                if ($l_err[1]>0){
+                try {
+                    $last_id = $dbW->insertOne($data_arr);
+                } catch (\Exception $l_err) {
                     // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
-                    echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " sql: ". $dbW->getSQL() ." _err:" . var_export($l_err, TRUE);
+                    echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " sql: ". $dbW->getSQL() ." _err:" . var_export($l_err->getMessage(), TRUE);
                     //
                 }
             }

@@ -124,8 +124,8 @@ class ProjectEditController extends AddController
             if (!empty($data_arr)) {
                 try {
                     $dbW->updateOne($data_arr, $conditon);
-                } catch (\Exception $e) {
-                    $response['html_content'] = date("Y-m-d H:i:s") . " 更新数据出错,".NEW_LINE_CHAR . date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__ . " SQL: ".$dbW->getSQL().", _arr:" . var_export($l_err, TRUE) . var_export($data_arr,true)." <a href='?do=project_edit&id=".$request["id"]."'>重新编辑</a> ";
+                } catch (\Exception $l_err) {
+                    $response['html_content'] = date("Y-m-d H:i:s") . " 更新数据出错,".NEW_LINE_CHAR . date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__ . " SQL: ".$dbW->getSQL().", _arr:" . var_export($l_err->getMessage(), TRUE) . var_export($data_arr,true)." <a href='?do=project_edit&id=".$request["id"]."'>重新编辑</a> ";
                     return $response['html_content'];
                 }
 

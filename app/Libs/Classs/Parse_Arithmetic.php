@@ -184,14 +184,11 @@ class Form
                 // 表名替换、字段替换
                 $l_sql = Parse_SQL::ReplaceSQlTblAndFieldname($dbR, $a_arr,$a_vals,$l_arr["query"]["sql"]);
                 // sql语句中文替换成英文完成之后进行查询
-                $l_rlt = $dbR->query_plan($l_sql,false);
-                $l_err = $dbR->errorInfo();
-
-
-
-                if ($l_err[1]>0){
+                try {
+                    $l_rlt = $dbR->query_plan($l_sql,false);
+                } catch (\Exception $l_err) {
                     // sql有错误，则返回，中止后续执行
-                    return $l_err;
+                    return $l_err->getMessage();
                 }
             }
         }
@@ -249,28 +246,25 @@ class Form
             // 表名替换、字段替换
             $l_sql = Parse_SQL::ReplaceSQlTblAndFieldname($dbR, $a_arr, $a_vals, $l_arr["query"]["sql"]);
             // sql语句中文替换成英文完成之后进行查询
-            $l_rlt = $dbR->query_plan($l_sql,false);
-            $l_err = $dbR->errorInfo();
-
-            if (!$l_rlt) {
+            try {
+                $l_rlt = $dbR->query_plan($l_sql,false);
+            } catch (\Exception $l_err2) {
                 echo var_export($dbR->errorInfo(), true). " error sql:" .$dbR->getSQL() ." FILE:".__FILE__." LINE:".__LINE__.NEW_LINE_CHAR;
-            }else {
-                // 算法可以自己添加外来的算法
-                if (false!==strpos($a_vals["arithmetic"],'[add_select]')) {
-                    $l_tmp = explode('[add_select]',$a_vals["arithmetic"]);
-                    $l_tmp = cArray::str2keyvalue(ltrim($l_tmp[1]),",",true);  // 解析成二维数组
-                    cArray::array__unshift($l_rlt,$l_tmp,"ahead");  // 填充到数组的前端
-                }
-                // 用获取的数据结果替换字段信息中的 type和length数据，强制进行替换
-                Parse_Arithmetic::fillInselect($a_arr,$a_key,$l_rlt,true,"other");
-                //$response["arithmetic"][$a_key]["f_info"] = $a_vals;  // 该字段的信息
-                $response["arithmetic"][$a_key]["pa_val"] = $a_arr["f_info"][$a_key]["length"];  // 算法最终结果保留一份
-            }
-
-            if ($l_err[1]>0){
-                // sql有错误，则返回，中止后续执行
+                $l_err['msg'] = $l_err2->getMessage();
                 return $l_err;
             }
+
+            // 算法可以自己添加外来的算法
+            if (false!==strpos($a_vals["arithmetic"],'[add_select]')) {
+                $l_tmp = explode('[add_select]',$a_vals["arithmetic"]);
+                $l_tmp = cArray::str2keyvalue(ltrim($l_tmp[1]),",",true);  // 解析成二维数组
+                cArray::array__unshift($l_rlt,$l_tmp,"ahead");  // 填充到数组的前端
+            }
+            // 用获取的数据结果替换字段信息中的 type和length数据，强制进行替换
+            Parse_Arithmetic::fillInselect($a_arr,$a_key,$l_rlt,true,"other");
+            //$response["arithmetic"][$a_key]["f_info"] = $a_vals;  // 该字段的信息
+            $response["arithmetic"][$a_key]["pa_val"] = $a_arr["f_info"][$a_key]["length"];  // 算法最终结果保留一份
+
         }
 
         return $l_err;
@@ -467,15 +461,15 @@ class Application
 
                 //$l_sql = "select aups_t3.aups_f1273,aups_t3.aups_f1278 from aups_t3 where aups_t3.aups_f1275='1' and aups_t3.aups_f1273='外-汇' limit 1";
                 // 执行sql查询操作, 其正确的结果将作为后面code代码的数据来源之一
-                $l_rlt = $dbR->query_plan($l_sql);
-                $l_err = $dbR->errorInfo();
-
-                if (!$l_rlt) {
-                    echo var_export($dbR->errorInfo(), true). " error sql:" .$dbR->getSQL() ." FILE:".__FILE__." LINE:".__LINE__.NEW_LINE_CHAR;
-                }
-
-                if ($l_err[1]>0){
+                try {
+                    $l_rlt = $dbR->query_plan($l_sql);
+                } catch (\Exception $l_err2) {
+                    echo var_export($l_err2->getMessage(), true). " error sql:" .$dbR->getSQL() ." FILE:".__FILE__." LINE:".__LINE__.NEW_LINE_CHAR;
                     // sql有错误，则返回，中止后续执行
+                    $l_err = [
+                        'code' => $l_err2->getCode(),
+                        'msg' => $l_err2->getMessage(),
+                    ];
                     return $l_err;
                 }
             }
