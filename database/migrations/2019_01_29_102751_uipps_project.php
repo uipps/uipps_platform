@@ -39,7 +39,7 @@ class UippsProject extends Migration
         // 项目
         Schema::create('project', function (Blueprint $table) {
             $table->increments('id')->comment('自增ID');
-            $table->string('name_cn', 200)->unique()->comment('中文名称');
+            $table->string('name_cn', 128)->unique()->comment('中文名称');
             $table->enum('type', ['SYSTEM','CMS','PHP_PROJECT','NORMAL','PUB','RES','GRAB'])->default('CMS')->comment('项目类型');
             $table->unsignedInteger('parent_id')->default(0)->comment('所属父级ID');
             $table->unsignedInteger('table_field_xiangmu_id')->default(0)->comment('字段定义表所属项目ID, 0:表示所属项目, 外来的项目可能不是0');
@@ -55,6 +55,8 @@ class UippsProject extends Migration
             $table->string('db_pwd', 20)->default('')->comment('数据库密码');
             $table->unsignedInteger('db_timeout')->default(0)->comment('数据库超时时间');
             $table->string('db_sock', 100)->default('')->comment('数据库socket位置');
+            $table->string('db_prefix', 20)->default('')->comment('数据库表前缀');
+            $table->string('other_setting', 255)->default('')->comment('其他设置,预留字段:如charset,collation,timezone等');
             $table->enum('if_use_slave', ['T', 'F'])->default('F')->comment('是否使用从库');
             // 从库
             $table->string('slave_db_host', 50)->default('')->comment('从库主机名');
@@ -70,7 +72,7 @@ class UippsProject extends Migration
             $table->unsignedInteger('search_order')->index()->default(0)->comment('搜索顺序');
             $table->unsignedInteger('list_order')->default(50)->comment('显示顺序');
             $table->enum('if_hide', ['T','F'])->default('F')->comment('是否隐藏');
-            $table->string('description', 1000)->default('')->comment('描述');
+            $table->string('description', 255)->default('')->comment('描述');
             $table->unsignedInteger('host_id')->default(0)->comment('主机id');
             $table->unsignedInteger('res_pub_map')->default(0)->comment('发布地图');
             $table->string('website_name_cn', 200)->default('就你网')->comment('网站中文名称, 该项目的');

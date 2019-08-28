@@ -981,6 +981,10 @@ class DbHelper{
 
     // 通过数据库的项目信息，设置对应的配置信息，用于数据库操作
     public static function getConfigInfoByProjectData($p_arr) {
+        $db_other_setting = [];
+        if (isset($p_arr['other_setting']) && $p_arr['other_setting'] && json_decode($p_arr['other_setting'])) {
+            $db_other_setting = json_decode($p_arr['other_setting']);
+        }
         // 对需要的字段进行映射
         $db_connect_info = [
             'driver' => 'mysql',
@@ -989,13 +993,13 @@ class DbHelper{
             'database' => 'uipps_platform',
             'username' => 'root',
             'password' => '123456',
-            'charset' => 'utf8',
-            'collation' => 'utf8_general_ci',
-            'prefix' => env('DB_PREFIX'),
-            'prefix_indexes' => true,
-            'strict' => false,
-            'engine' => null,
-            'timezone'  => env('DB_TIMEZONE', '+00:00'),
+            'prefix' => isset($p_arr['db_prefix']) ? $p_arr['db_prefix']: '', // 以下参数均在项目表中可配置
+            'charset' => isset($db_other_setting['charset']) ? $db_other_setting['charset'] : 'utf8',
+            'collation' => isset($db_other_setting['collation']) ? $db_other_setting['collation'] : 'utf8_general_ci',
+            'prefix_indexes' => isset($db_other_setting['prefix_indexes']) ? $db_other_setting['prefix_indexes'] : true,
+            'strict' => isset($db_other_setting['strict']) ? $db_other_setting['strict'] : false,
+            'engine' => isset($db_other_setting['engine']) ? $db_other_setting['engine'] : null,
+            'timezone' => isset($db_other_setting['timezone']) ? $db_other_setting['timezone'] : env('DB_TIMEZONE', '+00:00'),
 
             /*'write' => [
                 'host' => env('DB_MASTER_HOST', '127.0.0.1'),
