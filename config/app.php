@@ -12,7 +12,6 @@ $GLOBALS['cfg']['out_character'] = env('out_character', 'utf8');
 $GLOBALS['cfg']['SOURCE_CSS_PATH'] = "WEB-INF/template/css";
 $GLOBALS['cfg']['SOURCE_JS_PATH']  = "WEB-INF/template/js";
 $GLOBALS['cfg']['SOURCE_IMG_PATH'] = "WEB-INF/template/images";
-require_once 'chinese.utf8.lang.php';
 
 
 // system.conf.php
@@ -173,6 +172,8 @@ $GLOBALS['cfg']['TABLENAME_USER']      = "user";
 $GLOBALS['cfg']['TABLENAME_LOGINLOG'] = "loginlog";
 define('NEW_LINE_CHAR',"\r\n");
 
+// laravel本身支持多语言，本文件中的'locale' => 'zh_cn'设置，文件在resources/lang/ 下en等；TODO 这里沿用旧的方式,有空再优化
+require_once $GLOBALS['cfg']['LANG_DEFINE_FILE'];
 
 return [
 
