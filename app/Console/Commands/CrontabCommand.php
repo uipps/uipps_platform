@@ -174,7 +174,7 @@ class CrontabCommand extends Command
         // 系统本身不应该在此处默认的dbr连接信息的数据库中
         //if ('SYSTEM'!=strtoupper($request['pro_type'])) {
         $dbW = new \DBW();
-        $dbW->table_name = TABLENAME_PREF.'project';
+        $dbW->table_name = env('DB_PREFIX', '') .'project';
         $pid = $dbW->insertOne($data_arr);
         if ($pid <= 0){
             // sql有错误，后面的就不用执行了。

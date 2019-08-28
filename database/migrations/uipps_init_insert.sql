@@ -244,3 +244,6 @@ update `field_def` set `list_order`='2010' where `name_eng`='field_def_table' an
 update `field_def` set `list_order`='2020' where `name_eng`='tmpl_design_table' and `t_id` = (select id from table_def where name_eng='project');
 update `field_def` set `list_order`='2030' where `name_eng`='creator' and `t_id` = (select id from table_def where name_eng='project');
 update `field_def` set `list_order`='2040' where `name_eng`='mender' and `t_id` = (select id from table_def where name_eng='project');
+
+-- update `field_def` set  `if_display_edit`='F' where `name_eng` in ('creator','mender','created_at','updated_at') and `t_id` = (select id from table_def where name_eng='project');
+   update `field_def` set  `if_display_edit`='F' where `name_eng` in ('creator','mender','created_at','updated_at','createdate','createtime','menddate','mendtime') ;

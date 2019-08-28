@@ -20,6 +20,7 @@ class ProjectAddController extends AddController
 
     public function execute(Request $a_request)
     {
+        $l_prefix = env('DB_PREFIX', '');
         // 检查是否登录
         $l_auth = $this->userService->ValidatePerm($a_request);
         $_SESSION = session()->all();
@@ -44,16 +45,17 @@ class ProjectAddController extends AddController
             //$response['ret'] = array('ret'=>1);
             return $response['html_content'];  // 总是返回此结果
         }
-        $table_name = TABLENAME_PREF."project";
+        $table_name = $l_prefix ."project";
         $arr = array();
         $arr["html_title"] = $GLOBALS['language']['TPL_ZENGJIA_STR'].$GLOBALS['language']['TPL_XIANGMU_STR'];
         $arr["html_name"]  = $arr["html_title"];
         $arr["table_name"] = $table_name;
+        $arr['sql_order'] = 'order by list_order, id'; // 排序
 
         // 没有提交数据的时候，需要依据被增加数据数据表的字段进行显示表单;
         // 当有数据提交的时候，需要依据字段属性自动筛选和默认赋值等
-        $TBL_def = TABLENAME_PREF."table_def";
-        $FLD_def = TABLENAME_PREF."field_def";
+        $TBL_def = $l_prefix ."table_def";
+        $FLD_def = $l_prefix ."field_def";
 
         $arr["dbR"] = new DBR();
 

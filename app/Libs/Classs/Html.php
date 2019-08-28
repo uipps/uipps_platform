@@ -40,7 +40,10 @@ class Html {
         }
 
         // 逐一字段解析并联成表单
-        foreach ($f_arr as $l_info){
+        foreach ($f_arr as $l_info) {
+            // 如果设置了不需要显示的字段则不必显示在编辑页面
+            if (isset($l_info['if_display_edit']) && 'F' == $l_info['if_display_edit'])
+                continue;
             $field = trim($l_info["name_eng"]);  // 字段都是英文的
             if (in_array($field,$a_no_need_field)) {
                 continue;

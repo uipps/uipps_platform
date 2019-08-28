@@ -662,7 +662,7 @@ class DbHelper{
 
             if (1==$i) {
                 // 逐级循环, 第一级是项目表，包含了数据库连接信息
-                $l_tbl_name = (empty($l_p_self_id["table_name"]))?TABLENAME_PREF."project":$l_p_self_id["table_name"];
+                $l_tbl_name = (empty($l_p_self_id["table_name"]))? env('DB_PREFIX', '')."project":$l_p_self_id["table_name"];
                 $dbR->table_name = $l_tbl_name;
                 // 都是id，整型数据，因此无需引号
 
@@ -675,7 +675,7 @@ class DbHelper{
                 $dbR->dbo = &DBO('', $dsn);
                 $dbR->SetCurrentSchema($l_p_s1['db_name']);*/
                 $dbR = new DBR($l_p_s1);
-                $dbR->table_name = empty($l_p_self_id["t_table_name"]) ? TABLENAME_PREF."table_def":$l_p_self_id["t_table_name"];
+                $dbR->table_name = empty($l_p_self_id["t_table_name"]) ? env('DB_PREFIX', '')."table_def":$l_p_self_id["t_table_name"];
                 $l_t_all = $dbR->getAlls(" where status_!='stop'", 'id, name_eng, name_cn');
                 $l_rlt["t_all_"] = $l_t_all;
 
@@ -691,7 +691,7 @@ class DbHelper{
                 $dbR->SetCurrentSchema($l_p_s1['db_name']);*/
                 $dbR = new DBR($l_p_s1);
                 //$dbR = null;$dbR = new DBR($l_p_s1);  // 涉及到数据库重连的问题，包含了数据库连接信息
-                $dbR->table_name = $l_tbl_name = empty($l_p_self_id["table_name"]) ? TABLENAME_PREF."table_def":$l_p_self_id["table_name"]; // 表定义表的数据必须获取到
+                $dbR->table_name = $l_tbl_name = empty($l_p_self_id["table_name"]) ? env('DB_PREFIX', '')."table_def":$l_p_self_id["table_name"]; // 表定义表的数据必须获取到
                 $l_t_def_arr = $dbR->getOne(" where id = ".$a_data[$l_p_self_id["ziduan"]]);  // 在没有$a_p_self_ids设置的情况下也能获取到数据
                 $l_rlt["t_def"] = $l_t_def_arr;
                 //print_r($l_t_def_arr);exit;
