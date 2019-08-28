@@ -33,8 +33,8 @@ class UippsProject extends Migration
             $table->engine = 'InnoDB';
             //$table->comment = '主机';
         });
-        DB::statement("ALTER TABLE `host_reg` CHANGE `updated_at` `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'");
-        DB::statement("ALTER TABLE `host_reg` comment '主机'");
+        DB::statement("ALTER TABLE `" . env('DB_PREFIX', '') . "host_reg` CHANGE `updated_at` `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'");
+        DB::statement("ALTER TABLE `" . env('DB_PREFIX', '') . "host_reg` comment '主机'");
 
         // 项目
         Schema::create('project', function (Blueprint $table) {
@@ -42,9 +42,10 @@ class UippsProject extends Migration
             $table->string('name_cn', 128)->unique()->comment('中文名称');
             $table->enum('type', ['SYSTEM','CMS','PHP_PROJECT','NORMAL','PUB','RES','GRAB'])->default('CMS')->comment('项目类型');
             $table->unsignedInteger('parent_id')->default(0)->comment('所属父级ID');
-            $table->unsignedInteger('table_field_xiangmu_id')->default(0)->comment('字段定义表所属项目ID, 0:表示所属项目, 外来的项目可能不是0');
-            $table->string('table_def_table', 32)->default('')->comment('表定义表的数据表名');
+            $table->unsignedInteger('table_field_belong_project_id')->default(0)->comment('字段定义表所属项目ID, 0:表示所属项目, 外来的项目可能不是0');
+            $table->string('table_def_table', 32)->default('')->comment('表定义表的数据表名,含前缀，以下类似');
             $table->string('field_def_table', 32)->default('')->comment('字段定义表的数据表名, 与字段定义表中的field_def_table不冲突');
+            $table->string('tmpl_design_table', 32)->default('')->comment('模板设计表的数据表名');
             $table->string('creator', 100)->default('')->comment('创建者');
             $table->string('mender', 100)->default('')->comment('修改者');
             // 主库
@@ -55,7 +56,7 @@ class UippsProject extends Migration
             $table->string('db_pwd', 20)->default('')->comment('数据库密码');
             $table->unsignedInteger('db_timeout')->default(0)->comment('数据库超时时间');
             $table->string('db_sock', 100)->default('')->comment('数据库socket位置');
-            $table->string('db_prefix', 20)->default('')->comment('数据库表前缀');
+            $table->string('db_prefix', 20)->default(env('DB_PREFIX', ''))->comment('数据库表前缀');
             $table->string('other_setting', 255)->default('')->comment('其他设置,预留字段:如charset,collation,timezone等');
             $table->enum('if_use_slave', ['T', 'F'])->default('F')->comment('是否使用从库');
             // 从库
@@ -75,8 +76,8 @@ class UippsProject extends Migration
             $table->string('description', 255)->default('')->comment('描述');
             $table->unsignedInteger('host_id')->default(0)->comment('主机id');
             $table->unsignedInteger('res_pub_map')->default(0)->comment('发布地图');
-            $table->string('website_name_cn', 200)->default('就你网')->comment('网站中文名称, 该项目的');
-            $table->string('waiwang_url', 255)->default('https://www.uipps.com')->comment('外网URL');
+            $table->string('website_name_cn', 200)->default('智能发布平台')->comment('网站中文名称, 该项目的');
+            $table->string('waiwang_url', 255)->default('http://www.uipps.com')->comment('外网URL');
             $table->string('bendi_uri', 255)->default('/data0/htdocs/www')->comment('本地URI, D:/www/htdocs/www.uipps.com');
 
             $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
@@ -85,7 +86,7 @@ class UippsProject extends Migration
             //$table->comment = '全部项目';
 
         });
-        DB::statement("ALTER TABLE `project` comment '全部项目'"); // 表注释
+        DB::statement("ALTER TABLE `" . env('DB_PREFIX', '') . "project` comment '全部项目'"); // 表注释
 
         // 用户
         Schema::create('user', function (Blueprint $table) {
@@ -115,7 +116,7 @@ class UippsProject extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '用户表';
         });
-        DB::statement("ALTER TABLE `user` comment '用户表'"); // 表注释
+        DB::statement("ALTER TABLE `" . env('DB_PREFIX', '') . "user` comment '用户表'"); // 表注释
 
         // 登录日志
         Schema::create('loginlog', function (Blueprint $table) {
@@ -134,7 +135,7 @@ class UippsProject extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '登录日志';
         });
-        DB::statement("ALTER TABLE `loginlog` comment '登录日志'");
+        DB::statement("ALTER TABLE `" . env('DB_PREFIX', '') . "loginlog` comment '登录日志'");
 
         // 计划任务
         Schema::create('schedule', function (Blueprint $table) {
@@ -172,7 +173,7 @@ class UippsProject extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '计划任务';
         });
-        DB::statement("ALTER TABLE `schedule` comment '计划任务'");
+        DB::statement("ALTER TABLE `" . env('DB_PREFIX', '') . "schedule` comment '计划任务'");
 
     }
 

@@ -46,7 +46,7 @@ class InitProjectCommand extends Command
         $this->info(date('Y-m-d H:i:s') . ' begin to process:' . self::NEW_LINE_CHAR);
         $dbW = new DBW();
         //$dbW->statement('drop table if exists migrations'); // 这样写其实也可以
-        $dbW->exec('drop table if exists migrations'); // 删除迁移库
+        $dbW->exec('DROP TABLE IF EXISTS ' . env('DB_PREFIX', '') . 'migrations'); // 删除迁移库，加上表前缀
 
         $_SESSION = session()->all();
         $creator = 1;
@@ -56,7 +56,7 @@ class InitProjectCommand extends Command
 
         //try { } catch (\QueryException $e) { echo $e->getMessage(); } // catch不了
         $dbR = new DBR();
-        $dbR->table_name = "project";
+        $dbR->table_name = env('DB_PREFIX', '') . 'project';
         $p_arr = $dbR->getOne('order by id');
         if (!$p_arr) {
             $this->info(date('Y-m-d H:i:s') . ' project list is empty!! '. self::NEW_LINE_CHAR);
@@ -68,8 +68,8 @@ class InitProjectCommand extends Command
             $this->info(date('Y-m-d H:i:s') . ' db_name is error!! '. self::NEW_LINE_CHAR);
             return 0;
         }
-        $table_def = 'table_def';
-        $field_def = 'field_def';
+        $table_def = env('DB_PREFIX', '') . 'table_def';
+        $field_def = env('DB_PREFIX', '') . 'field_def';
         $a_data_arr = array("source"=>'db',"creator"=>$creator);  // 能在外部增加字段的
 
         DbHelper::fill_table($p_arr, $a_data_arr,"all",$field_def,$table_def,$p_arr["id"]);
@@ -79,6 +79,12 @@ class InitProjectCommand extends Command
         // ------ 如果有额外的初始化数据需要insert或update的时候
         $l_e_wai  = file_get_contents(database_path('migrations/uipps_init_insert.sql'));
         $l_e_tmpl = file_get_contents(database_path('migrations/tmpl_design_init_insert.sql'));
+
+        if (env('DB_PREFIX')) {
+            $l_e_wai = table_field_def_tmpl_design_sql_replace($l_e_wai, env('DB_PREFIX'));
+            $l_e_tmpl = table_field_def_tmpl_design_sql_replace($l_e_tmpl, env('DB_PREFIX'));
+        }
+
         if ($l_e_wai) {
             // insert或update一些初始数据
             DbHelper::execDbWCreateInsertUpdate($p_arr, $l_e_tmpl . "\r\n ". $l_e_wai, array("INSERT INTO ","REPLACE INTO ","UPDATE "));

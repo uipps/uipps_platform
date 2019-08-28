@@ -913,3 +913,25 @@ function GetCurrentUrl2() {
 
     return $url;
 }
+
+// 表定义表、字段定义表、模板设计表sql中给相关sql加上表前缀
+function table_field_def_tmpl_design_sql_replace($str, $prefix) {
+    $prefix = trim($prefix); // 不能是空格
+    if (!$prefix || !trim($str))
+        return $str;
+
+    $need_replace = [
+        ' field_def ', // 注意前后的空格不能去掉
+        ' table_def ',
+        ' tmpl_design ',
+        ' `field_def` ',
+        ' `table_def` ',
+        ' `tmpl_design` ',
+        "'tmpl_design'",
+    ];
+    $to_replace = [];
+    foreach ($need_replace as $key => $value) {
+        $to_replace[$key] = preg_replace('/(\w+)/', $prefix.'${1}', $value); // 给表名加上前缀
+    }
+    return str_replace($need_replace, $to_replace, $str);
+}

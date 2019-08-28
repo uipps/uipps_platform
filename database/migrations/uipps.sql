@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `dpps_project` (
   `name_cn` varchar(200) NOT NULL COMMENT '中文名称',
   `type` enum('SYSTEM','CMS','PHP_PROJECT','NORMAL','PUB','RES','GRAB') NOT NULL default 'CMS' COMMENT '项目类型',
   `parent_id` int(11) NOT NULL default '0' COMMENT '所属父级ID',
-  `table_field_xiangmu_id` int(11) NOT NULL default '0' COMMENT '字段定义表所属项目ID, 0:表示所属项目,当前大多这样，只有外来的项目可能不是0',
+  `table_field_belong_project_id` int(11) NOT NULL default '0' COMMENT '字段定义表所属项目ID, 0:表示所属项目,当前大多这样，只有外来的项目可能不是0',
   `creator` varchar(100) NOT NULL default '0' COMMENT '创建者',
   `createdate` date NOT NULL default '0000-00-00' COMMENT '创建日期',
   `createtime` time NOT NULL default '00:00:00' COMMENT '创建时间',

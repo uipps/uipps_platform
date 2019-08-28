@@ -154,6 +154,10 @@ class DbHelper{
                 //$a_sql .= file_get_contents(database_path('migrations/uipps.sql'));
 
                 $l_e_wai = file_get_contents(database_path('migrations/uipps_init_insert.sql'));
+                // TODO 其他sql可能也需要进行替换，先将涉及到的替换了再说
+                if (env('DB_PREFIX')) {
+                    $l_e_wai = table_field_def_tmpl_design_sql_replace($l_e_wai, env('DB_PREFIX'));
+                }
 
                 $data_arr["name_cn"] = convCharacter($GLOBALS['language']['SYSTEM_NAME_STR'],true);
                 if (!array_key_exists("id",$data_arr)) {
@@ -209,6 +213,9 @@ class DbHelper{
             // 作为表定义表的一部分，通常情况下需要进行字段算法更新的
             if ($a_e_wai) {
                 $l_e_tmpl = file_get_contents(database_path('migrations/tmpl_design_init_insert.sql'));
+                if (env('DB_PREFIX'))
+                    $l_e_tmpl = table_field_def_tmpl_design_sql_replace($l_e_tmpl, env('DB_PREFIX'));
+
                 DbHelper::execDbWCreateInsertUpdate($data_arr, $l_e_tmpl,array("INSERT INTO ","REPLACE INTO ","UPDATE "));
             }
         } else {

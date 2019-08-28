@@ -27,7 +27,7 @@ sql=select CONCAT(id,"-",name_cn),id from project order by id
 update  field_def set `f_type`='Form::DB_Select', `arithmetic`='[query]
 sql=select CONCAT(id,"-",name_cn),id from project order by id
 [add_select]
--所在项目-,0' where name_eng='table_field_xiangmu_id' and t_id = (select id from table_def where name_eng='project');
+-所在项目-,0' where name_eng='table_field_belong_project_id' and t_id = (select id from table_def where name_eng='project');
 
 --   b) 更新数据类型 :
 -- SELECT * FROM `field_def`  where name_eng='db_pwd' and t_id = (select id from table_def where name_eng='project')
