@@ -1,6 +1,7 @@
 <?php
 
 class DbHelper{
+    const DOT_REPLACE_TO_STR = '---______---'; // 配置中不能有. ,否则会被当成数组的层级，因此需要将配置中的.替换成特殊符号便于还原
     //
     protected $ColumnTypes = array(
         "VARCHAR","TINYINT","TEXT","DATE",
@@ -1068,6 +1069,7 @@ class DbHelper{
         }
         return $rlt;
     }
+    // 由于config::set的限制，必须保证返回的字符串中没有点符号'.'
     public static function getConnectName($p_arr) {
         //return $p_arr'db_name'] . '_m';
         if (!is_array($p_arr)) {
@@ -1081,6 +1083,6 @@ class DbHelper{
         } else {
             throw new \Exception('Invalid array p_arr');
         }
-        return str_replace('.', '_', $dsn); // 保证没有.符号, 防止config.set的时候出现问题
+        return str_replace('.', self::DOT_REPLACE_TO_STR, $dsn); // 保证没有.符号, 防止config.set的时候出现问题
     }
 }
