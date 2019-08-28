@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `field_def` (
   `list_order` smallint(5) NOT NULL default '1000' COMMENT '显示顺序',
   `source` enum('db','grab','none') NOT NULL default 'none' COMMENT '来源',
   `description` varchar(255) default NULL COMMENT '描述',
+  `if_display_edit` enum('T','F') NOT NULL default 'T' COMMENT '是否显示在添加或编辑界面',
   `created_at` int(10) unsigned NOT NULL default '0' COMMENT '创建时间',
   `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY  (`id`),

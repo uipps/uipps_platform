@@ -75,7 +75,9 @@ class TableFieldTmplDesign extends Migration
             $table->enum('exec_mode', ['0','1','2','3'])->default('0')->comment('执行模式');
             $table->unsignedSmallInteger('list_order')->default('1000')->comment('显示顺序');
             $table->enum('source', ['db','grab','none'])->default('none')->comment('来源');
-            $table->string('description', 255)->default('')->comment('描述');
+            $table->string('description', 255)->nullable()->default('')->comment('描述');
+            $table->enum('if_display_edit', ['T','F'])->default('T')->comment('是否显示在添加或编辑界面');
+            //$table->enum('if_display_api', ['T','F'])->default('T')->comment('是否在接口中返回');
 
             $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
             $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
@@ -104,7 +106,7 @@ class TableFieldTmplDesign extends Migration
             $table->string('default_url', 255)->default('')->comment('默认URL');
             $table->text('default_html')->comment('默认静态模板代码');
             $table->string('tmpl_expr', 600)->default('')->comment('执行条件, 只有满足此表达式条件才执行发布, 必须是PHP表达式(如:${是否发往首页) == "yes" && ${栏目名称} == "国内")');
-            $table->string('description', 255)->default('')->comment('描述');
+            $table->string('description', 255)->nullable()->default('')->comment('描述');
 
             $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');
             $table->unsignedInteger('created_at')->default(0)->comment('创建时间');
