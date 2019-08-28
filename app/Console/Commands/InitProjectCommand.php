@@ -43,10 +43,11 @@ class InitProjectCommand extends Command
         // 主要参数是db_name=grab&if_repair
         // 主要功能是创建数据库（如果数据库存在则按照项目特点进行补充和修正）、数据表和字段
         // 具备修复功能，保持同真实数据表一致的功能
+        $prefix = env('DB_PREFIX', '');
         $this->info(date('Y-m-d H:i:s') . ' begin to process:' . self::NEW_LINE_CHAR);
         $dbW = new DBW();
         //$dbW->statement('drop table if exists migrations'); // 这样写其实也可以
-        $dbW->exec('DROP TABLE IF EXISTS ' . env('DB_PREFIX', '') . 'migrations'); // 删除迁移库，加上表前缀
+        $dbW->exec('DROP TABLE IF EXISTS ' . $prefix . 'migrations'); // 删除迁移库，加上表前缀
 
         $_SESSION = session()->all();
         $creator = 1;
@@ -56,7 +57,7 @@ class InitProjectCommand extends Command
 
         //try { } catch (\QueryException $e) { echo $e->getMessage(); } // catch不了
         $dbR = new DBR();
-        $dbR->table_name = env('DB_PREFIX', '') . 'project';
+        $dbR->table_name = $prefix . 'project';
         $p_arr = $dbR->getOne('order by id');
         if (!$p_arr) {
             $this->info(date('Y-m-d H:i:s') . ' project list is empty!! '. self::NEW_LINE_CHAR);
@@ -68,8 +69,8 @@ class InitProjectCommand extends Command
             $this->info(date('Y-m-d H:i:s') . ' db_name is error!! '. self::NEW_LINE_CHAR);
             return 0;
         }
-        $table_def = env('DB_PREFIX', '') . 'table_def';
-        $field_def = env('DB_PREFIX', '') . 'field_def';
+        $table_def = $prefix . 'table_def';
+        $field_def = $prefix . 'field_def';
         $a_data_arr = array("source"=>'db',"creator"=>$creator);  // 能在外部增加字段的
 
         DbHelper::fill_table($p_arr, $a_data_arr,"all",$field_def,$table_def,$p_arr["id"]);

@@ -46,8 +46,8 @@ class UippsProject extends Migration
             $table->string('table_def_table', 32)->default('')->comment('表定义表的数据表名,含前缀，以下类似');
             $table->string('field_def_table', 32)->default('')->comment('字段定义表的数据表名, 与字段定义表中的field_def_table不冲突');
             $table->string('tmpl_design_table', 32)->default('')->comment('模板设计表的数据表名');
-            $table->string('creator', 100)->default('')->comment('创建者');
-            $table->string('mender', 100)->default('')->comment('修改者');
+            $table->string('creator', 100)->nullable()->comment('创建者');
+            $table->string('mender', 100)->nullable()->comment('修改者');
             // 主库
             $table->string('db_host', 50)->default('127.0.0.1')->comment('数据库主机');
             $table->string('db_name', 50)->default('')->comment('数据库名称, 英文名称');
@@ -60,13 +60,13 @@ class UippsProject extends Migration
             $table->string('other_setting', 255)->default('')->comment('其他设置,预留字段:如charset,collation,timezone等');
             $table->enum('if_use_slave', ['T', 'F'])->default('F')->comment('是否使用从库');
             // 从库
-            $table->string('slave_db_host', 50)->default('')->comment('从库主机名');
-            $table->string('slave_db_name', 50)->default('')->comment('从库数据库名');
-            $table->unsignedInteger('slave_db_port')->default(0)->comment('从库端口');
-            $table->string('slave_db_user', 20)->default('')->comment('从库用户名');
-            $table->string('slave_db_pwd', 20)->default('')->comment('从库密码');
-            $table->unsignedInteger('slave_db_timeout')->default(0)->comment('从库超时时间');
-            $table->string('slave_db_sock', 100)->default('')->comment('从库socket位置');
+            $table->string('slave_db_host', 50)->nullable()->comment('从库主机名');  // TODO 当前为了测试有null的情况，记得删除这些nullable()
+            $table->string('slave_db_name', 50)->nullable()->comment('从库数据库名');
+            $table->unsignedInteger('slave_db_port')->nullable()->comment('从库端口');
+            $table->string('slave_db_user', 20)->nullable()->comment('从库用户名');
+            $table->string('slave_db_pwd', 20)->nullable()->comment('从库密码');
+            $table->unsignedInteger('slave_db_timeout')->nullable()->comment('从库超时时间');
+            $table->string('slave_db_sock', 100)->nullable()->comment('从库socket位置');
             // 其他
             $table->enum('if_daemon_pub', ['T','F'])->default('F')->comment('是否后台发布');
             $table->enum('status_', ['use','stop','test','del','scrap','open','pause','close'])->default('use')->comment('状态, 使用、停用等');

@@ -47,15 +47,18 @@ class Html {
             }
             if (array_key_exists($field, $a_init)) {
                 $l_init[Html::getDefault_waibu_str()] = $a_init[$field];
-            }else {
+            } else {
                 $l_init = array();
             }
             if ("auto_increment"!=strtolower(trim($l_info["extra"])) && "timestamp" != strtolower(trim($l_info["type"]))) {
+                $must_field =  '';
+                if ('NO' == strtoupper($l_info['is_null']) && !in_array($l_info['default'], ['NULL', '0'])) // 默认值不是NULL或空字符串
+                    $must_field = '<span style="color:#FF0000">*</span>';
+
                 $l_str .= '
           <tr>
             <td nowrap="nowrap" title="'.$l_info['description'].'">'.$l_info["name_cn"].'</td>
-            <td>'.Html::getOneFieldInput($l_info, $l_init).
-                    ( ("NO"==strtoupper($l_info["is_null"])) ? '<span style="color:#FF0000">*</span>' : "" ).'</td>
+            <td>'.Html::getOneFieldInput($l_info, $l_init). $must_field.'</td>
           </tr>';
             }
             // 上传文件需要填充一下
