@@ -193,7 +193,10 @@ class TemplateAddController extends AddController
                 unset($l_form_old["mender"]);
                 unset($l_form_old["menddate"]);
                 unset($l_form_old["mendtime"]);
-                unset($l_form_old["last_modify"]);
+                if(isset($l_form_old['updated_at']))
+                    unset($l_form_old['updated_at']);
+                else
+                    unset($l_form_old["last_modify"]);
                 $l_form_new = array(
                     "p_id"    =>$request["p_id"],
                     "name_eng"  =>$request["name_eng"],
@@ -224,9 +227,12 @@ class TemplateAddController extends AddController
                     unset($l_tmpl_design_old["mender"]);
                     unset($l_tmpl_design_old["menddate"]);
                     unset($l_tmpl_design_old["mendtime"]);
-                    unset($l_tmpl_design_old["last_modify"]);
+                    if(isset($l_tmpl_design_old['updated_at']))
+                        unset($l_tmpl_design_old['updated_at']);
+                    else
+                        unset($l_tmpl_design_old["last_modify"]);
 
-                    // 创建时间添加
+                        // 创建时间添加
                     $l_tmpl_design_old["tbl_id"]   = $tid;
                     $l_tmpl_design_old["creator"] = $_SESSION["user"]["username"];
                     $l_tmpl_design_old["createdate"] = date("Y-m-d");
@@ -250,7 +256,10 @@ class TemplateAddController extends AddController
                     unset($l_field_old["mender"]);
                     unset($l_field_old["menddate"]);
                     unset($l_field_old["mendtime"]);
-                    unset($l_field_old["last_modify"]);
+                    if(isset($l_field_old['updated_at']))
+                        unset($l_field_old['updated_at']);
+                    else
+                        unset($l_field_old["last_modify"]);
 
                     // 创建时间添加
                     $l_field_old["t_id"]   = $tid;
@@ -274,7 +283,7 @@ class TemplateAddController extends AddController
                 // 应当依据模板类型，对应地创建相应的数据字段????甚至是同时创建多张表，
                 // 此处仅仅限定最基本的数据表字段, 另外新增的字段在模板域中去添加。
                 $dbW = new DBW($arr["p_def"]);
-                $sql_q = "`id` int(11) unsigned NOT NULL auto_increment COMMENT '自增ID',`creator` varchar(100) NOT NULL default '0' COMMENT '创建者',`createdate` date NOT NULL default '0000-00-00' COMMENT '创建日期',`createtime` time NOT NULL default '00:00:00' COMMENT '创建时间',`mender` varchar(100) default NULL COMMENT '修改者',`menddate` date default NULL COMMENT '修改日期',`mendtime` time default NULL COMMENT '修改时间',`expireddate` date NOT NULL default '0000-00-00' COMMENT '过期日期',`audited` enum('0','1') NOT NULL default '0' COMMENT '是否审核',`status_` enum('use','stop','test','del','scrap') NOT NULL default 'use' COMMENT '状态, 使用、停用等',`flag` int(11) NOT NULL default '0' COMMENT '标示, 预留',`arithmetic` text COMMENT '文档算法, 包括发布文档列表算法, [publish_docs]1:28:1,1:28:2,,,,',`unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',`published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',`url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',`last_modify` timestamp NOT NULL COMMENT '最近修改时间', PRIMARY KEY  (`id`),KEY `createdate` (`createdate`,`createtime`),KEY `menddate` (`menddate`,`mendtime`),KEY `expireddate` (`expireddate`),KEY `audited` (`audited`),KEY `status_` (`status_`),KEY `published_1` (`published_1`),KEY `url_1` (`url_1`)";
+                $sql_q = "`id` int(11) unsigned NOT NULL auto_increment COMMENT '自增ID',`creator` varchar(100) NOT NULL default '0' COMMENT '创建者',`createdate` date NOT NULL default '0000-00-00' COMMENT '创建日期',`createtime` time NOT NULL default '00:00:00' COMMENT '创建时间',`mender` varchar(100) default NULL COMMENT '修改者',`menddate` date default NULL COMMENT '修改日期',`mendtime` time default NULL COMMENT '修改时间',`expireddate` date NOT NULL default '0000-00-00' COMMENT '过期日期',`audited` enum('0','1') NOT NULL default '0' COMMENT '是否审核',`status_` enum('use','stop','test','del','scrap') NOT NULL default 'use' COMMENT '状态, 使用、停用等',`flag` int(11) NOT NULL default '0' COMMENT '标示, 预留',`arithmetic` text COMMENT '文档算法, 包括发布文档列表算法, [publish_docs]1:28:1,1:28:2,,,,',`unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',`published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',`url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',`updated_at` timestamp NOT NULL COMMENT '最近修改时间', PRIMARY KEY  (`id`),KEY `createdate` (`createdate`,`createtime`),KEY `menddate` (`menddate`,`mendtime`),KEY `expireddate` (`expireddate`),KEY `audited` (`audited`),KEY `status_` (`status_`),KEY `published_1` (`published_1`),KEY `url_1` (`url_1`)";
                 try {
                     $dbW->create_table($form["name_eng"], $sql_q);
                 } catch (\Exception $l_err) {

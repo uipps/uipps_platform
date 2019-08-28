@@ -112,7 +112,7 @@ function getZiduan($a_str){
 }
 
 // list
-function buildH($arr,$ziduan,$val_replace=array(),$a_no_need_field=array("id","last_modify"), $domain=''){
+function buildH($arr,$ziduan,$val_replace=array(),$a_no_need_field=array("id",'updated_at',"last_modify"), $domain=''){
     $str = "";
     $str_title = "";
     if (is_array($arr) && count($arr)>0) {

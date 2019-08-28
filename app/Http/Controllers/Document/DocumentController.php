@@ -111,7 +111,7 @@ class DocumentController extends ListController
             }
         }
         $ziduan_arr = getZiduan( $this->tem_func( cArray::Index2KeyArr($l_list_f, $a_val=array("key"=>"name_eng", "value"=>"name_cn"))));// 需要的字段
-        $show_arr = buildH($arr["_arr"],$ziduan_arr,array(),array("id", "last_modify"), $arr['p_def']['waiwang_url']);
+        $show_arr = buildH($arr["_arr"],$ziduan_arr,array(),array("id",'updated_at', "last_modify"), $arr['p_def']['waiwang_url']);
         $show = $show_arr[0];
         $show_title = $show_arr[1];
 

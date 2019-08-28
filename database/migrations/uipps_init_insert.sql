@@ -238,4 +238,9 @@ sql=select CONCAT(username,"-",nickname),id from user order by id' where name_en
 
 -- ALTER TABLE  `user_doc_privileges` ADD  `status_` ENUM(  'use',  'stop',  'test',  'del',  'scrap' ) NOT NULL DEFAULT  'use' COMMENT  '状态, 使用、停用等';
 
-
+-- 9) project表字段显示顺序调整
+update `field_def` set `list_order`='2000' where `name_eng`='table_def_table' and `t_id` = (select id from table_def where name_eng='project');
+update `field_def` set `list_order`='2010' where `name_eng`='field_def_table' and `t_id` = (select id from table_def where name_eng='project');
+update `field_def` set `list_order`='2020' where `name_eng`='tmpl_design_table' and `t_id` = (select id from table_def where name_eng='project');
+update `field_def` set `list_order`='2030' where `name_eng`='creator' and `t_id` = (select id from table_def where name_eng='project');
+update `field_def` set `list_order`='2040' where `name_eng`='mender' and `t_id` = (select id from table_def where name_eng='project');

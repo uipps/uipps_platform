@@ -13,6 +13,7 @@ class TableFieldTmplDesign extends Migration
      */
     public function up()
     {
+        // TODO 考虑解析table_field.sql文件的方法，这样就不用写两处sql了，避免不一致和重复修改的问题
         // 表定义表
         Schema::create('table_def', function (Blueprint $table) {
             $table->increments('id')->comment('自增ID');

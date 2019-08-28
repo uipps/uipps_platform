@@ -66,7 +66,7 @@ class DBW extends MysqlW
         return parent::exec($sql);
     }
 
-    public function create_table($a_name="tbl_001",$sql_query="`id` int(11) unsigned NOT NULL auto_increment COMMENT '自增ID',`creator` varchar(100) NOT NULL default '0' COMMENT '创建者',`createdate` date NOT NULL default '0000-00-00' COMMENT '创建日期',`createtime` time NOT NULL default '00:00:00' COMMENT '创建时间',`mender` varchar(100) default NULL COMMENT '修改者',`menddate` date default NULL COMMENT '修改日期',`mendtime` time default NULL COMMENT '修改时间',`last_modify` timestamp NOT NULL COMMENT '最近修改时间', PRIMARY KEY  (`id`)",$MySQL_ENGINE="MyISAM",$MySQL_CHARSET="utf8"){
+    public function create_table($a_name="tbl_001",$sql_query="`id` int(11) unsigned NOT NULL auto_increment COMMENT '自增ID',`creator` varchar(100) NOT NULL default '0' COMMENT '创建者',`createdate` date NOT NULL default '0000-00-00' COMMENT '创建日期',`createtime` time NOT NULL default '00:00:00' COMMENT '创建时间',`mender` varchar(100) default NULL COMMENT '修改者',`menddate` date default NULL COMMENT '修改日期',`mendtime` time default NULL COMMENT '修改时间',`updated_at` timestamp NOT NULL COMMENT '最近修改时间', PRIMARY KEY  (`id`)",$MySQL_ENGINE="MyISAM",$MySQL_CHARSET="utf8"){
         $MySQL_CHARSET = $GLOBALS['cfg']['db_character'];
         $sql = " CREATE TABLE  ". cString_SQL::FormatField($a_name) . ' (' . $sql_query . ')'."ENGINE=".$MySQL_ENGINE." DEFAULT CHARSET=".$MySQL_CHARSET;
         return parent::exec($sql);
