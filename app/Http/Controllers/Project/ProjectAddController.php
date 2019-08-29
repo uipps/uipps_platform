@@ -125,7 +125,7 @@ class ProjectAddController extends AddController
             }
 
             $dbr2->SetCurrentSchema($form['db_name']);
-            //$e = $dbr2->query('use db_erp');
+            //$e = $dbr2->query('use db_erp'); // 有bug，当配置信息中没有db_name的时候，执行数据库切换报错。
             //$e = $dbr2->query('show databases');
             $b = $dbr2->GetCurrentSchema();
             echo $b . "\r\n";

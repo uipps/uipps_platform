@@ -11,13 +11,15 @@ class MysqlDB
 
     public function ConnectDB($dsn=array(), $options=false){
         if (!$dsn) {
-            $this->dbo = \DB::connection();
+            //$this->dbo = \DB::connection();
+            $this->dbo = \DB::reconnect();
             return ;
         }
         if (is_array($dsn) && isset($dsn['db_host'])) {
             DbHelper::getConfigInfoByProjectData($dsn);
             $connect_name = DbHelper::getConnectName($dsn);
-            $this->dbo = \DB::connection($connect_name);
+            //$this->dbo = \DB::connection($connect_name);
+            $this->dbo = \DB::reconnect($connect_name);
             return ;
         }
         throw new \Exception('Invalid array p_arr:' . __FILE__ . ' ' . __LINE__);
