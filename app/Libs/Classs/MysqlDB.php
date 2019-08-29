@@ -65,7 +65,7 @@ class MysqlDB
     public function SetCurrentSchema($schema ){
         //$dbo =& $this->dbo;
         $l_rlt = $this->dbo->query("use ".$schema);
-        $this->dbo->setDatabase($schema);
+        //$this->dbo->setDatabase($schema);
         $this->schema = $this->GetCurrentSchema(); // 顺便切换一下数据库
         return $l_rlt;
     }

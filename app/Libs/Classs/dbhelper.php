@@ -996,10 +996,10 @@ class DbHelper{
         $db_connect_info = [
             'driver' => 'mysql',
             'host' => '127.0.0.1',
-            'port' => '3509',
-            'database' => 'uipps_platform',
+            'port' => '3306',
+            'database' => '',
             'username' => 'root',
-            'password' => '123456',
+            'password' => '',
             'prefix' => isset($p_arr['db_prefix']) ? $p_arr['db_prefix']: '', // 以下参数均在项目表中可配置
             'charset' => isset($db_other_setting['charset']) ? $db_other_setting['charset'] : 'utf8',
             'collation' => isset($db_other_setting['collation']) ? $db_other_setting['collation'] : 'utf8_general_ci',
@@ -1029,7 +1029,7 @@ class DbHelper{
 
         $db_connect_info['host']     = $p_arr['db_host'];
         $db_connect_info['port']     = $p_arr['db_port'];
-        $db_connect_info['database'] = $p_arr['db_name'];
+        $db_connect_info['database'] = isset($p_arr['db_name']) ? $p_arr['db_name'] : '';
         $db_connect_info['username'] = $p_arr['db_user'];
         $db_connect_info['password'] = $p_arr['db_pwd'];
 
@@ -1086,11 +1086,12 @@ class DbHelper{
         if (!is_array($p_arr)) {
             throw new \Exception('Invalid array p_arr');
         }
+        // dsn不需要携带db_name信息，因为可能并没有选择数据库
         if (!isset($p_arr["db_port"]) || '' == $p_arr["db_port"]) $p_arr["db_port"] = 3306; // 补充默认端口，统一格式
         if (array_key_exists("db_pwd", $p_arr)) {
-            $dsn = "mysql://".$p_arr["db_user"].":".$p_arr["db_pwd"]."@".$p_arr["db_host"].":".$p_arr["db_port"]."/".$p_arr["db_name"];
+            $dsn = "mysql://".$p_arr["db_user"].":".$p_arr["db_pwd"]."@".$p_arr["db_host"].":".$p_arr["db_port"]."/";
         } else if (array_key_exists("db_pass", $p_arr)) {
-            $dsn = "mysql://".$p_arr["db_user"].":".$p_arr["db_pass"]."@".$p_arr["db_host"].":".$p_arr["db_port"]."/".$p_arr["db_name"];
+            $dsn = "mysql://".$p_arr["db_user"].":".$p_arr["db_pass"]."@".$p_arr["db_host"].":".$p_arr["db_port"]."/";
         } else {
             throw new \Exception('Invalid array p_arr');
         }

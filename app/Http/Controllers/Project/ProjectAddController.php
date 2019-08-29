@@ -99,18 +99,44 @@ class ProjectAddController extends AddController
             return $content;  // 总是返回此结果
         } else {
 
-            if (!isset($form["db_name"]) || ""==$form["db_name"]) {
+            if (!isset($form['db_name']) || ''==$form['db_name']) {
                 $dbR = new DBR();
                 $dbR->table_name = $table_name;
                 // db_name
 
                 // 从数据表中获取
-                $a_proj = $dbR->getAlls("","db_name");
+                $a_proj = $dbR->getAlls('','db_name');
 
                 // 同时还要从当前的数据库获取，以防止有其他未注册项目的存在而产生冲突????
                 // 默认的数据库名称 aaaa 加数字 ，需要执行查询统计
-                $request["db_name"] = $form["db_name"] = DbHelper::getAutocreamentDbname($a_proj, "db_name", $form);
+                $request['db_name'] = $form['db_name'] = DbHelper::getAutocreamentDbname($a_proj, 'db_name', $form);
             }
+            // 检查数据库是否能连上，再判断该创建的数据库是否不存在，不存在则创建数据库，并进行use;
+            $tmp_info = $form;
+            if (isset($tmp_info['db_name'])) unset($tmp_info['db_name']);
+            $dbr2 = new DBR($tmp_info);
+            $all_database_list = DbHelper::getAllDB($dbr2, []); // 获取全部数据库
+            $b = $dbr2->GetCurrentSchema();
+            echo $b . "\r\n";
+
+            if (!in_array($form['db_name'], $all_database_list)) {
+                $dbW = new DBW($tmp_info);
+                $rlt = $dbW->create_db($form['db_name']);
+            }
+
+            $dbr2->SetCurrentSchema($form['db_name']);
+            //$e = $dbr2->query('use db_erp');
+            //$e = $dbr2->query('show databases');
+            $b = $dbr2->GetCurrentSchema();
+            echo $b . "\r\n";
+            $dbr2->table_name = 'award'; // erp_category
+            //$dbr2->getOne();
+
+            print_r($form);
+            //print_r($e);
+            print_r($all_database_list);
+            exit;
+
 
             // 同表单呈现一样，填充之前需要将字段的各个算法执行一下，便于修正字段的相关限制和取值范围
             Parse_Arithmetic::parse_for_list_form($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
