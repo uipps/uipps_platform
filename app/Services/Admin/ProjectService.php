@@ -19,8 +19,6 @@ class ProjectService extends BaseService
 
     public function getProjectList($params) {
         $data_arr = $this->projectRepository->getProjectList();
-        if (!$data_arr)
-            return $data_arr;
-        return $data_arr->toArray();
+        return $data_arr;
     }
 }

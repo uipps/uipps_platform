@@ -14,6 +14,8 @@ class ProjectRepositoryImpl extends BaseRepository
         if ($uids)
             $db_result = Project::where($sql_where)->whereIn('uid', $uids)->get();
         else $db_result = Project::where($sql_where)->get();
+        if ($db_result)
+            return $db_result->toArray();
         return $db_result;
     }
 
@@ -21,6 +23,8 @@ class ProjectRepositoryImpl extends BaseRepository
         if (!is_numeric($pid) || $pid <= 0)
             return [];
         $db_result = Project::find($pid);
+        if ($db_result)
+            return $db_result->toArray(); // 节省内存
         return $db_result;
     }
 }
