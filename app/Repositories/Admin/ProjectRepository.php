@@ -15,7 +15,7 @@ class ProjectRepository extends ProjectRepositoryImpl
     public function getProjectById($pid) {
         $cache_key = $this->GetCacheKey($pid);
 
-        $cached_result = Cache::get($cache_key);var_dump($cached_result);
+        $cached_result = Cache::get($cache_key);
         if ($cached_result)
             return $cached_result;
 

@@ -2,12 +2,16 @@
 
 class cArray
 {
-    /**
+    /*
      * 索引的二维数组转变成按照某个字段唯一标识的二维数组
      * 由getFieldArr而来
      * @param array $field_arr 必须是二维数组
      * @param string $ziduan   存在的唯一的key
      * @return array 二维数组或一维
+
+        php5.5.0以后用array_column方法
+        $l_real_tbls = \cArray::Index2KeyArr($l_real_tbls, array("key"=>"Name", "value"=>"Name"));
+        $l_real_tbls = array_column($l_real_tbls, 'Name', 'Name');
      */
     public static function Index2KeyArr($field_arr, $a_val=array("key"=>"Field", "value"=>"Field")){
         $arr = array();
