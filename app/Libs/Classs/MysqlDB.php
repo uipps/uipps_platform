@@ -64,13 +64,16 @@ class MysqlDB
      * @param string  $schema
      * @return boolean
      */
+    /*
+    // 如果连接信息里面没有db_name，use db这句sql会报错；laravel中这样切换数据库不成功，需要config::set配置信息，然后db::reconnect
     public function SetCurrentSchema($schema ){
         //$dbo =& $this->dbo;
+
         $l_rlt = $this->dbo->query("use ".$schema);
         //$this->dbo->setDatabase($schema);
         $this->schema = $this->GetCurrentSchema(); // 顺便切换一下数据库
         return $l_rlt;
-    }
+    }*/
     /**
      * 取得当前的 dsn
      * @access  $type string  format to return ("array", "string")
@@ -101,23 +104,6 @@ class MysqlDB
         return $this->dbo->affectingStatement();
         //$dbo =& $this->dbo;
         //return $dbo->_affectedRows($dbo->getConnection());
-    }
-
-    /**
-     * 取一行
-     * @access private
-     * @param resource $rs 结果集
-     * @return array
-     */
-    public function fa(&$rs){
-        if(!$this->assoc)
-        {
-            return $rs->fetchRow();
-        }
-        else
-        {
-            return $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
-        }
     }
 
     /**

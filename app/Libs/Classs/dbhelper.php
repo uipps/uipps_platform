@@ -118,24 +118,24 @@ class DbHelper{
      * @param string $a_sql 额外的需要执行的sql语句
      * @param sting $db_charset
      */
-    public static function createDBandBaseTBL($data_arr, $a_sql="", $db_charset="utf8", $source="db", $a_e_wai=true){
-        if (!array_key_exists('db_name', $data_arr) && !array_key_exists('db_port', $data_arr)) return ;
-        $db_name = $data_arr["db_name"];
+    public static function createDBandBaseTBL($p_arr, $a_sql="", $db_charset="utf8", $source="db", $a_e_wai=true){
+        if (!array_key_exists('db_name', $p_arr) && !array_key_exists('db_port', $p_arr)) return ;
+        $db_name = $p_arr["db_name"];
 
-        $dbR = new DBR($data_arr);
-        $dbW = new DBW($data_arr);
+        $dbR = new DBR($p_arr);
+        $dbW = new DBW($p_arr);
         // 在指定的主机上建库
         $l_tmp = DbHelper::getAllDB($dbR);
         if ( !in_array($db_name, $l_tmp) ) {
             // 不存在则创建该数据库
             //$sql = 'CREATE DATABASE IF NOT EXISTS '.cString_SQL::FormatField($db_name).' DEFAULT CHARACTER SET '.$db_charset.' COLLATE '.$db_charset.'_general_ci';
-            //$connect_name = self::getConnectName($data_arr);
+            //$connect_name = self::getConnectName($p_arr);
             //$rlt = DB::connection($connect_name)->insert($sql);
             $rlt = $dbW->create_db($db_name, $db_charset);
         }
 
         // 依据项目的类型，确定需要建立哪几张基本表
-        switch (strtoupper($data_arr["type"])){
+        switch (strtoupper($p_arr["type"])){
             case "PHP_PROJECT":
                 $a_sql .= file_get_contents(database_path('migrations/cms.sql'));
 
@@ -159,9 +159,9 @@ class DbHelper{
                     $l_e_wai = table_field_def_tmpl_design_sql_replace($l_e_wai, env('DB_PREFIX'));
                 }
 
-                $data_arr["name_cn"] = convCharacter($GLOBALS['language']['SYSTEM_NAME_STR'],true);
-                if (!array_key_exists("id",$data_arr)) {
-                    $data_arr["id"] = 1;  // 应当自动获取其id，暂时先手动指定
+                $p_arr["name_cn"] = convCharacter($GLOBALS['language']['SYSTEM_NAME_STR'],true);
+                if (!array_key_exists("id", $p_arr)) {
+                    $p_arr["id"] = 1;  // 应当自动获取其id，暂时先手动指定
                 }
                 break;
             case "NORMAL":
@@ -190,7 +190,7 @@ class DbHelper{
         $a_sql .= file_get_contents(database_path('migrations/table_field.sql'));
 
         // 首先创建相应的数据表
-        DbHelper::execDbWCreateInsertUpdate($data_arr, $a_sql);
+        DbHelper::execDbWCreateInsertUpdate($p_arr, $a_sql);
 
         $_SESSION = session()->all();
         $creator = 1;
@@ -204,11 +204,11 @@ class DbHelper{
             $table_def = $match_tbl[1];
             $field_def = $match_fld[1];
             $a_data_arr = array("source"=>$source,"creator"=>$creator);  // 能在外部增加字段的
-            // $dsn = DbHelper::getDSNstrByProArrOrIniArr($data_arr);
+            // $dsn = DbHelper::getDSNstrByProArrOrIniArr($p_arr);
 
             // TODO 暂时不用文件的方式, 应该直接
-            DbHelper::fill_table($data_arr, $a_data_arr,"all",$field_def,$table_def,$data_arr["id"]);
-            DbHelper::fill_field($data_arr, $a_data_arr,"all",$field_def,$table_def);
+            DbHelper::fill_table($p_arr, $a_data_arr,"all",$field_def,$table_def,$p_arr["id"]);
+            DbHelper::fill_field($p_arr, $a_data_arr,"all",$field_def,$table_def);
 
             // 作为表定义表的一部分，通常情况下需要进行字段算法更新的
             if ($a_e_wai) {
@@ -216,7 +216,7 @@ class DbHelper{
                 if (env('DB_PREFIX'))
                     $l_e_tmpl = table_field_def_tmpl_design_sql_replace($l_e_tmpl, env('DB_PREFIX'));
 
-                DbHelper::execDbWCreateInsertUpdate($data_arr, $l_e_tmpl,array("INSERT INTO ","REPLACE INTO ","UPDATE "));
+                DbHelper::execDbWCreateInsertUpdate($p_arr, $l_e_tmpl,array("INSERT INTO ","REPLACE INTO ","UPDATE "));
             }
         } else {
             //
@@ -225,12 +225,12 @@ class DbHelper{
         // ------ 如果有额外的初始化数据需要insert或update的时候
         if ($a_e_wai && isset($l_e_wai) && ""!=$l_e_wai) {
             // insert或update一些初始数据
-            DbHelper::execDbWCreateInsertUpdate($data_arr, $l_e_wai,array("INSERT INTO ","REPLACE INTO ","UPDATE "));
+            DbHelper::execDbWCreateInsertUpdate($p_arr, $l_e_wai,array("INSERT INTO ","REPLACE INTO ","UPDATE "));
         }
 
         // 如果重新创建的系统，则需要修改mysql数据库连接信息初始值
-        if ("SYSTEM"==strtoupper($data_arr["type"])) {
-            //cFile::modifyMysqlConfigIniAndLANGConfigFileWhenCreateSYSTEM($data_arr);
+        if ("SYSTEM"==strtoupper($p_arr["type"])) {
+            //cFile::modifyMysqlConfigIniAndLANGConfigFileWhenCreateSYSTEM($p_arr);
         }
 
         return 1;

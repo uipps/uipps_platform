@@ -111,32 +111,33 @@ class ProjectAddController extends AddController
                 // 默认的数据库名称 aaaa 加数字 ，需要执行查询统计
                 $request['db_name'] = $form['db_name'] = DbHelper::getAutocreamentDbname($a_proj, 'db_name', $form);
             }
+
             // 检查数据库是否能连上，再判断该创建的数据库是否不存在，不存在则创建数据库，并进行use;
             $tmp_info = $form;
             if (isset($tmp_info['db_name'])) unset($tmp_info['db_name']);
             $dbr2 = new DBR($tmp_info);
             $all_database_list = DbHelper::getAllDB($dbr2, []); // 获取全部数据库
-            $b = $dbr2->GetCurrentSchema();
-            echo $b . "\r\n";
-
+            //$b = $dbr2->GetCurrentSchema(); echo $b . "\r\n"; // 空串
             if (!in_array($form['db_name'], $all_database_list)) {
                 $dbW = new DBW($tmp_info);
-                $rlt = $dbW->create_db($form['db_name']);
+                try {
+                    // 如果没有建库权限，可能会报错
+                    $dbW->create_db($form['db_name']); // 返回true；数据库已经存在也返回true；
+                } catch (\Exception $l_err) {
+                    echo 'create database ' . $form['db_name'] . ' error!: ' . $l_err->getMessage();
+                    exit;
+                }
             }
 
-            $dbr2->SetCurrentSchema($form['db_name']);
-            //$e = $dbr2->query('use db_erp'); // 有bug，当配置信息中没有db_name的时候，执行数据库切换报错。
-            //$e = $dbr2->query('show databases');
-            $b = $dbr2->GetCurrentSchema();
-            echo $b . "\r\n";
-            $dbr2->table_name = 'award'; // erp_category
-            //$dbr2->getOne();
-
-            print_r($form);
-            //print_r($e);
-            print_r($all_database_list);
-            exit;
-
+            // 切换到新创建的数据库，需要携带数据库名称信息，重新连一下数据库。
+            /* TODO 临时测试2019.08.30，之后请删除
+            $dbR = new DBR($form);
+            $dbW = new DBW($form);
+            $l_real_tbls = $dbR->getDBTbls($form['db_name']); // 获取所有数据表
+            if ($l_real_tbls) {
+                //$l_real_tbls = \cArray::Index2KeyArr($l_real_tbls, array("key"=>"Name", "value"=>"Name"));
+                $l_real_tbls = array_column($l_real_tbls, 'Name', 'Name');
+            }*/
 
             // 同表单呈现一样，填充之前需要将字段的各个算法执行一下，便于修正字段的相关限制和取值范围
             Parse_Arithmetic::parse_for_list_form($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
