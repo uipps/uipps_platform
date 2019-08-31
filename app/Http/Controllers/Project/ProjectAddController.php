@@ -99,11 +99,18 @@ class ProjectAddController extends AddController
             return $content;  // 总是返回此结果
         } else {
 
-            if (!isset($form['db_name']) || ''==$form['db_name']) {
-                $dbR = new DBR();
-                $dbR->table_name = $table_name;
-                // db_name
+            $dbR = new DBR();
+            $dbR->table_name = $table_name;
+            // 从数据表中获取
+            $a_proj = $dbR->getAlls();
+            if (!$a_proj) {
+                echo ' project is empty : ' . var_export($a_proj, true) ;
+                exit;
+            }
+            // 项目是否已经存在于项目表中（修改项目的时候）TODO
+            //$project_exists_list =
 
+            if (!isset($form['db_name']) || ''==$form['db_name']) {
                 // 从数据表中获取
                 $a_proj = $dbR->getAlls('','db_name');
 
@@ -159,7 +166,7 @@ class ProjectAddController extends AddController
             $dbW = new DBW();
             $dbW->table_name = $table_name;
             $pid = $dbW->insertOne($data_arr);
-            if ($pid<=0){
+            if (!is_numeric($pid) || $pid <= 0) {
                 // 增加失败后
                 $response['html_content'] = date("Y-m-d H:i:s") . var_export($data_arr, true). " 发生错误,sql: ". $dbW->getSQL();
                 //$response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);

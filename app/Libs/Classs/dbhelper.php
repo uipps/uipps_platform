@@ -119,25 +119,32 @@ class DbHelper{
      * @param sting $db_charset
      */
     public static function createDBandBaseTBL($p_arr, $a_sql="", $db_charset="utf8", $source="db", $a_e_wai=true){
-        if (!array_key_exists('db_name', $p_arr) && !array_key_exists('db_port', $p_arr)) return ;
-        $db_name = $p_arr["db_name"];
+        if (!array_key_exists('db_name', $p_arr) && !array_key_exists('db_port', $p_arr)) return 0;
+        $db_name = $p_arr['db_name'];
 
-        $dbR = new DBR($p_arr);
-        $dbW = new DBW($p_arr);
+        // 检查数据库是否能连上，再判断该创建的数据库是否不存在，不存在则创建数据库，并进行use;
+        $tmp_info = $p_arr;
+        if (isset($tmp_info['db_name'])) unset($tmp_info['db_name']); // 数据库可能并不存在，不unset连接数据库会报错
+        $dbr2 = new DBR($tmp_info);
+        $all_database_list = DbHelper::getAllDB($dbr2, []); // 获取全部数据库
         // 在指定的主机上建库
-        $l_tmp = DbHelper::getAllDB($dbR);
-        if ( !in_array($db_name, $l_tmp) ) {
-            // 不存在则创建该数据库
-            //$sql = 'CREATE DATABASE IF NOT EXISTS '.cString_SQL::FormatField($db_name).' DEFAULT CHARACTER SET '.$db_charset.' COLLATE '.$db_charset.'_general_ci';
-            //$connect_name = self::getConnectName($p_arr);
-            //$rlt = DB::connection($connect_name)->insert($sql);
-            $rlt = $dbW->create_db($db_name, $db_charset);
+        if (!in_array($p_arr['db_name'], $all_database_list)) {
+            $dbW = new DBW($tmp_info);
+            try {
+                // 如果没有建库权限，可能会报错
+                $dbW->create_db($p_arr['db_name']);
+            } catch (\Exception $l_err) {
+                echo 'create database ' . $p_arr['db_name'] . ' error!: ' . $l_err->getMessage();
+                exit;
+            }
         }
+        // TODO 前缀功能暂未实现、暂不支持 以后有空了再完善
+        //if (isset($p_arr['db_prefix'])){};
 
         // 依据项目的类型，确定需要建立哪几张基本表
         switch (strtoupper($p_arr["type"])){
             case "PHP_PROJECT":
-                $a_sql .= file_get_contents(database_path('migrations/cms.sql'));
+                //$a_sql .= file_get_contents(database_path('migrations/cms.sql'));
 
                 // 同时创建资源库和基本表
                 // $db_name_res = $form["db_name"]."_res";
@@ -184,54 +191,82 @@ class DbHelper{
 
                 break;
         }
-        // 如果字段定义表指定在本项目内, 则同时需要创建表定义表和字段定义表
-
-        // 所有的数据库都必须有这两张表
-        $a_sql .= file_get_contents(database_path('migrations/table_field.sql'));
-
-        // 首先创建相应的数据表
-        DbHelper::execDbWCreateInsertUpdate($p_arr, $a_sql);
-
+        // 检查表定义表和字段定义表是否存在，所有的数据库都必须有这两张表
         $_SESSION = session()->all();
         $creator = 1;
         if (isset($_SESSION['user']) && $_SESSION['user'] && isset($_SESSION['user']['id'])) {
             $creator = $_SESSION['user']['id'];
         }
+        $a_data_arr = array("source"=>$source,"creator"=>$creator);  // 能在外部增加字段的
 
-        // 如果a_sql中包含table_def和field_def两张表则需要进行自动填充数据的操作
-        if (preg_match("/\s+`?(\w*table_def)`?\s+/", $a_sql, $match_tbl) && preg_match("/\s+`?(\w*field_def)`?\s+/", $a_sql, $match_fld))
-        {
-            $table_def = $match_tbl[1];
-            $field_def = $match_fld[1];
-            $a_data_arr = array("source"=>$source,"creator"=>$creator);  // 能在外部增加字段的
-            // $dsn = DbHelper::getDSNstrByProArrOrIniArr($p_arr);
+        // 表定义表和字段定义表有可能是挂靠在其他项目上的
+        $table_field_belong_project_id = 0;
+        if ($p_arr['table_field_belong_project_id'] > 0 && (!isset($p_arr['id']) || $p_arr['id'] != $p_arr['table_field_belong_project_id'])) {
+            // 需要获取对应的项目信息，并且检查该项目中的是否存在表定义表和字段定义表，如果该项目也挂靠在其他项目则报错；暂不支持多级挂靠，避免出现互相挂靠而死循环
+            // $p_info_t_def = \App\Models\Admin\Project::find(1); 也可，不过不好加缓存
+            $p_obj = new \App\Repositories\Admin\ProjectRepository();
+            $p_info_t_def = $p_obj->getProjectById($p_arr['table_field_belong_project_id']);
 
-            // TODO 暂时不用文件的方式, 应该直接
-            DbHelper::fill_table($p_arr, $a_data_arr,"all",$field_def,$table_def,$p_arr["id"]);
-            DbHelper::fill_field($p_arr, $a_data_arr,"all",$field_def,$table_def);
+            $table_field_belong_project_id = $p_arr['table_field_belong_project_id'];
 
-            // 作为表定义表的一部分，通常情况下需要进行字段算法更新的
-            if ($a_e_wai) {
-                $l_e_tmpl = file_get_contents(database_path('migrations/tmpl_design_init_insert.sql'));
-                if (env('DB_PREFIX'))
-                    $l_e_tmpl = table_field_def_tmpl_design_sql_replace($l_e_tmpl, env('DB_PREFIX'));
-
-                DbHelper::execDbWCreateInsertUpdate($p_arr, $l_e_tmpl,array("INSERT INTO ","REPLACE INTO ","UPDATE "));
+            // 切换到指定的数据库，需要携带数据库名称信息，重新连一下数据库。
+            $dbR = new DBR($p_info_t_def);
+            $l_real_tbls = $dbR->getDBTbls($p_arr['db_name']); // 获取所有数据表
+            if ($l_real_tbls) {
+                $l_real_tbls = array_column($l_real_tbls, 'Name', 'Name');
+            }
+            $l_table_def = (isset($p_arr['table_def_table']) && $p_arr['table_def_table']) ? $p_arr['table_def_table'] : 'table_def';
+            $l_field_def = (isset($p_arr['field_def_table']) && $p_arr['field_def_table']) ? $p_arr['field_def_table'] : 'field_def';
+            // 检查一下表定义表和字段定义表是否存在，tmpl_design_table
+            if (!in_array($l_table_def, $l_real_tbls) || !in_array($l_field_def, $l_real_tbls)) {
+                // 没有相应表，则需要报错，
+                echo ' can not find table_def , field_def in this project id ' . var_export($p_arr, true);
+                exit;
             }
         } else {
-            //
+            // 如果就在项目本身，需要检查表定义表和字段定义表是否存在，不存在则创建
+            $a_sql .= file_get_contents(database_path('migrations/table_field.sql'));
+        }
+
+        // 首先创建相应的数据表
+        DbHelper::execDbWCreateInsertUpdate($p_arr, $a_sql);
+
+        if ($table_field_belong_project_id) {
+            // 字段定义表,表定义表
+            if (isset($p_info_t_def['table_def_table']) && $p_info_t_def['table_def_table']) {
+                $table_def = $p_info_t_def['table_def_table'];
+                $field_def = $p_info_t_def['field_def_table'];
+            } else if (isset($p_info_t_def['db_prefix']) && $p_info_t_def['db_prefix']) {
+                $table_def = $p_info_t_def['db_prefix'] . 'table_def';
+                $field_def = $p_info_t_def['db_prefix'] . 'field_def';
+            }
+            $project_arr = $p_info_t_def; // 需要执行sql的项目连接信息
+        } else {
+            $table_def = (isset($p_arr['table_def_table']) && $p_arr['table_def_table']) ? $p_arr['table_def_table'] : 'table_def';
+            $field_def = (isset($p_arr['field_def_table']) && $p_arr['field_def_table']) ? $p_arr['field_def_table'] : 'field_def';
+            $project_arr = $p_arr; // 需要执行sql的项目连接信息
+        }
+
+        // 字段定义表已经存在，无需创建表，但是需要插入数据
+        DbHelper::fill_table($project_arr, $a_data_arr,"all",$field_def,$table_def, $p_arr["id"]);
+        DbHelper::fill_field($project_arr, $a_data_arr,"all",$field_def,$table_def);
+
+        // 作为表定义表的一部分，通常情况下需要进行字段算法更新的
+        if ($a_e_wai) {
+            $l_e_tmpl = file_get_contents(database_path('migrations/tmpl_design_init_insert.sql'));
+            if (env('DB_PREFIX'))
+                $l_e_tmpl = table_field_def_tmpl_design_sql_replace($l_e_tmpl, env('DB_PREFIX'));
+            DbHelper::execDbWCreateInsertUpdate($project_arr, $l_e_tmpl,array("INSERT INTO ", "REPLACE INTO ", "UPDATE "));
         }
 
         // ------ 如果有额外的初始化数据需要insert或update的时候
-        if ($a_e_wai && isset($l_e_wai) && ""!=$l_e_wai) {
+        if ($a_e_wai && isset($l_e_wai) && '' != $l_e_wai) {
             // insert或update一些初始数据
-            DbHelper::execDbWCreateInsertUpdate($p_arr, $l_e_wai,array("INSERT INTO ","REPLACE INTO ","UPDATE "));
+            DbHelper::execDbWCreateInsertUpdate($project_arr, $l_e_wai, array("INSERT INTO ", "REPLACE INTO ", "UPDATE "));
         }
 
         // 如果重新创建的系统，则需要修改mysql数据库连接信息初始值
-        if ("SYSTEM"==strtoupper($p_arr["type"])) {
-            //cFile::modifyMysqlConfigIniAndLANGConfigFileWhenCreateSYSTEM($p_arr);
-        }
+        // if ("SYSTEM"==strtoupper($p_arr["type"])) cFile::modifyMysqlConfigIniAndLANGConfigFileWhenCreateSYSTEM($p_arr);
 
         return 1;
     }
