@@ -26,7 +26,10 @@ class MysqlW extends MysqlDB
         $sql = "insert into {$tablename} ( $ziduan ) values ( $vals )";$this->sql = $sql;
         global $SHOW_SQL;
         if ("all"==$SHOW_SQL||false!==strpos($SHOW_SQL,"201")) echo $sql.NEW_LINE_CHAR;
-        $affected = $this->dbo->insert($sql);
+        $affected = $this->dbo->insert($sql); // 成功返回true
+        //$affected = $this->dbo->insertGetId($sql); // 报错，Call to undefined method Illuminate\Database\MySqlConnection::insertGetId()
+        if ($affected)
+            return $this->dbo->getPdo()->lastInsertId(); // 返回insertID
         return $affected;
     }
     /**
