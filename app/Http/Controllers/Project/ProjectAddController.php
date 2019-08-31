@@ -99,18 +99,10 @@ class ProjectAddController extends AddController
             return $content;  // 总是返回此结果
         } else {
 
-            $dbR = new DBR();
-            $dbR->table_name = $table_name;
-            // 从数据表中获取
-            $a_proj = $dbR->getAlls();
-            if (!$a_proj) {
-                echo ' project is empty : ' . var_export($a_proj, true) ;
-                exit;
-            }
-            // 项目是否已经存在于项目表中（修改项目的时候）TODO
-            //$project_exists_list =
-
             if (!isset($form['db_name']) || ''==$form['db_name']) {
+                $dbR = new DBR();
+                $dbR->table_name = $table_name;
+
                 // 从数据表中获取
                 $a_proj = $dbR->getAlls('','db_name');
 
@@ -163,13 +155,23 @@ class ProjectAddController extends AddController
             if (array_key_exists("createdate", $arr["f_info"])) $data_arr["createdate"] = ("0000-00-00"==$data_arr["createdate"] || empty($data_arr["createdate"])) ? date("Y-m-d") : $data_arr["createdate"];
             if (array_key_exists("createtime", $arr["f_info"])) $data_arr["createtime"] = ("00:00:00"==$data_arr["createtime"] || empty($data_arr["createtime"]))   ? date("H:i:s") : $data_arr["createtime"];
 
-            $dbW = new DBW();
-            $dbW->table_name = $table_name;
-            $pid = $dbW->insertOne($data_arr);
+
+            // 项目是否已经存在于项目表中（修改项目的时候）TODO
+            $p_obj = new \App\Repositories\Admin\ProjectRepository();
+            $project_exists_list = $p_obj->getProjectDsnList();
+            $l_dsn = DbHelper::getConnectName($form, true, false);
+            if ($project_exists_list && isset($project_exists_list[$l_dsn])) {
+                // 如果已经存在，获取id
+                $pid = $project_exists_list[$l_dsn]['id'];
+            } else {
+                // 不存在
+                $dbW = new DBW();
+                $dbW->table_name = $table_name;
+                $pid = $dbW->insertOne($data_arr);
+            }
             if (!is_numeric($pid) || $pid <= 0) {
                 // 增加失败后
                 $response['html_content'] = date("Y-m-d H:i:s") . var_export($data_arr, true). " 发生错误,sql: ". $dbW->getSQL();
-                //$response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
                 return $response['html_content'];
             }
 

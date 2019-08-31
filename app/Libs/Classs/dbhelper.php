@@ -17,13 +17,8 @@ class DbHelper{
 
     // 将数据库project表的数组或mysql_config.ini中数组类型变为dsn字符串
     public static function getDSNstrByProArrOrIniArr($dsn){
-        if (is_array($dsn)) {
-            if (array_key_exists("db_pwd", $dsn)) {
-                $dsn = "mysql://".$dsn["db_user"].":".$dsn["db_pwd"]."@".$dsn["db_host"].":".$dsn["db_port"]."/".$dsn["db_name"];
-            }else if (array_key_exists("db_pass", $dsn)) {
-                $dsn = "mysql://".$dsn["db_user"].":".$dsn["db_pass"]."@".$dsn["db_host"].":".$dsn["db_port"]."/".$dsn["db_name"];
-            }
-        }
+        if (is_array($dsn))
+            $dsn = self::getConnectName($dsn, true, false);
         return $dsn;
     }
 
@@ -211,14 +206,15 @@ class DbHelper{
 
             // 切换到指定的数据库，需要携带数据库名称信息，重新连一下数据库。
             $dbR = new DBR($p_info_t_def);
-            $l_real_tbls = $dbR->getDBTbls($p_arr['db_name']); // 获取所有数据表
+            $l_real_tbls = $dbR->getDBTbls($p_info_t_def['db_name']); // 获取当前连接库的所有数据表，加不加 $p_info_t_def['db_name'] 都可
+
             if ($l_real_tbls) {
                 $l_real_tbls = array_column($l_real_tbls, 'Name', 'Name');
             }
-            $l_table_def = (isset($p_arr['table_def_table']) && $p_arr['table_def_table']) ? $p_arr['table_def_table'] : 'table_def';
-            $l_field_def = (isset($p_arr['field_def_table']) && $p_arr['field_def_table']) ? $p_arr['field_def_table'] : 'field_def';
+            $table_def = (isset($p_arr['table_def_table']) && $p_arr['table_def_table']) ? $p_arr['table_def_table'] : 'table_def';
+            $field_def = (isset($p_arr['field_def_table']) && $p_arr['field_def_table']) ? $p_arr['field_def_table'] : 'field_def';
             // 检查一下表定义表和字段定义表是否存在，tmpl_design_table
-            if (!in_array($l_table_def, $l_real_tbls) || !in_array($l_field_def, $l_real_tbls)) {
+            if (!in_array($table_def, $l_real_tbls) || !in_array($field_def, $l_real_tbls)) {
                 // 没有相应表，则需要报错，
                 echo ' can not find table_def , field_def in this project id ' . var_export($p_arr, true);
                 exit;
@@ -239,6 +235,9 @@ class DbHelper{
             } else if (isset($p_info_t_def['db_prefix']) && $p_info_t_def['db_prefix']) {
                 $table_def = $p_info_t_def['db_prefix'] . 'table_def';
                 $field_def = $p_info_t_def['db_prefix'] . 'field_def';
+            } else {
+                // $table_def = 'table_def';
+                // $field_def = 'field_def';
             }
             $project_arr = $p_info_t_def; // 需要执行sql的项目连接信息
         } else {
@@ -248,8 +247,8 @@ class DbHelper{
         }
 
         // 字段定义表已经存在，无需创建表，但是需要插入数据
-        DbHelper::fill_table($project_arr, $a_data_arr,"all",$field_def,$table_def, $p_arr["id"]);
-        DbHelper::fill_field($project_arr, $a_data_arr,"all",$field_def,$table_def);
+        DbHelper::fill_table($project_arr, $a_data_arr,"all", $field_def, $table_def, $p_arr["id"]);
+        DbHelper::fill_field($project_arr, $a_data_arr,"all", $field_def, $table_def);
 
         // 作为表定义表的一部分，通常情况下需要进行字段算法更新的
         if ($a_e_wai) {
@@ -262,7 +261,7 @@ class DbHelper{
         // ------ 如果有额外的初始化数据需要insert或update的时候
         if ($a_e_wai && isset($l_e_wai) && '' != $l_e_wai) {
             // insert或update一些初始数据
-            DbHelper::execDbWCreateInsertUpdate($project_arr, $l_e_wai, array("INSERT INTO ", "REPLACE INTO ", "UPDATE "));
+            DbHelper::execDbWCreateInsertUpdate($p_arr, $l_e_wai, array("INSERT INTO ", "REPLACE INTO ", "UPDATE "));
         }
 
         // 如果重新创建的系统，则需要修改mysql数据库连接信息初始值
@@ -290,6 +289,7 @@ class DbHelper{
                 }
             }
         }
+        if (!isset($l_arr) || !$l_arr) return 1;
 
         // 然后逐一执行
         foreach ($l_arr as $l_sql) {
@@ -1116,7 +1116,7 @@ class DbHelper{
         return $rlt;
     }
     // 由于config::set的限制，必须保证返回的字符串中没有点符号'.'
-    public static function getConnectName($p_arr) {
+    public static function getConnectName($p_arr, $with_dbname = false, $replace_dot = true) {
         //return $p_arr'db_name'] . '_m';
         if (!is_array($p_arr)) {
             throw new \Exception('Invalid array p_arr');
@@ -1130,6 +1130,10 @@ class DbHelper{
         } else {
             throw new \Exception('Invalid array p_arr');
         }
-        return str_replace('.', self::DOT_REPLACE_TO_STR, $dsn); // 保证没有.符号, 防止config.set的时候出现问题
+        if ($with_dbname) $dsn = $dsn . $p_arr['db_name'];
+
+        if ($replace_dot)
+            return str_replace('.', self::DOT_REPLACE_TO_STR, $dsn); // 保证没有.符号, 防止config.set的时候出现问题
+        return $dsn;
     }
 }

@@ -27,4 +27,11 @@ class ProjectRepositoryImpl extends BaseRepository
             return $db_result->toArray(); // 节省内存
         return $db_result;
     }
+
+    public function getProjectDsnList($with_dbname = true) {
+        $db_result = Project::get();
+        if ($db_result)
+            return $db_result->toArray(); // 节省内存
+        return $db_result;
+    }
 }
