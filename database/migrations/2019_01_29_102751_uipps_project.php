@@ -40,7 +40,7 @@ class UippsProject extends Migration
         Schema::create('project', function (Blueprint $table) {
             $table->increments('id')->comment('自增ID');
             $table->string('name_cn', 128)->unique()->comment('中文名称');
-            $table->enum('type', ['SYSTEM','CMS','PHP_PROJECT','NORMAL','PUB','RES','GRAB'])->default('CMS')->comment('项目类型');
+            $table->enum('type', ['SYSTEM','CMS','PHP_PROJECT','NORMAL','PUB','RES','GRAB'])->default('PHP_PROJECT')->comment('项目类型');
             $table->unsignedInteger('parent_id')->default(0)->comment('所属父级ID');
             $table->unsignedInteger('table_field_belong_project_id')->default(0)->comment('字段定义表所属项目ID, 0:表示所属项目, 外来的项目可能不是0');
             $table->string('table_def_table', 32)->nullable()->default('')->comment('表定义表的数据表名,含前缀，以下类似');

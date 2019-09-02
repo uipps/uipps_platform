@@ -73,7 +73,7 @@ class InitProjectCommand extends Command
         $field_def = $prefix . 'field_def';
         $a_data_arr = array("source"=>'db',"creator"=>$creator);  // 能在外部增加字段的
 
-        DbHelper::fill_table($p_arr, $a_data_arr,"all",$field_def,$table_def,$p_arr["id"]);
+        DbHelper::fill_table($p_arr, $a_data_arr,"all",$field_def,$table_def);
         DbHelper::fill_field($p_arr, $a_data_arr,"all",$field_def,$table_def);
 
 

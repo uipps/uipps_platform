@@ -116,6 +116,7 @@ class DbHelper{
     public static function createDBandBaseTBL($p_arr, $a_sql="", $db_charset="utf8", $source="db", $a_e_wai=true){
         if (!array_key_exists('db_name', $p_arr) && !array_key_exists('db_port', $p_arr)) return 0;
         $db_name = $p_arr['db_name'];
+        $p_arr['type'] = strtoupper($p_arr['type']); // 强制转大写
 
         // 检查数据库是否能连上，再判断该创建的数据库是否不存在，不存在则创建数据库，并进行use;
         $tmp_info = $p_arr;
@@ -137,7 +138,8 @@ class DbHelper{
         //if (isset($p_arr['db_prefix'])){};
 
         // 依据项目的类型，确定需要建立哪几张基本表
-        switch (strtoupper($p_arr["type"])){
+        switch ($p_arr['type']) {
+            case "NORMAL":
             case "PHP_PROJECT":
                 //$a_sql .= file_get_contents(database_path('migrations/cms.sql'));
 
@@ -165,9 +167,6 @@ class DbHelper{
                 if (!array_key_exists("id", $p_arr)) {
                     $p_arr["id"] = 1;  // 应当自动获取其id，暂时先手动指定
                 }
-                break;
-            case "NORMAL":
-
                 break;
             case "PUB":
 
@@ -219,6 +218,12 @@ class DbHelper{
                 echo ' can not find table_def , field_def in this project id ' . var_export($p_arr, true);
                 exit;
             }
+
+            // 暂时不支持cms类型的项目进行字段定义表分离
+            if ('CMS' == $p_arr['type']) {
+                echo ' project type ' . $p_arr['type'] . ' , do not suppert table_def , field_def in different project:' . var_export($p_arr, true);
+                exit;
+            }
         } else {
             // 如果就在项目本身，需要检查表定义表和字段定义表是否存在，不存在则创建
             $a_sql .= file_get_contents(database_path('migrations/table_field.sql'));
@@ -247,8 +252,8 @@ class DbHelper{
         }
 
         // 字段定义表已经存在，无需创建表，但是需要插入数据
-        DbHelper::fill_table($project_arr, $a_data_arr,"all", $field_def, $table_def, $p_arr["id"]);
-        DbHelper::fill_field($project_arr, $a_data_arr,"all", $field_def, $table_def);
+        DbHelper::fill_table($project_arr, $a_data_arr, "all", $field_def, $table_def, $p_arr);
+        DbHelper::fill_field($project_arr, $a_data_arr, "all", $field_def, $table_def, true, $p_arr);
 
         // 作为表定义表的一部分，通常情况下需要进行字段算法更新的
         if ($a_e_wai) {
@@ -445,16 +450,25 @@ class DbHelper{
     }
 
     // 自动填充 table_def 表
-    public static function fill_table($p_arr, $data_arr, $tbl_name="all", $f_def="field_def", $t_def="table_def", $p_id=0, $no_table=array()){
+    public static function fill_table($p_arr, $data_arr, $tbl_name="all", $f_def="field_def", $t_def="table_def", $real_p_arr=[], $no_table=array()){
         $if_repair = true;
         if (""==$tbl_name ) {
             return null;
         }
+        if (!$real_p_arr) $real_p_arr = $p_arr;
+        $real_p_id = $real_p_arr['id'];
+
         $dbR = new DBR($p_arr);
         $dbW = new DBW($p_arr);
 
-        // 先获取所有的表
-        $all_table = $dbR->getDBTbls();
+        if ($p_arr['id'] != $real_p_id) {
+            // 项目和字段定义表分离，不在同一个库里面的情况
+            $dbReal = new DBR($real_p_arr);
+            $all_table = $dbReal->getDBTbls($real_p_arr['db_name']); // 需要创建的项目的数据表
+        } else {
+            // 先获取所有的表
+            $all_table = $dbR->getDBTbls();
+        }
         if (!$all_table){
             return null;
         }
@@ -469,7 +483,7 @@ class DbHelper{
                     }else{
                         $l_data_arr = array();
                     }
-                    DbHelper::ins2table_def($dbR,$dbW,array_merge($l_data_arr,$data_arr), $l_table["Name"], $f_def, $t_def, $p_id);
+                    DbHelper::ins2table_def($dbR,$dbW,array_merge($l_data_arr,$data_arr), $l_table["Name"], $f_def, $t_def, $real_p_id);
                 }
             }
         }
@@ -479,28 +493,30 @@ class DbHelper{
             // 还需要进行修复, 对于废弃的表需要删除或改为废弃状态，当前直接删除
             // 对于在字段定义表中属于多余表的那些字段，统统删除
             $dbR->table_name = $t_def;
-            $l_old_tbls = $dbR->getAlls("where p_id = $p_id and status_='use' order by id");
+            $l_old_tbls = $dbR->getAlls("where p_id = $real_p_id and status_='use' order by id");
             $l_old_tbls = cArray::Index2KeyArr($l_old_tbls, array("key"=>"name_eng", "value"=>"name_eng"));
             $all_table = cArray::Index2KeyArr($all_table, array("key"=>"Name", "value"=>"Name"));
             $l_duo = array_diff($l_old_tbls,$all_table);  // 在old中，但不在实际的表结构中
+            if (!$l_duo)
+                return 0;
             // 多出的字段需要删除或修改为废弃状态
-            foreach ($l_duo as $l_tbl){
-                $l_row = $dbR->getOne("where p_id = $p_id and name_eng = '".$l_tbl."' and status_='use' ");
+            foreach ($l_duo as $l_tbl) {
+                $l_row = $dbR->getOne("where p_id = $real_p_id and name_eng = '" . $l_tbl . "' and status_='use' ");
 
-                if (!empty($l_row)) {
+                if ($l_row) {
                     $dbW->table_name = $t_def;
                     //$dbW->delOne(array("id"=>$l_row["id"]),"id");
-                    $dbW->updateOne(array('status_'=>'del'), "id=".$l_row["id"]);
+                    $dbW->updateOne(array('status_' => 'del'), "id=" . $l_row["id"]);
                     // 同时还需要删除字段定义表中的该表的所有字段
                     $dbW->table_name = $f_def;
                     //$dbW->delOne(array("t_id"=>$l_row["id"]),"t_id");
-                    $dbW->updateOne(array('status_'=>'del'), "t_id=".$l_row["id"]);
+                    $dbW->updateOne(array('status_' => 'del'), "t_id=" . $l_row["id"]);
                 }
             }
         }
 
 
-        return null;
+        return 1;
     }
 
     // 往表定义表中插入数据
@@ -550,22 +566,36 @@ class DbHelper{
         return $last_id;
     }
 
-    // 自动填充 field_def 表
-    public static function fill_field($p_arr, $data_arr, $want_tbl="all", $f_def="field_def", $t_def="table_def", $if_repair=true){
-        if ('' == $want_tbl) {
+    // 自动填充 field_def 表，填充字段定义表，但需要处理的数据库跟字段定义表可能不在同一个库。
+    // $p_arr是字段定义表所在库；而 $real_p_arr 是项目数据表所在库
+    public static function fill_field($p_arr, $data_arr, $want_tbl="all", $f_def="field_def", $t_def="table_def", $if_repair=true, $real_p_arr=[]){
+        if (!$p_arr || '' == $want_tbl) {
             return 0;
         }
+        if (!$real_p_arr) $real_p_arr = $p_arr;
+        if ($p_arr['id'] != $real_p_arr['id']) {
+            // 项目和字段定义表分离，不在同一个库里面的情况
+            // TODO 表修复等问题等
+        }
+
         $dbR = new DBR($p_arr);
         $dbW = new DBW($p_arr);
+
+        $p_real_id = $real_p_arr['id'];
+        $p_sql_str = '';
+        if ($p_real_id > 0) {
+            $p_sql_str = ' AND  p_id = ' . $p_real_id;
+        }
 
         // 自动完成所有表的导入，包括自身也需要导入
         $dbR->table_name = $t_def;
         if ("all"==$want_tbl) {
-            $_tbls = $dbR->getAlls();
-        }else {
-            $_tbl = $dbR->getOne("where name_eng = '$want_tbl'");
+            $_tbls = $dbR->getAlls("where status_='use' " . $p_sql_str);
+        } else {
+            $_tbl = $dbR->getOne("where name_eng = '$want_tbl'" . $p_sql_str);
             $_tbls = array($_tbl);
         }
+
         // 需要for 循环
         foreach ($_tbls as $_tbl){
             if ($_tbl["id"]>0) {
