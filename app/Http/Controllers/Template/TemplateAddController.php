@@ -348,7 +348,7 @@ if (isset($form[$a_key])){
 
 return $l_url;')
                 );
-                DbHelper::ins2field_def($dbR,$dbW,$l_data_arr,$tid,$FLD_def,$TBL_def);
+                DbHelper::ins2field_def($arr["p_def"], $l_data_arr,$tid,$FLD_def,$TBL_def);
 
 // 添加成功以后，需要对定义的各种任务需要一一完成(即执行相应的成功后算法)
                 Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
