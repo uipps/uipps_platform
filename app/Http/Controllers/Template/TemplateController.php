@@ -56,8 +56,9 @@ class TemplateController extends ListController
 
         $arr = array();
         $arr["table_name"] = $table_name;
-        $arr["TBL_def"] = $TBL_def;
-        $arr["FLD_def"] = $FLD_def;
+        $arr["real_p_id"] = $p_self_info['p_def']['table_field_belong_project_id']; // 字段定义表所在项目
+        $arr["TBL_def"] = $p_self_info['p_def']['TBL_def'];
+        $arr["FLD_def"] = $p_self_info['p_def']['FLD_def'];;
         $arr["html_title"] = $GLOBALS['language']['TPL_MOBAN_STR'].$GLOBALS['language']['TPL_LIEBIAO_STR'];
         $arr["html_name"] = $p_self_info["p_def"]["name_cn"].$arr["html_title"];
         $arr["default_sqlwhere"]  = "where `name_eng` NOT LIKE '%table_def' AND `name_eng` NOT LIKE '%field_def'"; // 表定义表和字段定义表不用显示

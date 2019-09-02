@@ -734,21 +734,51 @@ class DbHelper{
 
             if (1==$i) {
                 // 逐级循环, 第一级是项目表，包含了数据库连接信息
-                $l_tbl_name = (empty($l_p_self_id["table_name"]))? env('DB_PREFIX', '')."project":$l_p_self_id["table_name"];
+                $l_tbl_name = (isset($l_p_self_id["table_name"]) && $l_p_self_id["table_name"]) ? $l_p_self_id["table_name"] : env('DB_PREFIX')."project";
                 $dbR->table_name = $l_tbl_name;
                 // 都是id，整型数据，因此无需引号
-
                 $l_p_s1 = $dbR->getOne(" where id=".$a_data[$l_p_self_id["ziduan"]]);
+                if (!$l_p_s1) {
+                    Log::info('project empty!');
+                    return 0;
+                }
                 $l_rlt["p_def"] = $l_p_s1;
 
+                // 表定义表、字段定义表可能不在项目内，这里需要依据项目设定的表定义表所在项目进行获取
+                $table_field_belong_project_id = 0;
+                if ($l_p_s1['table_field_belong_project_id'] > 0 && ($l_p_s1['id'] != $l_p_s1['table_field_belong_project_id'])) {
+                    $p_obj = new \App\Repositories\Admin\ProjectRepository();
+                    $p_info_t_def = $p_obj->getProjectById($l_p_s1['table_field_belong_project_id']);
+                    $table_field_belong_project_id = $l_p_s1['table_field_belong_project_id'];
+                }
+                if ($table_field_belong_project_id) {
+                    // 字段定义表,表定义表在其他项目中
+                    if (isset($p_info_t_def['table_def_table']) && $p_info_t_def['table_def_table']) {
+                        $table_def = $p_info_t_def['table_def_table'];
+                        $field_def = $p_info_t_def['field_def_table'];
+                    } else if (isset($p_info_t_def['db_prefix']) && $p_info_t_def['db_prefix']) {
+                        $table_def = $p_info_t_def['db_prefix'] . 'table_def';
+                        $field_def = $p_info_t_def['db_prefix'] . 'field_def';
+                    } else {
+                        $table_def = 'table_def';
+                        $field_def = 'field_def';
+                    }
+                    $project_arr = $p_info_t_def; // 需要执行sql的项目连接信息
+                } else {
+                    $table_def = (isset($l_p_s1['table_def_table']) && $l_p_s1['table_def_table']) ? $l_p_s1['table_def_table'] : 'table_def';
+                    $field_def = (isset($l_p_s1['field_def_table']) && $l_p_s1['field_def_table']) ? $l_p_s1['field_def_table'] : 'field_def';
+                    $project_arr = $l_p_s1; // 需要执行sql的项目连接信息
+                }
+                $l_rlt['p_def']['TBL_def'] = $table_def;
+                $l_rlt['p_def']['FLD_def'] = $field_def;
 
                 // 该项目下所有的表
                 /*$dsn = DbHelper::getDSNstrByProArrOrIniArr($l_p_s1);
                 $dbR->dbo = &DBO('', $dsn);
                 $dbR->SetCurrentSchema($l_p_s1['db_name']);*/
-                $dbR = new DBR($l_p_s1);
-                $dbR->table_name = empty($l_p_self_id["t_table_name"]) ? env('DB_PREFIX', '')."table_def":$l_p_self_id["t_table_name"];
-                $l_t_all = $dbR->getAlls(" where status_!='stop'", 'id, name_eng, name_cn');
+                $dbR = new DBR($project_arr);
+                $dbR->table_name = empty($l_p_self_id["t_table_name"]) ? $table_def :$l_p_self_id["t_table_name"];
+                $l_t_all = $dbR->getAlls(" where status_!='stop' AND p_id = " . $l_p_s1['id'], 'id, name_eng, name_cn');
                 $l_rlt["t_all_"] = $l_t_all;
 
                 /*$dbR->table_name = $l_p_self_id["table_name"];
@@ -761,15 +791,16 @@ class DbHelper{
                 /*$dsn = DbHelper::getDSNstrByProArrOrIniArr($l_p_s1);
                 $dbR->dbo = &DBO('', $dsn);
                 $dbR->SetCurrentSchema($l_p_s1['db_name']);*/
-                $dbR = new DBR($l_p_s1);
+                $dbR = new DBR($project_arr);
                 //$dbR = null;$dbR = new DBR($l_p_s1);  // 涉及到数据库重连的问题，包含了数据库连接信息
-                $dbR->table_name = $l_tbl_name = empty($l_p_self_id["table_name"]) ? env('DB_PREFIX', '')."table_def":$l_p_self_id["table_name"]; // 表定义表的数据必须获取到
+                $dbR->table_name = $l_tbl_name = $table_def; // 表定义表的数据必须获取到
                 $l_t_def_arr = $dbR->getOne(" where id = ".$a_data[$l_p_self_id["ziduan"]]);  // 在没有$a_p_self_ids设置的情况下也能获取到数据
                 $l_rlt["t_def"] = $l_t_def_arr;
                 //print_r($l_t_def_arr);exit;
 
                 // 需要将表级别的信息也一同获取到，例如表模板设计表的数据也需要一同获取到其信息
-                $l_real_tbls = $dbR->getDBTbls();
+                $dbReal = new DBR($l_p_s1);
+                $l_real_tbls = $dbReal->getDBTbls();
                 $l_real_tbls = cArray::Index2KeyArr($l_real_tbls,array("key"=>"Name","value"=>"Name"));
                 $l_tmpl_design = TABLENAME_PREF . "tmpl_design";
                 if (array_key_exists($l_tmpl_design,$l_real_tbls)) {
@@ -791,7 +822,7 @@ class DbHelper{
                 }
 
                 // 同时获取该表所有字段定义信息, 多行数据
-                $dbR->table_name = empty($l_p_self_id["table_name2"]) ? TABLENAME_PREF."field_def":$l_p_self_id["table_name2"]; // 字段定义表的数据必须获取到
+                $dbR->table_name = empty($l_p_self_id["table_name2"]) ? $field_def:$l_p_self_id["table_name2"]; // 字段定义表的数据必须获取到
                 $l_f_def_tbl = $dbR->getAlls(" where t_id = ".$a_data[$l_p_self_id["ziduan"]] . $l_f_range. " order by list_order asc,id asc ");  // 字段定义表中的定义. 在没有$a_p_self_ids设置的情况下也能获取到数据
                 $l_f_def_real= DbHelper::getFieldInfoByTbl($dbR, $l_t_def_arr["name_eng"]); // 实际、真实的表获取
                 // 同时获取实际表(真实表,实际的表,真实的表)表结构中的字段信息,然后组合成完整的信息
