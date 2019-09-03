@@ -895,11 +895,7 @@ function GetCurrentUrl2() {
     // 拼装url
     $url .= 'http';
     if (443 == $_SERVER['SERVER_PORT']) $url .= 's'; // 是否 https
-    $url .= '://' . $_SERVER['SERVER_NAME'];
-
-    // 默认的80端口可以不用显示, 443不显示端口号
-    if (80 != $_SERVER['SERVER_PORT'] && 443 != $_SERVER['SERVER_PORT'])
-        $url .= ':' . $_SERVER['SERVER_PORT'];
+    $url .= '://' . $_SERVER['HTTP_HOST'];
 
     if (isset($_SERVER['REQUEST_URI']))
         return $url .= $_SERVER['REQUEST_URI'];
