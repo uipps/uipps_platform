@@ -187,7 +187,7 @@ class ProjectAddController extends AddController
 
             // $response['html_content'] = "";
             //return "main.php?do=project_list";  // 总是返回此结果
-            $response['html_content'] = "<script type='text/javascript'>window.parent.frames['frmMainMenu'].location.reload();window.parent.frames['frmCenter'].location.href='main.php?do=project_list';</script>".NEW_LINE_CHAR;
+            $response['html_content'] = "<script type='text/javascript'>window.parent.frames['frmMainMenu'].location.reload();window.parent.frames['frmCenter'].location.href='/project/list';</script>".NEW_LINE_CHAR;
             //$response['ret'] = array('ret'=>0);
             return $response['html_content'];  // 总是返回此结果
 

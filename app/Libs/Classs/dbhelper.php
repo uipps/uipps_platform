@@ -312,36 +312,6 @@ class DbHelper{
         }
         return 1;
     }
-    /*public static function execDbWCreateInsertUpdate(&$data_arr, $a_sql='', $a_spe_arr=array("CREATE ","INSERT INTO ","UPDATE ","REPLACE INTO ")){
-        // 换另外一种更合理的算法
-        $a_sql = cString::lineDelBySpe($a_sql,"--");  // 仅仅去掉行注释
-        $a_sql = str_ireplace('ON UPDATE CURRENT_TIMESTAMP',DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),$a_sql);  // 替换掉其中的ON UPDATE CURRENT_TIMESTAMP为特定字符串执行sql的时候然后替换回来，因为里面还有sql关键词'update '
-
-        $l_arr = [];
-        if (!empty($a_spe_arr)) {
-            $l_str = implode("|",$a_spe_arr);
-            $l_str = "/($l_str)/i";
-
-            if( preg_match_all($l_str,trim($a_sql),$l_matches,PREG_SET_ORDER) ) {
-                $l_arr = preg_split($l_str, $a_sql);  // 正则分割成多块
-                //
-                foreach ($l_matches as $l_k => $l_v){
-                    $l_arr[$l_k+1] = $l_v[1] . $l_arr[$l_k+1]; // 字符串补全，还原
-                }
-            }
-        }
-
-        if (isset($data_arr['db_name'])) self::getConfigInfoByProjectData($data_arr);
-        // 然后逐一执行
-        foreach ($l_arr as $l_sql) {
-            if (""!=trim($l_sql)) {
-                $l_sql = str_ireplace(DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),'ON UPDATE CURRENT_TIMESTAMP',$l_sql);  // sql字符串复原
-                $connect_name = self::getConnectName($data_arr);
-                $rlt = DB::connection($connect_name)->insert($l_sql);
-            }
-        }
-        return 1;
-    }*/
 
     /**
      * 各个项目自动检测
@@ -467,7 +437,7 @@ class DbHelper{
             $all_table = $dbReal->getDBTbls($real_p_arr['db_name']); // 需要创建的项目的数据表
         } else {
             // 先获取所有的表
-            $all_table = $dbR->getDBTbls();
+            $all_table = $dbR->getDBTbls($p_arr['db_name']);
         }
         if (!$all_table){
             return null;
@@ -554,8 +524,6 @@ class DbHelper{
         $data_arr = array_merge($data_arr,$a_data_arr);  // 外面给出的数据可修改里面的参数
         try {
             $last_id = $dbW->insertOne($data_arr);
-            // $last_id = $dbW->LastID();
-            var_dump($last_id);
         } catch (\Exception $e) {
             echo $dbW->getSQL();
             echo "insert error!";

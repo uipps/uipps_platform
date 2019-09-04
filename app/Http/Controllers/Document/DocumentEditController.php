@@ -211,7 +211,7 @@ class DocumentEditController extends AddController
                 // 删除处理直接返回到列表页面
                 if ('del'==$form['status_']) {
                     $response['ret'] = array('ret'=>0);
-                    return "main.php?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"];
+                    return "/".$this->type_name."/list?_=".$arr["parent_rela"]["parent_ids_url_build_query"];
                 }
                 if (empty($data_arr)) {
                     $l_html = "<br />未修改任何数据";

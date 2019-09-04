@@ -201,7 +201,7 @@ class TempdefEditController extends AddController
                 return $response['html_content'];  // 总是返回此结果
             }
 
-            if ('del'==$form['status_']) return "main.php?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"];  // 删除处理直接返回到列表页面
+            if ('del'==$form['status_']) return "/".$this->type_name."/list?_=".$arr["parent_rela"]["parent_ids_url_build_query"];  // 删除处理直接返回到列表页面
             // 修改成功(或未修改)以后，需要对定义的各种任务需要一一完成(即执行相应的算法)
             Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
 
