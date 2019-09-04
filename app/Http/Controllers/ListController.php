@@ -24,9 +24,9 @@ class ListController extends Controller
         // 初始化一些需要用到的默认数据
         if(!array_key_exists("parent_ids_arr", $a_arr)) $a_arr["parent_ids_arr"] = array();
         if(!array_key_exists("a_options", $a_arr)) $a_arr["a_options"] = array();
-        if(!array_key_exists("sql_order", $a_arr)) $a_arr["sql_order"] = "order by id desc";
+        if(!array_key_exists("sql_order", $a_arr)) $a_arr["sql_order"] = "order by `id` desc";
         if(!array_key_exists("tplname", $a_arr)) $a_arr["tplname"] = "list"; // $actionMap->getProp("path")
-        if(!array_key_exists("default_sqlwhere", $a_arr)) $a_arr["default_sqlwhere"] = "where status_ = 'use'"; // $actionMap->getProp("path")
+        if(!array_key_exists("default_sqlwhere", $a_arr)) $a_arr["default_sqlwhere"] = "where `status_` = 'use'"; // $actionMap->getProp("path")
 
         // 获取父级。依据指定的父级元素、及本级元素而获取到的id列表等相关数据。放在上面初始化之后
         $a_arr["parent_rela"] = GetParentIds($request, $a_arr["parent_ids_arr"], $a_arr["a_options"]);

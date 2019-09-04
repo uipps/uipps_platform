@@ -532,7 +532,7 @@ class DbHelper{
         }
         $dbW->table_name = $t_def;
         //print_r($dbW->getExistorNot("name_eng='".$name_eng."'"));
-        if($dbW->getExistorNot("name_eng='".$name_eng."'")){
+        if($dbW->getExistorNot("name_eng='".$name_eng."'  AND p_id = $p_id ")){
             // 表如果存在是否需要进行修复???? 对于tpl_type等的修改基于什么呢？如何获取这样的数据呢？
             // 暂时先不更新存在中的数据表
             usleep(300);
@@ -576,14 +576,13 @@ class DbHelper{
         if (!$real_p_arr) $real_p_arr = $p_arr;
 
         $dbR = new DBR($p_arr);
-        $p_sql_str = ' AND  p_id = ' . $real_p_arr['id']; // 项目id
 
         // 自动完成所有表的导入，包括自身也需要导入
         $dbR->table_name = $t_def;
         if ("all"==$want_tbl) {
-            $_tbls = $dbR->getAlls("where status_='use' " . $p_sql_str); // fill_table 已经修正数据表了
+            $_tbls = $dbR->getAlls("where status_='use' AND  p_id = " . $real_p_arr['id']); // fill_table 已经修正数据表了
         } else {
-            $_tbl = $dbR->getOne("where name_eng = '$want_tbl'" . $p_sql_str);
+            $_tbl = $dbR->getOne("where name_eng = '$want_tbl' AND  p_id = " . $real_p_arr['id']);
             $_tbls = array($_tbl);
         }
         if (!$_tbls)
