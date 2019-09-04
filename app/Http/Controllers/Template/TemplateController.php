@@ -50,18 +50,17 @@ class TemplateController extends ListController
         //print_r($p_self_info);
 
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
-        $TBL_def = env('DB_PREFIX') . env('TABLE_DEF');// TABLENAME_PREF."table_def";
-        $FLD_def = env('DB_PREFIX') . env('FIELD_DEF'); // TABLENAME_PREF."field_def";
-
+        //$TBL_def = env('DB_PREFIX') . env('TABLE_DEF');// TABLENAME_PREF."table_def";
+        //$FLD_def = env('DB_PREFIX') . env('FIELD_DEF'); // TABLENAME_PREF."field_def";
 
         $arr = array();
         $arr["table_name"] = $table_name;
-        $arr["real_p_id"] = $p_self_info['p_def']['table_field_belong_project_id']; // 字段定义表所在项目
+        //$arr["real_p_id"] = $p_self_info['p_def']['table_field_belong_project_id']; // 字段定义表所在项目
         $arr["TBL_def"] = $p_self_info['p_def']['TBL_def'];
         $arr["FLD_def"] = $p_self_info['p_def']['FLD_def'];;
         $arr["html_title"] = $GLOBALS['language']['TPL_MOBAN_STR'].$GLOBALS['language']['TPL_LIEBIAO_STR'];
         $arr["html_name"] = $p_self_info["p_def"]["name_cn"].$arr["html_title"];
-        $arr["default_sqlwhere"]  = "where `name_eng` NOT LIKE '%table_def' AND `name_eng` NOT LIKE '%field_def'"; // 表定义表和字段定义表不用显示
+        $arr["default_sqlwhere"]  = "where `name_eng` NOT LIKE '%table_def' AND `name_eng` NOT LIKE '%field_def' AND p_id = " . $request['p_id']; // 表定义表和字段定义表不用显示
         $arr["sql_order"] = "order by id desc";
         $arr["parent_ids_arr"] = array(1=>"p_id");  // 父级元素列表,p2, p3...分别表示二、三级父级元素例如项目id，模板id，文档id等
         $arr["a_options"] = array(

@@ -33,12 +33,31 @@ class ListController extends Controller
     }
 
     public function execute(&$arr,&$actionMap,&$actionError,$request,&$response,$form,$get,$cookie){
-        $dbR = $arr['dbR'];
+        //$dbR = $arr['dbR'];
+        if (isset($arr['p_def']) && $arr['p_def']['table_field_belong_project_id'] > 0 && ($arr['p_def']['id'] != $arr['p_def']['table_field_belong_project_id'])) {
+            $p_obj = new \App\Repositories\Admin\ProjectRepository();
+            $p_info_t_def = $p_obj->getProjectById($arr['p_def']['table_field_belong_project_id']);
+            $dbR = new \DBR($p_info_t_def); // 字段定义表不在项目所在库
+            //$p_id = $arr['p_def']['id'];
+        } elseif(isset($arr['p_def'])) {
+            $dbR = new \DBR($arr['p_def']); // 字段定义表在项目数据库
+            //$p_id = $arr['p_def']['id'];
+        } else {
+            //$dbR = new \DBR();
+            $dbR = $arr['dbR'];
+            //$p_id = 1;
+        }
+        //$arr['default_sqlwhere'] .= ' AND p_id = ' . $p_id;
 
         if (array_key_exists("f_info",$arr)) {
             $l_fieldarr = getFieldArr($arr["f_info"],array("key"=>"name_eng","value"=>"name_cn"));
-        }else {
-            $l_tmp = \DbHelper::getTblFields($dbR, $arr['table_name']);
+        }elseif (isset($arr['p_def'])) {
+            $dbReal = new \DBR($arr['p_def']);
+            $l_tmp = \DbHelper::getTblFields($dbReal, $arr['table_name']);
+            $l_fieldarr = getFieldArr($l_tmp);
+        } else {
+            $dbReal = new \DBR();
+            $l_tmp = \DbHelper::getTblFields($dbReal, $arr['table_name']);
             $l_fieldarr = getFieldArr($l_tmp);
         }
 

@@ -26,12 +26,25 @@ class AddController extends Controller
 
     public static function getFieldsInfo(&$a_arr){
         // 先去表定义表找对应的table_id，
-        $dbR = $a_arr["dbR"];
+        //$dbR = $a_arr["dbR"];
+        if (isset($a_arr['p_def']) && $a_arr['p_def']['table_field_belong_project_id'] > 0 && ($a_arr['p_def']['id'] != $a_arr['p_def']['table_field_belong_project_id'])) {
+            $p_obj = new \App\Repositories\Admin\ProjectRepository();
+            $p_info_t_def = $p_obj->getProjectById($a_arr['p_def']['table_field_belong_project_id']);
+            $dbR = new \DBR($p_info_t_def); // 字段定义表不在项目所在库
+            $p_id = $a_arr['p_def']['id'];
+        } elseif(isset($a_arr['p_def'])) {
+            $dbR = new \DBR($a_arr['p_def']); // 字段定义表在项目数据库
+            $p_id = $a_arr['p_def']['id'];
+        } else {
+            $dbR = new \DBR();
+            //$dbR = $a_arr["dbR"];
+            $p_id = 1; // TODO 是否固定值？还是自动获取
+        }
         $dbR->table_name = $a_arr["TBL_def"];
-        $t_info = $dbR->getOne(" where name_eng='".$a_arr["table_name"]."' ");
+        $t_info = $dbR->getOne(" where name_eng='".$a_arr["table_name"]."' AND p_id = " . $p_id);
         if ($t_info) {
             $t_id = $t_info["id"];
-        }else {
+        } else {
             echo "table_empty";//作为错误信息显示出来
             return null;
         }
