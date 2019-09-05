@@ -707,7 +707,7 @@ class DbHelper{
                 $l_p_s1 = $dbR->getOne(" where id=".$a_data[$l_p_self_id["ziduan"]]);
                 if (!$l_p_s1) {
                     Log::info('project empty!');
-                    return 0;
+                    return [];
                 }
                 $l_rlt["p_def"] = $l_p_s1;
 

@@ -56,7 +56,10 @@ class TemplateAddController extends AddController
         );
         // 获取到前两级的数据数组
         $p_self_info = DbHelper::getProTblFldArr($dbR, $request, $a_p_self_ids);
-        //print_r($p_self_info);
+        if (!$p_self_info) {
+            // 项目不存在的情况
+            return "项目不存在！";
+        }
 
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
         $TBL_def = TABLENAME_PREF."table_def";
