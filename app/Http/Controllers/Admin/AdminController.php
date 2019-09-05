@@ -166,32 +166,58 @@ class AdminController extends Controller
         }
 
         $request = $a_request->all();
+        $request["p_id"] = $request["p_id"] + 0;
         //print_r($request);exit;
         //$_SESSION = session()->all();
         $GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
 
         $dbR = new DBR();
         $dbR->table_name = "project";
-        $p_arr = $dbR->getOne(" where id = ".($request["p_id"]+0));
+        $p_arr = $dbR->getOne(" where id = ". $request["p_id"]);
         //print_r($p_arr); // 模板信息需要从另一个库中获取信息
         if (!$p_arr) {
             // 漏洞:如果攻击者使用一个不存在的id，则$p_arr返回的是NULL????其他类似漏洞有时间的时候全部处理一下。
             $response['html_content'] = date("Y-m-d H:i:s") . "project not exist!";
             return $response['html_content'];
         }
+
+        // 表定义表、字段定义表可能不在项目内，这里需要依据项目设定的表定义表所在项目进行获取
+        if ($p_arr['table_field_belong_project_id'] > 0 && ($p_arr['id'] != $p_arr['table_field_belong_project_id'])) {
+            $p_obj = new \App\Repositories\Admin\ProjectRepository();
+            $p_info_t_def = $p_obj->getProjectById($p_arr['table_field_belong_project_id']);
+
+            // 字段定义表,表定义表在其他项目中
+            if (isset($p_info_t_def['table_def_table']) && $p_info_t_def['table_def_table']) {
+                $table_def = $p_info_t_def['table_def_table'];
+                $field_def = $p_info_t_def['field_def_table'];
+            } else if (isset($p_info_t_def['db_prefix']) && $p_info_t_def['db_prefix']) {
+                $table_def = $p_info_t_def['db_prefix'] . 'table_def';
+                $field_def = $p_info_t_def['db_prefix'] . 'field_def';
+            } else {
+                $table_def = 'table_def';
+                $field_def = 'field_def';
+            }
+            $project_arr = $p_info_t_def; // table_field_def 定义表所在项目
+        } else {
+            $table_def = (isset($l_p_s1['table_def_table']) && $l_p_s1['table_def_table']) ? $l_p_s1['table_def_table'] : 'table_def';
+            $field_def = (isset($l_p_s1['field_def_table']) && $l_p_s1['field_def_table']) ? $l_p_s1['field_def_table'] : 'field_def';
+            $project_arr = $l_p_s1; // table_field_def 就在项目本身
+        }
         //$dsn = \DbHelper::getDSNstrByProArrOrIniArr($p_arr);
         //$dbR->dbo = &DBO('', $dsn);
         //$dbR = null;
-        $dbR = new DBR($p_arr);
-        $dbR->table_name = "table_def";
+        $dbR = new DBR($project_arr);
+        $dbR->table_name = $table_def;
 
         // 需要根据用户权限显示其具有操作权限的表
         if (1==$_SESSION["user"]["if_super"]) {
-            $l_where = "";  // " where type='$pt' "
+            $l_where = " AND p_id = " . $request['p_id'];  // " where type='$pt' "
         } else {
             $l_ts = \UserPrivilege::getSqlInTableByPid($request['p_id']);
-            if (""!=$l_ts) $l_where = " and id in ($l_ts)";
-            else $l_where = "and id<0 ";  // 将获取不到任何数据, 如果么有权限的话
+            if ('' == $l_ts) {
+                return "没有权限！"; //$l_where = "and id<0 ";
+            }
+            $l_where = " and id in ($l_ts)";
         }
         $arr = $dbR->getAlls("where `name_eng` NOT LIKE '%table_def' and `name_eng` NOT LIKE '%field_def' " . $l_where);
 

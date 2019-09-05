@@ -712,13 +712,12 @@ class DbHelper{
                 $l_rlt["p_def"] = $l_p_s1;
 
                 // 表定义表、字段定义表可能不在项目内，这里需要依据项目设定的表定义表所在项目进行获取
-                $table_field_belong_project_id = 0;
+                //$table_field_belong_project_id = 0;
                 if ($l_p_s1['table_field_belong_project_id'] > 0 && ($l_p_s1['id'] != $l_p_s1['table_field_belong_project_id'])) {
                     $p_obj = new \App\Repositories\Admin\ProjectRepository();
                     $p_info_t_def = $p_obj->getProjectById($l_p_s1['table_field_belong_project_id']);
-                    $table_field_belong_project_id = $l_p_s1['table_field_belong_project_id'];
-                }
-                if ($table_field_belong_project_id) {
+                    //$table_field_belong_project_id = $l_p_s1['table_field_belong_project_id'];
+
                     // 字段定义表,表定义表在其他项目中
                     if (isset($p_info_t_def['table_def_table']) && $p_info_t_def['table_def_table']) {
                         $table_def = $p_info_t_def['table_def_table'];
