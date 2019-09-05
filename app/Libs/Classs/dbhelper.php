@@ -790,7 +790,7 @@ class DbHelper{
                 // 同时获取该表所有字段定义信息, 多行数据
                 $dbR->table_name = empty($l_p_self_id["table_name2"]) ? $field_def:$l_p_self_id["table_name2"]; // 字段定义表的数据必须获取到
                 $l_f_def_tbl = $dbR->getAlls(" where t_id = ".$a_data[$l_p_self_id["ziduan"]] . $l_f_range. " order by list_order asc,id asc ");  // 字段定义表中的定义. 在没有$a_p_self_ids设置的情况下也能获取到数据
-                $l_f_def_real= DbHelper::getFieldInfoByTbl($dbR, $l_t_def_arr["name_eng"]); // 实际、真实的表获取
+                $l_f_def_real= DbHelper::getFieldInfoByTbl($dbReal, $l_t_def_arr["name_eng"]); // 实际、真实的表获取
                 // 同时获取实际表(真实表,实际的表,真实的表)表结构中的字段信息,然后组合成完整的信息
                 // 兼容以前的必须保留之前的字段
                 $l_tmp_arr = DbHelper::BaseReplaceDuo($l_f_def_real, $l_f_def_tbl, DbHelper::getField7Attribute());
@@ -804,8 +804,8 @@ class DbHelper{
 
             }else if (3==$i){
                 // 具体某张表中的具体数据了，不过先需要去字段定义表中获取到字段的算法以后，再才从具体表中获取数据
-                $l_tmp_tbl = empty($l_rlt["t_def"]["name_eng"])? TABLENAME_PREF."field_def" : $l_rlt["t_def"]["name_eng"];
-                $dbR->table_name = empty($l_p_self_id["table_name"]) ? $l_tmp_tbl : $l_p_self_id["table_name"]; // 字段定义表
+                $l_tmp_tbl = empty($l_rlt["t_def"]["name_eng"])? $field_def : $l_rlt["t_def"]["name_eng"];
+                $dbR->table_name = $l_p_self_id["table_name"] ? $l_p_self_id["table_name"] : $l_tmp_tbl; // 字段定义表
                 $l_f_def_arr = $dbR->getOne(" where id=".$a_data[$l_p_self_id["ziduan"]]);
                 $l_rlt["f_data"] = $l_f_def_arr;  // 非表定义表字段定义表中具体的单行数据
 
