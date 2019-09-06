@@ -199,9 +199,9 @@ class AdminController extends Controller
             }
             $project_arr = $p_info_t_def; // table_field_def 定义表所在项目
         } else {
-            $table_def = (isset($l_p_s1['table_def_table']) && $l_p_s1['table_def_table']) ? $l_p_s1['table_def_table'] : 'table_def';
-            $field_def = (isset($l_p_s1['field_def_table']) && $l_p_s1['field_def_table']) ? $l_p_s1['field_def_table'] : 'field_def';
-            $project_arr = $l_p_s1; // table_field_def 就在项目本身
+            $table_def = (isset($p_arr['table_def_table']) && $p_arr['table_def_table']) ? $p_arr['table_def_table'] : 'table_def';
+            $field_def = (isset($p_arr['field_def_table']) && $p_arr['field_def_table']) ? $p_arr['field_def_table'] : 'field_def';
+            $project_arr = $p_arr; // table_field_def 就在项目本身
         }
         //$dsn = \DbHelper::getDSNstrByProArrOrIniArr($p_arr);
         //$dbR->dbo = &DBO('', $dsn);

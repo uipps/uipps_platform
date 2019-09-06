@@ -43,10 +43,11 @@ class ListController extends Controller
             $dbR = new \DBR($arr['p_def']); // 字段定义表在项目数据库
             //$p_id = $arr['p_def']['id'];
         } else {
-            //$dbR = new \DBR();
-            $dbR = $arr['dbR'];
+            $dbR = new \DBR();
+            //$dbR = $arr['dbR'];
             //$p_id = 1;
         }
+        $dbR->table_name = $arr['table_name'];
         //$arr['default_sqlwhere'] .= ' AND p_id = ' . $p_id;
 
         if (array_key_exists("f_info",$arr)) {
@@ -68,6 +69,10 @@ class ListController extends Controller
         // 查询 end
 
         // 分页
+        if (isset($arr['p_def']) && isset($arr['t_def']) && isset($arr['t_def']['name_eng']) && $arr['t_def']['name_eng']) {
+            $dbR = new \DBR($arr['p_def']);
+            $dbR->table_name = $arr['table_name'];
+        }
         $pagebar_arr = getPagebar($dbR, $this->pageSize, $this->flag,$this->pagesize_flag, $request, $sql_where);
         $page_bar_size = $pagebar_arr["page_bar_size"];
 
