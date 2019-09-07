@@ -48,6 +48,9 @@ class TemplateController extends ListController
         // 获取到前两级的数据数组
         $p_self_info = DbHelper::getProTblFldArr($dbR, $request, $a_p_self_ids);
         //print_r($p_self_info);
+        if (!isset($p_self_info["p_def"]) || !$p_self_info["p_def"]) {
+            return  $response['html_content'] = '项目信息为空！';
+        }
 
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
         //$TBL_def = env('DB_PREFIX') . env('TABLE_DEF');// TABLENAME_PREF."table_def";

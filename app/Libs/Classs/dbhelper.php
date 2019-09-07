@@ -760,7 +760,10 @@ class DbHelper{
                 $dbR = new DBR($project_arr);
                 //$dbR = null;$dbR = new DBR($l_p_s1);  // 涉及到数据库重连的问题，包含了数据库连接信息
                 $dbR->table_name = $l_tbl_name = $table_def; // 表定义表的数据必须获取到
-                $l_t_def_arr = $dbR->getOne(" where id = ".$a_data[$l_p_self_id["ziduan"]]);  // 在没有$a_p_self_ids设置的情况下也能获取到数据
+                $l_t_def_arr = $dbR->getOne(" where id = ".$a_data[$l_p_self_id["ziduan"]] . ' AND p_id = ' . $a_data[$l_p_self_id["ziduan"]] );  // 在没有$a_p_self_ids设置的情况下也能获取到数据
+                if (!$l_t_def_arr) {
+                    return $l_rlt;
+                }
                 $l_rlt["t_def"] = $l_t_def_arr;
                 //print_r($l_t_def_arr);exit;
 
