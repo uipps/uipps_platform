@@ -1,4 +1,5 @@
 UIPPS(universal information publish platform) 通用信息发布平台 基于laravel5.7版本，独特的设计理念，颠覆传统开发方式，一个后台管理搞定API、H5；集中管理高效开发。
+也叫IPPFI(intelligent publish platform for information ) 智能信息发布平台 。
 
 # 目录
 - [1.安装步骤](#1安装步骤)
