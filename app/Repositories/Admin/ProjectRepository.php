@@ -49,4 +49,12 @@ class ProjectRepository extends ProjectRepositoryImpl
         Cache::add($cache_key, $rlt, self::CACHE_TIME_DSN_PROJECT_LIST);
         return $rlt;
     }
+
+    // 插入一条项目记录，同时要删除cache（这里就简单删除cache即可）
+    public function insertOneProject($data_arr) {
+        $cache_key = $this->GetProjectDsnCacheKey();
+        $rlt = parent::insertOneProject($data_arr);
+        Cache::forget($cache_key); // 删除缓存
+        return $rlt;
+    }
 }

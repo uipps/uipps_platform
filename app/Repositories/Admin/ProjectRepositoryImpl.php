@@ -34,4 +34,10 @@ class ProjectRepositoryImpl extends BaseRepository
             return $db_result->toArray(); // 节省内存
         return $db_result;
     }
+
+    // 插入单条记录
+    public function insertOneProject($data_arr) {
+        return Project::insertGetId($data_arr);
+        //return $project->insertGetId($data_arr);
+    }
 }

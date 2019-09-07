@@ -927,3 +927,83 @@ function table_field_def_tmpl_design_sql_replace($str, $prefix) {
     }
     return str_replace($need_replace, $to_replace, $str);
 }
+
+function createProjectBy($request) {
+    // 准备创建项目
+    $l_prefix = env('DB_PREFIX', '');
+    $table_name = $l_prefix ."project";
+
+    $actionMap = [];
+    $actionError = [];
+    $response = [];
+    $form = $request;
+    $get = [];
+    $cookie = [];
+
+    $arr = [];
+    $arr["table_name"] = $table_name;
+    $arr['sql_order'] = 'order by list_order, id'; // 排序
+    $arr["dbR"] = new DBR();
+    $arr["TBL_def"] = $l_prefix ."table_def";
+    $arr["FLD_def"] = $l_prefix ."field_def";
+
+    \App\Http\Controllers\AddController::getFieldsInfo($arr);  // 获取表和字段定义信息
+
+    // 没有设置数据库英文名称，则自动设置一个数据库英文名称
+    if (!isset($form['db_name']) || ''==$form['db_name']) {
+        $dbR = new DBR();
+        $dbR->table_name = $table_name;
+        $a_proj = $dbR->getAlls('','db_name');
+        $request['db_name'] = $form['db_name'] = DbHelper::getAutocreamentDbname($a_proj, 'db_name', $form);
+    }
+
+    // 检查数据库是否能连上，再判断该创建的数据库是否不存在，不存在则创建数据库，并进行use;
+    $tmp_info = $form;
+    if (isset($tmp_info['db_name'])) unset($tmp_info['db_name']);
+    $dbr2 = new DBR($tmp_info);
+    $all_database_list = DbHelper::getAllDB($dbr2, []); // 获取全部数据库
+    if (!in_array($form['db_name'], $all_database_list)) {
+        $dbW = new DBW($tmp_info);
+        try {
+            // 如果没有建库权限，可能会报错
+            $dbW->create_db($form['db_name']); // 返回true；数据库已经存在也返回true；
+        } catch (\Exception $l_err) {
+            echo 'create database ' . $form['db_name'] . ' error!: ' . $l_err->getMessage();
+            exit;
+        }
+    }
+
+    // 同表单呈现一样，填充之前需要将字段的各个算法执行一下，便于修正字段的相关限制和取值范围
+    Parse_Arithmetic::parse_for_list_form($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
+    $data_arr = DbHelper::getInsertArrByFormFieldInfo($request, $arr["f_info"], false);
+    //print_r($data_arr);exit;
+
+    // 项目是否已经存在于项目表中（修改项目的时候）TODO
+    $p_obj = new \App\Repositories\Admin\ProjectRepository();
+    $project_exists_list = $p_obj->getProjectDsnList();
+    $l_dsn = DbHelper::getConnectName($request, true, false);
+    if ($project_exists_list && isset($project_exists_list[$l_dsn])) {
+        // 如果已经存在，获取id
+        $pid = $project_exists_list[$l_dsn]['id'];
+        Log::info('exists pid:' . $pid);
+    } else {
+        // 不存在
+        //$dbW = new DBW();
+        //$dbW->table_name = $table_name;
+        //$pid = $dbW->insertOne($data_arr);
+        $pid = $p_obj->insertOneProject($data_arr);
+        Log::info(__LINE__ . ' create new project pid:' . $pid);
+    }
+    if (!is_numeric($pid) || $pid <= 0) {
+        // 增加失败后
+        $msg = date("Y-m-d H:i:s") . var_export($data_arr, true). " 发生错误,sql: ". $dbW->getSQL();
+        Log::info($msg);
+        return false;
+    }
+    $form["id"] = $pid;  // 该项目id, 创建记录成功才会有此项
+
+    // 增加项目记录成功后，需要创建相应的数据库和建立相应的数据表以及填充必要的数据
+    // 依据项目的类型，确定需要建立哪几张基本表，后续需要在这个成功的基础上进行????
+    $rlt = DbHelper::createDBandBaseTBL($form);
+    return 1;
+}

@@ -3,11 +3,16 @@
 // php artisan crontab fill_db_table_field uipps_platform
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Project\ProjectAddController;
 use App\Services\Admin\ProjectService;
 use App\Repositories\Admin\ProjectRepository;
 use Illuminate\Console\Command;
+use Illuminate\Http\Request;
 use Symfony\Component\Console\Input\InputArgument;
 use DbHelper;
+//use GuzzleHttp\Client;
+use DBR;
+use DBW;
 
 
 class CrontabCommand extends Command
@@ -22,9 +27,8 @@ class CrontabCommand extends Command
     {
         return [
             ['action', InputArgument::REQUIRED],
-            ['db_name', InputArgument::OPTIONAL],
-            ['project_info', InputArgument::OPTIONAL],
-            //['project_type', InputArgument::OPTIONAL],
+            ['db_name', InputArgument::OPTIONAL], // 创建项目的时候是db_info, 包括db_host
+            //['project_info', InputArgument::OPTIONAL],
         ];
     }
 
@@ -57,23 +61,45 @@ class CrontabCommand extends Command
     private function createProject($request) {
         $this->info('start createProject');
 
-        if (!isset($request['db_name']) || !isset($request['project_info']) ||
-            !isset($request['project_type'])) {
+        if (!isset($request['db_name']) ) {
             $this->info(date('Y-m-d H:i:s') . ' project-info must not be empty!! '. self::NEW_LINE_CHAR);
             return 0;
         }
-        $project_info = json_decode($request['project_info'], true);
+        parse_str($request['db_name'], $project_info);
+        //$project_info = parse_query($request['db_name']);
         if (!$project_info || !isset($project_info['db_host'])) {
             $this->info(date('Y-m-d H:i:s') . ' project-info decode error! '. self::NEW_LINE_CHAR);
             return 0;
         }
-
-        //$projectService = new ProjectService(new ProjectRepository());
-        //$p_list = $projectService->getProjectList($request);
-        //print_r($p_list);
+        //print_r($project_info);exit;
+        return createProjectBy($project_info);
 
 
-        return 1;
+        /* 失败
+        $project_add = new ProjectAddController(new \App\Services\Admin\UserService());
+        //$project_add->setMethod('POST');
+        $a_request = new Request();
+        $_POST = $request;
+        //$a_request->all();
+        $a_request->setMethod('POST');
+        $project_add->execute($a_request);*/
+
+
+        /* 网页请求的方法 /project/add
+        $l_options = [];
+        $l_method = 'POST'; // 有数据则为post方法
+        $l_url = '/project/add';
+        $req = new \GuzzleHttp\Client($l_options);
+        try {
+            $response = $req->request($l_method, $l_url);
+        } catch (\Exception $e) {
+            echo $e->getCode() . ' ' . $e->getMessage();
+            return '';
+        }
+        echo $code = $response->getStatusCode(); // 200
+        $reason = $response->getReasonPhrase(); // OK
+        $l_header = $response->getHeaders();	// 返回的头信息
+        return $html_content = $response->getBody()->getContents();	// 抓取到了页面内容*/
     }
 
     // 填充table_def,field_def数据 php artisan crontab fill_db_table_field uipps_platform
@@ -95,7 +121,7 @@ class CrontabCommand extends Command
             return 0;
         }
         /*
-        if (!isset($request['project_info']) || !$request['project_info'] || !json_decode($request['project_info'])) {
+        if (!isset($request['db_name']) || !$request['db_name'] || !json_decode($request['db_name'])) {
             $this->info(date('Y-m-d H:i:s') . ' project_info is empty, can\'t create new project!' . self::NEW_LINE_CHAR);
             return 0;
         }
@@ -149,11 +175,11 @@ class CrontabCommand extends Command
             $this->info(date('Y-m-d H:i:s') . ' Done!' . self::NEW_LINE_CHAR);
             return 1;
         }
-        if (!isset($request['project_info']) || !$request['project_info'] || !json_decode($request['project_info'])) {
+        if (!isset($request['db_name']) || !$request['db_name'] || !json_decode($request['db_name'])) {
             $this->info(date('Y-m-d H:i:s') . ' project_info is empty, can\'t create new project!' . self::NEW_LINE_CHAR);
             return 0;
         }
-        $tmp = json_decode($request['project_info']);
+        $tmp = parse_str($request['db_name']);
         $request = array_merge($tmp, $request);
 
         // 项目表中没有此项目的话，则需要入库一下，同时创建一个数据库
