@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `table_def` (
   `js_verify_add_edit` enum('TRUE','FALSE') NOT NULL default 'FALSE' COMMENT '是否js验证, 某张表中添加、修改记录的时候',
   `js_code_add_edit` mediumtext COMMENT 'js验证代码, 某张表中添加、修改记录的时候',
   `created_at` int(10) unsigned NOT NULL default '0' COMMENT '创建时间',
-  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name_eng` (`p_id`,`name_eng`),
   KEY `idx_cdt` (`createdate`,`createtime`)
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `field_def` (
   `description` varchar(255) default NULL COMMENT '描述',
   `if_display_edit` enum('T','F') NOT NULL default 'T' COMMENT '是否显示在添加或编辑界面',
   `created_at` int(10) unsigned NOT NULL default '0' COMMENT '创建时间',
-  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `ind_2` (`t_id`,`name_eng`),
   KEY `t_id` (`t_id`,`list_order`)
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `tmpl_design` (
   `description` text COMMENT '描述',
   `status_` enum('use','stop','test','del','scrap') NOT NULL default 'use' COMMENT '状态, 使用、停用等',
   `created_at` int(10) unsigned NOT NULL default '0' COMMENT '创建时间',
-  `last_modify` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近修改时间',
   PRIMARY KEY  (`id`),
   KEY `idx_cdt` (`createdate`,`createtime`),
   KEY `idx_mdt` (`menddate`,`mendtime`),

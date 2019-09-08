@@ -361,7 +361,7 @@ ${通栏10}', 'use'),
 
 
 -- 字段定义表中的数据, 分为表自身以及表以外的算法：表以外的直接insert；表自身的则需要通过程序进行检验哪些字段的字段类型、算法、排序(list_order)、七大基本属性等
--- 第一张表 aups_t001 页面碎片字段更新id,last_modify无需更新，没有特别的算法.只需要更新如下的几个字段
+-- 第一张表 aups_t001 页面碎片字段更新id,last_modify/updated_at无需更新，没有特别的算法.只需要更新如下的几个字段
 update `field_def` set `f_type`='Form::TextArea' where `name_eng`='aups_f001' and `t_id` = (select id from table_def where name_eng='aups_t001');
 update `field_def` set `f_type`='Form::ImageFile' where `name_eng`='aups_f002' and `t_id` = (select id from table_def where name_eng='aups_t001');
 update `field_def` set `f_type`='Form::ImageFile' where `name_eng`='aups_f005' and `t_id` = (select id from table_def where name_eng='aups_t001');
@@ -1143,7 +1143,7 @@ update `field_def` set `list_order`='1064' where `name_eng`='arithmetic';
 update `field_def` set `list_order`='1065' where `name_eng`='unicomment_id';
 update `field_def` set `list_order`='1999' where `name_eng`='published_1';
 update `field_def` set `list_order`='2000' where `name_eng`='url_1' and t_id not in (select id from table_def where name_eng in ('aups_t001'));
-update `field_def` set `list_order`='2012' where `name_eng`='last_modify';
+update `field_def` set `list_order`='2012' where `name_eng` IN ('last_modify', 'updated_at');
 update  field_def set `creator`='admin' where creator='0';
 update  field_def set `createdate`=DATE_FORMAT(NOW(),'%Y-%m-%d') where createdate='0000-00-00';
 update  field_def set `createtime`=DATE_FORMAT(NOW(),'%H:%i:%s') where createtime='00:00:00';
