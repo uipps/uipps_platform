@@ -175,8 +175,10 @@ class DbHelper{
                 break;
             case "GRAB":
                 $a_sql .= file_get_contents(database_path('migrations/grab.sql'));
+                $a_sql = str_replace('dpps_', env('DB_PREFIX', ''), $a_sql);
 
                 $l_e_wai = file_get_contents(database_path('migrations/grab_init.sql'));
+                $l_e_wai = str_replace('dpps_', env('DB_PREFIX', ''), $l_e_wai);
 
                 break;
             default:
