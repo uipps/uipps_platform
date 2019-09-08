@@ -3,6 +3,7 @@
 
 -- 表的初始数据 begin
 -- 文章表插入测试值，暂时不需要
+-- ‘AND 1’ 替换成 ‘`p_id` = 2’
 INSERT INTO `aups_t003` (`id`, `aups_f070`, `aups_f078`, `aups_f071`, `aups_f072`, `aups_f073`, `aups_f074`, `aups_f075`, `aups_f076`, `aups_f077`) VALUES
 (1, '新闻', '', '1', 'news', '/news', '/yule/news', 100, '', '');
 
@@ -1018,7 +1019,7 @@ if (1 == $level){
 }
 
 return '''';',`exec_mode`='0',`list_order`='50',`source`='none',`description`='' ;
-INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t007'),`name_eng`='aups_f093',`name_cn`='相关发布-港股动态',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
+INSERT INTO `field_def` set `t_id`=(select id from table_def where name_eng='aups_t007' AND 1 ),`name_eng`='aups_f093',`name_cn`='相关发布-港股动态',`edit_flag`='0',`is_null`='YES',`key`='',`extra`='',`type`='VARCHAR',`f_type`='Application::PostInPage',`length`='255',`attribute`='',`unit`='',`default`='',`status_`='use',`arithmetic`='allow=post_1
 
 [post_1]
 expr=''${栏目名称}'' == ''港股动态''

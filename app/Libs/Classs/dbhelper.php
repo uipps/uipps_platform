@@ -141,8 +141,6 @@ class DbHelper{
         switch ($p_arr['type']) {
             case "NORMAL":
             case "PHP_PROJECT":
-                //$a_sql .= file_get_contents(database_path('migrations/cms.sql'));
-
                 // 同时创建资源库和基本表
                 // $db_name_res = $form["db_name"]."_res";
                 //$l_e_wai = file_get_contents($GLOBALS['cfg']['PATH_RUNTIME']."/DataDriver/sql/php_project_init.sql");
