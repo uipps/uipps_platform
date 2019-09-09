@@ -4,8 +4,9 @@
  *
  */
 //namespace App\Libs\Classs;
-use DBR;
-use DBW;
+//use DBR;
+//use DBW;
+require_once 'DBR.php';
 
 class Form
 {
