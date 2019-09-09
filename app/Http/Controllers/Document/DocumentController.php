@@ -75,7 +75,7 @@ class DocumentController extends ListController
         $arr["FLD_def"] = $FLD_def;
         $arr["html_title"] = $GLOBALS['language']['TPL_WENDANG_STR'].$GLOBALS['language']['TPL_LIEBIAO_STR'];
         $arr["html_name"]  = $p_self_info["t_def"]["name_cn"].$arr["html_title"];
-        $arr["sql_order"] = "order by id desc";
+        $arr["sql_order"] = '';
         $arr["parent_ids_arr"] = array(1=>"p_id", 2=>"t_id");  // 父级元素列表,p2, p3...分别表示二、三级父级元素例如项目id，模板id，文档id等
         $arr["a_options"] = array(
             "nav"=>array(
@@ -91,6 +91,18 @@ class DocumentController extends ListController
                 )
             )
         );
+        // sql_order 或 default_sqlwhere
+        if (isset($p_self_info['f_info'])) {
+            if (isset($p_self_info['f_info']['id'])) {
+                $arr["sql_order"] = "order by `id` desc";
+            } else {
+                // TODO 自动找主键
+            }
+            if (isset($p_self_info['f_info']['status_']))
+                $arr["default_sqlwhere"] = "where `status_` = 'use'";
+            else
+                $arr["default_sqlwhere"] = 'where 1';
+        }
 
         $this->Init($request, $arr); // 初始化一下, 需要用到的数据的初始化动作,在parent::之前调用
 

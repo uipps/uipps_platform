@@ -146,7 +146,7 @@ function buildH($arr,$ziduan,$val_replace=array(),$a_no_need_field=array("id",'u
                 }
 
                 if ("id"==$filed) {
-                    if ('del'==$val['status_']) $display_v = '<strike>'.$l_val.'</strike>';
+                    if (isset($val['status_']) && 'del'==$val['status_']) $display_v = '<strike>'.$l_val.'</strike>';
                     else $display_v = $l_val;
                     $str .= "<td nowrap><input type='radio' name='id' value='".$l_val."'>".$display_v."</td>";
                 }else if ("status_"==$filed) {
@@ -155,7 +155,7 @@ function buildH($arr,$ziduan,$val_replace=array(),$a_no_need_field=array("id",'u
                         if(key_exists($filed,$val_replace)) $display_v = getFieldDesc($l_val,$val_replace[$filed]);
                     }
 
-                    if ('del'==$val['status_']) $display_v = '<strike>'.$display_v.'</strike>';
+                    if (isset($val['status_']) && 'del'==$val['status_']) $display_v = '<strike>'.$display_v.'</strike>';
 
                     if (key_exists($filed,$ziduan[2])) {
                         $str .= "<td nowrap style='color:".$ziduan[2][$filed][$l_val]."'>".$display_v."</td>";
@@ -184,7 +184,7 @@ function buildH($arr,$ziduan,$val_replace=array(),$a_no_need_field=array("id",'u
                         $l_url = (false === strpos($val["url_1"], '://')) ? rtrim($domain, '/') . "/" . ltrim($val["url_1"], '/') : $val["url_1"];
                         $display_v = "<a href='".$l_url."' target='_blank'>".$l_val."</a>";
                     }
-                    if ('del'==$val['status_']) $display_v = '<strike>'.$l_val.'</strike>';
+                    if (isset($val['status_']) && 'del'==$val['status_']) $display_v = '<strike>'.$l_val.'</strike>';
 
                     $str .= "<td nowrap>".$display_v."</td>";
                 }else {
@@ -192,7 +192,7 @@ function buildH($arr,$ziduan,$val_replace=array(),$a_no_need_field=array("id",'u
                     if (!empty($val_replace)) {
                         if(key_exists($filed,$val_replace)) $display_v = getFieldDesc($l_val,$val_replace[$filed]);
                     }
-                    if ('del'==$val['status_']) $display_v = '<strike>'.$display_v.'</strike>';
+                    if (isset($val['status_']) && 'del'==$val['status_']) $display_v = '<strike>'.$display_v.'</strike>';
 
                     $str .= "<td nowrap". $__atri .">".convCharacter($display_v)."</td>";
                 }
