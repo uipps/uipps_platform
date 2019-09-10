@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
+
 class AddController extends Controller
 {
     public $type_name= '';
@@ -45,6 +47,7 @@ class AddController extends Controller
         if ($t_info) {
             $t_id = $t_info["id"];
         } else {
+            Log::error("table_empty! " . __FILE__ . ' line:' . __LINE__ . " where name_eng='".$a_arr["table_name"]."' AND p_id = " . $p_id);
             echo "table_empty";//作为错误信息显示出来
             return null;
         }
