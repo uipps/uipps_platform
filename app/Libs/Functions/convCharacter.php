@@ -28,6 +28,7 @@ function convCharacter($str,$in2db=false){
         $tar_char = $in2db?$GLOBALS['cfg']['db_character']:$GLOBALS['cfg']['out_character'];
         if (in_array($tar_char, ['utf8', 'utf8mb4'])) {
             // 判断是否为utf8编码的，如果是则不用转换，如果不是则需要转换，多一重保险
+            // TODO utf8mb4 编码问题，有空再解决
             if (!is_utf8_encode($str)) {
                 $new_str = iconv("GBK","UTF-8//IGNORE",$str);
                 $new_str = str_ireplace("charset=GB2312","charset=utf-8",$new_str);
