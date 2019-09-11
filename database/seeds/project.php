@@ -30,7 +30,7 @@ class project extends Seeder
             'db_pwd'  => env('DB_MASTER_PASSWORD', '10y9c2U5'),
             'db_timeout' => env('DB_TIMEOUT', 0),
             'db_sock'    => env('DB_SOCK', ''),
-            'db_prefix'  => env('DB_PREFIX', ''),
+            'db_prefix'  => TABLENAME_PREF,
             'other_setting' => '',
             'if_use_slave' => 'F',
             'slave_db_host' => '',

@@ -43,7 +43,7 @@ class InitProjectCommand extends Command
         // 主要参数是db_name=grab&if_repair
         // 主要功能是创建数据库（如果数据库存在则按照项目特点进行补充和修正）、数据表和字段
         // 具备修复功能，保持同真实数据表一致的功能
-        $prefix = env('DB_PREFIX', '');
+        $prefix = TABLENAME_PREF;
         $this->info(date('Y-m-d H:i:s') . ' begin to process:' . self::NEW_LINE_CHAR);
         $dbW = new DBW();
         //$dbW->statement('drop table if exists migrations'); // 这样写其实也可以
@@ -81,9 +81,9 @@ class InitProjectCommand extends Command
         $l_e_wai  = file_get_contents(database_path('migrations/uipps_init_insert.sql'));
         $l_e_tmpl = file_get_contents(database_path('migrations/tmpl_design_init_insert.sql'));
 
-        if (env('DB_PREFIX')) {
-            $l_e_wai = table_field_def_tmpl_design_sql_replace($l_e_wai, env('DB_PREFIX'));
-            $l_e_tmpl = table_field_def_tmpl_design_sql_replace($l_e_tmpl, env('DB_PREFIX'));
+        if ($prefix) {
+            $l_e_wai = table_field_def_tmpl_design_sql_replace($l_e_wai, $prefix);
+            $l_e_tmpl = table_field_def_tmpl_design_sql_replace($l_e_tmpl, $prefix);
         }
 
         if ($l_e_wai) {

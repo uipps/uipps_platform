@@ -930,7 +930,7 @@ function table_field_def_tmpl_design_sql_replace($str, $prefix) {
 
 function createProjectBy($request) {
     // 准备创建项目
-    $l_prefix = env('DB_PREFIX', '');
+    $l_prefix = TABLENAME_PREF;
     $table_name = $l_prefix ."project";
 
     $actionMap = [];

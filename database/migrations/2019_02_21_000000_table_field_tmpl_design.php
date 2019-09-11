@@ -46,7 +46,7 @@ class TableFieldTmplDesign extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '表定义表';
         });
-        DB::statement("ALTER TABLE `" . env('DB_PREFIX', '') . "table_def` comment '表定义表'");
+        DB::statement("ALTER TABLE `" . TABLENAME_PREF . "table_def` comment '表定义表'");
 
 
         // 字段定义表
@@ -87,7 +87,7 @@ class TableFieldTmplDesign extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '字段定义表';
         });
-        DB::statement("ALTER TABLE `" . env('DB_PREFIX', '') . "field_def` comment '字段定义表'");
+        DB::statement("ALTER TABLE `" . TABLENAME_PREF . "field_def` comment '字段定义表'");
 
         // 模板设计表
         Schema::create('tmpl_design', function (Blueprint $table) {
@@ -115,7 +115,7 @@ class TableFieldTmplDesign extends Migration
             $table->engine = 'InnoDB';
             $table->comment = '模板设计表';
         });
-        DB::statement("ALTER TABLE `" . env('DB_PREFIX', '') . "tmpl_design` comment '模板设计表'");
+        DB::statement("ALTER TABLE `" . TABLENAME_PREF . "tmpl_design` comment '模板设计表'");
     }
 
     /**

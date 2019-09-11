@@ -54,7 +54,7 @@ return [
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8',
             'collation' => 'utf8_general_ci',
-            'prefix' => env('DB_PREFIX', ''),
+            'prefix' => TABLENAME_PREF, // env('DB_PREFIX', ''), // TODO 前缀功能预留，暂未实现
             'prefix_indexes' => true,
             'strict' => true,
             //'sticky' => false,
@@ -84,7 +84,7 @@ return [
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8',
             'collation' => 'utf8_general_ci',
-            'prefix' => env('DB_PREFIX', ''),
+            'prefix' => TABLENAME_PREF, // env('DB_PREFIX', ''), // TODO 前缀功能预留，暂未实现
             'prefix_indexes' => true,
             'strict' => true,
             //'sticky' => false,

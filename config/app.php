@@ -1,5 +1,5 @@
 <?php
-define('TABLENAME_PREF', env('DB_PREFIX', ''));
+define('TABLENAME_PREF', ''); // TODO 前缀功能预留，暂未实现
 $GLOBALS['cfg']['WEB_DOMAIN'] = 'uipps.com';
 
 $GLOBALS['cfg']['__LIMIT__'] = '__LIMIT__';   // 条数限制

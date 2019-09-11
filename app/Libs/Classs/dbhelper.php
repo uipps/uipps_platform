@@ -157,8 +157,8 @@ class DbHelper{
 
                 $l_e_wai = file_get_contents(database_path('migrations/uipps_init_insert.sql'));
                 // TODO 其他sql可能也需要进行替换，先将涉及到的替换了再说
-                if (env('DB_PREFIX')) {
-                    $l_e_wai = table_field_def_tmpl_design_sql_replace($l_e_wai, env('DB_PREFIX'));
+                if (TABLENAME_PREF) {
+                    $l_e_wai = table_field_def_tmpl_design_sql_replace($l_e_wai, TABLENAME_PREF);
                 }
 
                 $p_arr["name_cn"] = convCharacter($GLOBALS['language']['SYSTEM_NAME_STR'],true);
@@ -175,10 +175,10 @@ class DbHelper{
                 break;
             case "GRAB":
                 $a_sql .= file_get_contents(database_path('migrations/grab.sql'));
-                $a_sql = str_replace('dpps_', env('DB_PREFIX', ''), $a_sql);
+                $a_sql = str_replace('dpps_', TABLENAME_PREF, $a_sql);
 
                 $l_e_wai = file_get_contents(database_path('migrations/grab_init.sql'));
-                $l_e_wai = str_replace('dpps_', env('DB_PREFIX', ''), $l_e_wai);
+                $l_e_wai = str_replace('dpps_', TABLENAME_PREF, $l_e_wai);
 
                 break;
             default:
@@ -258,8 +258,8 @@ class DbHelper{
         // 作为表定义表的一部分，通常情况下需要进行字段算法更新的
         if ($a_e_wai) {
             $l_e_tmpl = file_get_contents(database_path('migrations/tmpl_design_init_insert.sql'));
-            if (env('DB_PREFIX'))
-                $l_e_tmpl = table_field_def_tmpl_design_sql_replace($l_e_tmpl, env('DB_PREFIX'));
+            if (TABLENAME_PREF)
+                $l_e_tmpl = table_field_def_tmpl_design_sql_replace($l_e_tmpl, TABLENAME_PREF);
             DbHelper::execDbWCreateInsertUpdate($project_arr, $l_e_tmpl,array("INSERT INTO ", "REPLACE INTO ", "UPDATE "));
         }
 
@@ -701,7 +701,7 @@ class DbHelper{
 
             if (1==$i) {
                 // 逐级循环, 第一级是项目表，包含了数据库连接信息
-                $l_tbl_name = (isset($l_p_self_id["table_name"]) && $l_p_self_id["table_name"]) ? $l_p_self_id["table_name"] : env('DB_PREFIX')."project";
+                $l_tbl_name = (isset($l_p_self_id["table_name"]) && $l_p_self_id["table_name"]) ? $l_p_self_id["table_name"] : TABLENAME_PREF."project";
                 $dbR->table_name = $l_tbl_name;
                 // 都是id，整型数据，因此无需引号
                 $l_p_s1 = $dbR->getOne(" where id=".$a_data[$l_p_self_id["ziduan"]]);

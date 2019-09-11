@@ -44,8 +44,8 @@ class ProjectController extends ListController
 
 
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
-        $TBL_def = env('DB_PREFIX') . env('TABLE_DEF');
-        $FLD_def = env('DB_PREFIX') . env('FIELD_DEF');
+        $TBL_def = TABLENAME_PREF . env('TABLE_DEF');
+        $FLD_def = TABLENAME_PREF . env('FIELD_DEF');
 
         $arr = array();
         $arr['table_name'] = $table_name;

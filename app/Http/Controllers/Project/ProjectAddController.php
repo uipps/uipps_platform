@@ -20,7 +20,7 @@ class ProjectAddController extends AddController
 
     public function execute(Request $a_request)
     {
-        $l_prefix = env('DB_PREFIX', '');
+        $l_prefix = TABLENAME_PREF;
         // 检查是否登录
         $l_auth = $this->userService->ValidatePerm($a_request);
         $_SESSION = session()->all();
