@@ -33,21 +33,21 @@ class AddController extends Controller
             $p_obj = new \App\Repositories\Admin\ProjectRepository();
             $p_info_t_def = $p_obj->getProjectById($a_arr['p_def']['table_field_belong_project_id']);
             $dbR = new \DBR($p_info_t_def); // 字段定义表不在项目所在库
-            $p_id = $a_arr['p_def']['id'];
+            $t_f_p_id = $a_arr['p_def']['table_field_belong_project_id']; // 字段定义表所在项目ID
         } elseif(isset($a_arr['p_def'])) {
             $dbR = new \DBR($a_arr['p_def']); // 字段定义表在项目数据库
-            $p_id = $a_arr['p_def']['id'];
+            $t_f_p_id = $a_arr['p_def']['id'];
         } else {
             $dbR = new \DBR();
             //$dbR = $a_arr["dbR"];
-            $p_id = 1; // TODO 是否固定值？还是自动获取
+            $t_f_p_id = 1; // TODO 是否固定值？还是自动获取
         }
         $dbR->table_name = $a_arr["TBL_def"];
-        $t_info = $dbR->getOne(" where name_eng='".$a_arr["table_name"]."' AND p_id = " . $p_id);
+        $t_info = $dbR->getOne(" where name_eng='".$a_arr["table_name"]."' AND p_id = " . $t_f_p_id);
         if ($t_info) {
             $t_id = $t_info["id"];
         } else {
-            Log::error("table_empty! " . __FILE__ . ' line:' . __LINE__ . " where name_eng='".$a_arr["table_name"]."' AND p_id = " . $p_id);
+            Log::error("table_empty! " . __FILE__ . ' line:' . __LINE__ . " where name_eng='".$a_arr["table_name"]."' AND p_id = " . $t_f_p_id);
             echo "table_empty";//作为错误信息显示出来
             return null;
         }
