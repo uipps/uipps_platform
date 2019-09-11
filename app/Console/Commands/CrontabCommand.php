@@ -36,15 +36,22 @@ class CrontabCommand extends Command
     {
         $argvList = $this->argument();
         $action = $argvList['action'];
-        $data = $this->$action($argvList);
 
-        print_r($data);
+        $start_time = microtime(true);
+        $start_mem = memory_get_usage();
+        $this->info(date('Y-m-d H:i:s') . ' begin:');
+
+        $data = $this->$action($argvList);
+        $this->info('  result:' . var_export($data, true));
+
+        $end_mem = memory_get_usage();
+        $this->info(date('Y-m-d H:i:s') . ' end, cost:' . (microtime(true) - $start_time) . ' seconds! memory_use: ' . ($end_mem - $start_mem) . ' = '. $end_mem . ' - ' . $start_mem );
     }
 
     // 获取项目列表信息
     private function getProjectList($params)
     {
-        $this->info('start getProjectList');
+        $this->info('  ' . date('Y-m-d H:i:s') . ' start getProjectList');
 
         $projectService = new ProjectService(new ProjectRepository());
         $p_list = $projectService->getProjectList($params);
@@ -59,7 +66,7 @@ class CrontabCommand extends Command
 
     // 后台创建项目，包括主从库设置等
     private function createProject($request) {
-        $this->info('start createProject');
+        $this->info('  ' . date('Y-m-d H:i:s') . ' start createProject');
 
         if (!isset($request['db_name']) ) {
             $this->info(date('Y-m-d H:i:s') . ' project-info must not be empty!! '. self::NEW_LINE_CHAR);
@@ -107,7 +114,7 @@ class CrontabCommand extends Command
         // 主要参数是db_name=grab&if_repair
         // 主要功能是创建数据库（如果数据库存在则按照项目特点进行补充和修正）、数据表和字段
         // 具备修复功能，保持同真实数据表一致的功能
-        $this->info(date('Y-m-d H:i:s') . ' begin to process:' . self::NEW_LINE_CHAR);
+        $this->info('  ' . date('Y-m-d H:i:s') . ' begin to process:' . self::NEW_LINE_CHAR);
 
         // 只允许cli后台运行，主要是完成一些任务。输出调试信息等  web测试的时候有&&&&安全隐患&&&&
         if (php_sapi_name() != 'cli') {
