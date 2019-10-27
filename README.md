@@ -15,8 +15,8 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
 - 复制.env.example为.env `cp .env.example .env`
 - 修改.env文件里的数据库连接、邮箱等信息
 - `composer update`
-- `php artisan key:generate` 或手动指定
-- `php artisan make:auth`
+- `php artisan key:generate` ( 可不用执行，已经在env中手动指定APP_KEY了)
+- `php artisan make:auth`    ( 可不用执行，因生成默认登录认证路由、contrller、blade模版文件等)
 - `php artisan migrate:fresh`
 - `php artisan db:seed --class=project`
 - `php artisan initproject InitTableField`
