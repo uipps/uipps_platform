@@ -142,6 +142,10 @@ class CrontabCommand extends Command
         }*/
         //  1. 检查table_def， field_def 两张表是否存在
         //$this->info('1. 检查table_def， field_def 两张表是否存在');
+        // TODO 删除系统产生的migrations迁移表
+        $dbW = new DBW();
+        $dbW->statement('drop table if exists migrations'); // 这样写其实也可以
+        $dbW->exec('DROP TABLE IF EXISTS ' . TABLENAME_PREF . 'migrations'); // 删除迁移库，加上表前缀
 
         // 获取项目列表
         $projectService = new ProjectService(new ProjectRepository());
