@@ -674,7 +674,9 @@ class DbHelper{
     }
 
     // 通过父级id数组，逐级获取并最终获取到最后一级的数据
-    public static function getProTblFldArr(&$dbR, $a_data, $a_p_self_ids=array()){
+    public static function getProTblFldArr($p_arr=[], $a_data, $a_p_self_ids=array()){
+        $dbR = new DBR();
+
         $l_rlt = array();  // 返回所有级别的数组，并以
 
         if (empty($a_p_self_ids) || !is_array($a_p_self_ids)) {
@@ -775,6 +777,7 @@ class DbHelper{
                 $l_real_tbls = cArray::Index2KeyArr($l_real_tbls,array("key"=>"Name","value"=>"Name"));
                 $l_tmpl_design = TABLENAME_PREF . "tmpl_design";
                 if (array_key_exists($l_tmpl_design,$l_real_tbls)) {
+                    $dbR = new DBR($project_arr);
                     $dbR->table_name = $l_tmpl_design;
                     $l_tmpl_design = $dbR->getAlls("where tbl_id=".$a_data[$l_p_self_id["ziduan"]]." and status_='use'");
                     if (!empty($l_tmpl_design))$l_rlt["t_def"]["tmpl_design"] = $l_tmpl_design;
@@ -795,7 +798,7 @@ class DbHelper{
                 // 同时获取该表所有字段定义信息, 多行数据
                 $dbR->table_name = empty($l_p_self_id["table_name2"]) ? $field_def:$l_p_self_id["table_name2"]; // 字段定义表的数据必须获取到
                 $l_f_def_tbl = $dbR->getAlls(" where t_id = ".$a_data[$l_p_self_id["ziduan"]] . $l_f_range. " order by list_order asc,id asc ");  // 字段定义表中的定义. 在没有$a_p_self_ids设置的情况下也能获取到数据
-                $l_f_def_real= DbHelper::getFieldInfoByTbl($dbReal, $l_t_def_arr["name_eng"]); // 实际、真实的表获取
+                $l_f_def_real= DbHelper::getFieldInfoByTbl($l_p_s1, $l_t_def_arr["name_eng"]); // 实际、真实的表获取
                 // 同时获取实际表(真实表,实际的表,真实的表)表结构中的字段信息,然后组合成完整的信息
                 // 兼容以前的必须保留之前的字段
                 $l_tmp_arr = DbHelper::BaseReplaceDuo($l_f_def_real, $l_f_def_tbl, DbHelper::getField7Attribute());
@@ -883,13 +886,14 @@ class DbHelper{
     }
 
     // 依据数据表英文名，获取到字段全部信息，类似field_def中的字段
-    public static function getFieldInfoByTbl(&$dbR, $tbl_name_eng, $a_field_def_arr=array()){
+    public static function getFieldInfoByTbl($p_arr, $tbl_name_eng, $a_field_def_arr=array()){
         $l_rlt = array();
 
         // 先获取字段定义表的数据, 只需要其中中文名称即可
         if(!empty($a_field_def_arr)) $l_name_arr = cArray::Index2KeyArr($a_field_def_arr, array("key"=>"name_eng", "value"=>"name_cn"));
         else $l_name_arr = array();
 
+        $dbR = new DBR($p_arr);
         $all_field = $dbR->getTblFields($tbl_name_eng);
 
         // 获取不同字段
