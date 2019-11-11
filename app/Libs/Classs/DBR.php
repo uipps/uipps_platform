@@ -11,7 +11,7 @@ class DBR extends MysqlR
         return $this->ConnectDB($_arr, $options);
     }
 
-    public function getExistorNot($id){
+    public function getExistorNot($id, $assoc=true){
         $sql = "select * from ".cString_SQL::FormatField($this->table_name)." where d_id =$id limit 1";
         return parent::GetOne($sql);
     }

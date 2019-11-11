@@ -453,7 +453,7 @@ class DbHelper{
                     }else{
                         $l_data_arr = array();
                     }
-                    DbHelper::ins2table_def($dbR,$dbW,array_merge($l_data_arr,$data_arr), $l_table["Name"], $f_def, $t_def, $real_p_id);
+                    DbHelper::ins2table_def($p_arr, array_merge($l_data_arr,$data_arr), $l_table["Name"], $f_def, $t_def, $real_p_id);
                 }
             }
         }
@@ -490,7 +490,7 @@ class DbHelper{
     }
 
     // 往表定义表中插入数据
-    public static function ins2table_def(&$dbR, &$dbW, $a_data_arr, $a_tablename, $f_def="field_def", $t_def="table_def",$p_id=0){
+    public static function ins2table_def($p_arr, $a_data_arr, $a_tablename, $f_def="field_def", $t_def="table_def",$p_id=0){
         $name_eng = $a_tablename;   //
         $name_cn = $name_eng;      // 暂时用英文的或者用表注释
         if(isset($a_data_arr["description"]) && $a_data_arr["description"]) $name_cn = $a_data_arr["description"];
@@ -500,6 +500,8 @@ class DbHelper{
         if (isset($_SESSION['user']) && $_SESSION['user'] && isset($_SESSION['user']['id'])) {
             $creator = $_SESSION['user']['id'];
         }
+
+        $dbW = new DBW($p_arr);
         $dbW->table_name = $t_def;
         //print_r($dbW->getExistorNot("name_eng='".$name_eng."'"));
         if($dbW->getExistorNot("name_eng='".$name_eng."'  AND p_id = $p_id ")){
@@ -568,7 +570,6 @@ class DbHelper{
     // 往字段定义表中插入数据
     public static function ins2field_def($p_arr, $a_data_arr, $t_id=0, $f_def="field_def", $t_def="table_def",$if_repair=true, $real_p_arr=[]){
         $dbR = new DBR($p_arr); // p_arr是字段定义表所在项目
-        $dbW = new DBW($p_arr);
 
         if (!$real_p_arr) $real_p_arr = $p_arr;
 
@@ -599,6 +600,7 @@ class DbHelper{
         // 获取数组的维度
         $l_depth=cString_num::get_array_depth($a_data_arr);
 
+        $dbW = new DBW($p_arr);
         $dbW->table_name = $f_def;
         // 循环插入
         foreach ($all_field as $l_arr) {
