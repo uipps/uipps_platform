@@ -171,7 +171,7 @@ class AdminController extends Controller
         //$_SESSION = session()->all();
         $GLOBALS['cfg']['RES_WEBPATH_PREF'] = env('RES_WEBPATH_PREF');
 
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
         $dbR->table_name = "project";
         $p_arr = $dbR->getOne(" where id = ". $request["p_id"]);
         //print_r($p_arr); // 模板信息需要从另一个库中获取信息
@@ -206,7 +206,7 @@ class AdminController extends Controller
         //$dsn = \DbHelper::getDSNstrByProArrOrIniArr($p_arr);
         //$dbR->dbo = &DBO('', $dsn);
         //$dbR = null;
-        $dbR = new DBR($project_arr);
+        $dbR = DBR::getDBR($project_arr);
         $dbR->table_name = $table_def;
 
         // 需要根据用户权限显示其具有操作权限的表

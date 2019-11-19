@@ -43,7 +43,7 @@ class TemplateEditController extends AddController
 
         // 找到父级元素, 只有一级父级
         $p_id = $request["p_id"];  // 第一个父级id, 也是project id。
-        $dbR = new DBR();      // 系统默认数据库连接信息，开始都从这个入口
+        $dbR = DBR::getDBR();      // 系统默认数据库连接信息，开始都从这个入口
 
 
         // 获取发布主机列表 , 用于ui
@@ -138,7 +138,7 @@ class TemplateEditController extends AddController
             if (array_key_exists("menddate", $arr["f_info"])) $data_arr["menddate"] = date("Y-m-d");
             if (array_key_exists("mendtime", $arr["f_info"])) $data_arr["mendtime"] = date("H:i:s");
 
-            $dbW = new DBW($arr["p_def"]);
+            $dbW = DBW::getDBW($arr["p_def"]);
             // 检查表名是否修改，如果表名称修改了，则需要先改表名，然后进行其他操作
             if (!empty($data_arr["name_eng"]) && $data_arr["name_eng"] != $l_rlt["name_eng"]) {
                 $data_arr["name_eng"] = trim( str_replace("`", "",$data_arr["name_eng"]) );

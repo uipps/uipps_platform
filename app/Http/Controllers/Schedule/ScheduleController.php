@@ -55,17 +55,17 @@ class ScheduleController extends ListController
             $request["_action"] = '';
         if("delete"==$request["_action"]){
             // 可以调用 main.php?do=schedule_del&id=$request["id"]
-            $dbW = new DBW();
+            $dbW = DBW::getDBW();
             $dbW->table_name = TABLENAME_PREF."schedule";
             $ar = array("id"=>$request["id"]);
             $dbW->delOne($ar,"id");
         }else if("start"==$request["_action"]){
-            $dbW = new DBW();
+            $dbW = DBW::getDBW();
             $dbW->table_name = TABLENAME_PREF."schedule";
             $ar = array("status_"=>'1');
             $dbW->updateOne($ar,"id=".$request["id"]);
         }else if("stop"==$request["_action"]){
-            $dbW = new DBW();
+            $dbW = DBW::getDBW();
             $dbW->table_name = TABLENAME_PREF."schedule";
             $ar = array("status_"=>'0');
             $dbW->updateOne($ar,"id=".$request["id"]);
@@ -73,7 +73,7 @@ class ScheduleController extends ListController
         //  end
 
         // 显示页面数据
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
         $dbR -> table_name = TABLENAME_PREF."schedule";
 
 

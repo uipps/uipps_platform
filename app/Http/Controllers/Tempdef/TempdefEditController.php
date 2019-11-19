@@ -46,7 +46,7 @@ class TempdefEditController extends AddController
         // 模板定义表增加的时候其实需要修改表结构，同时在字段定义表中需要增加记录
         // 找到父级元素, 有两级父级
         $p_id = $request["p_id"];  // 第一个父级id, 也是project id。
-        $dbR = new DBR();      // 系统默认数据库连接信息，开始都从这个入口
+        $dbR = DBR::getDBR();      // 系统默认数据库连接信息，开始都从这个入口
 
         $a_p_self_ids = array(
             1=>array("ziduan"=>"p_id"),
@@ -132,7 +132,7 @@ class TempdefEditController extends AddController
                 return $response['html_content'];
             }
 
-            $dbW = new DBW($arr["p_def"]);
+            $dbW = DBW::getDBW($arr["p_def"]);
 
             $form["name_eng_old"] = $l_rlt["name_eng"]; // 需要在数组中注册上旧字段英文名
 

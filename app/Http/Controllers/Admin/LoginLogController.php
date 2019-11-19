@@ -45,7 +45,7 @@ class LoginLogController extends ListController
         if (!isset($request["pagesize_form"])) $request["pagesize_form"] = 0;
 
         // 显示页面数据
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
         $dbR->table_name = TABLENAME_PREF."loginlog";
 
         // 有查询的时候，查询sql语句保留

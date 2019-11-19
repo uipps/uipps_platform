@@ -38,7 +38,7 @@ class TemplateController extends ListController
         $request['do'] = 'template_list';
 
 
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
         $table_name = TABLENAME_PREF . env('TABLE_DEF');//TABLENAME_PREF."table_def";
 
         // 获取发布主机列表 , 用于ui

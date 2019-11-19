@@ -40,7 +40,7 @@ class DocumentController extends ListController
         //$_SESSION = session()->all();
 
         // 配置其父级、自身级别字段列表。
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
 
         $a_p_self_ids = array(
             1=>array("ziduan"=>"p_id"),
@@ -59,7 +59,7 @@ class DocumentController extends ListController
         //print_r($tbl_def);
         /*if (empty($tbl_def)) {
           require_once("common/lib/dbhelper.php");
-          $dbW = new DBW($p_arr);
+          $dbW = DBW::getDBW($p_arr);
           $a_data_arr = array("source"=>"db","creator"=>$_SESSION["user"]["username"]);  // 能在外部增加字段的
       DbHelper::fill_field($dbR,$dbW,$a_data_arr,"all",TABLENAME_PREF."field_def",TABLENAME_PREF."table_def");
 

@@ -45,7 +45,7 @@ class InitProjectCommand extends Command
         // 具备修复功能，保持同真实数据表一致的功能
         $prefix = TABLENAME_PREF;
         $this->info(date('Y-m-d H:i:s') . ' begin to process:' . self::NEW_LINE_CHAR);
-        $dbW = new DBW();
+        $dbW = DBW::getDBW();
         //$dbW->statement('drop table if exists migrations'); // 这样写其实也可以
         $dbW->exec('DROP TABLE IF EXISTS ' . $prefix . 'migrations'); // 删除迁移库，加上表前缀
 
@@ -56,7 +56,7 @@ class InitProjectCommand extends Command
         }
 
         //try { } catch (\QueryException $e) { echo $e->getMessage(); } // catch不了
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
         $dbR->table_name = $prefix . 'project';
         $p_arr = $dbR->getOne('order by id');
         if (!$p_arr) {

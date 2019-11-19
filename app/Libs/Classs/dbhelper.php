@@ -53,7 +53,7 @@ class DbHelper{
         $dsn = empty($dsn) ? $_SERVER["SRV_DB_DSN_".$a_type]: $dsn;
         if (empty($dsn)){ echo "dsn error!"; exit;}
 
-        // 兼容性修改, 兼容new dbR($p_arr)的关键字
+        // 兼容性修改, 兼容DBR::getDBR($p_arr)的关键字
         if (is_array($dsn)) {
             $dsn = DbHelper::getDSNstrByProArrOrIniArr($dsn);
         }
@@ -121,11 +121,11 @@ class DbHelper{
         // 检查数据库是否能连上，再判断该创建的数据库是否不存在，不存在则创建数据库，并进行use;
         $tmp_info = $p_arr;
         if (isset($tmp_info['db_name'])) unset($tmp_info['db_name']); // 数据库可能并不存在，不unset连接数据库会报错
-        $dbr2 = new DBR($tmp_info);
+        $dbr2 = DBR::getDBR($tmp_info);
         $all_database_list = DbHelper::getAllDB($dbr2, []); // 获取全部数据库
         // 在指定的主机上建库
         if (!in_array($p_arr['db_name'], $all_database_list)) {
-            $dbW = new DBW($tmp_info);
+            $dbW = DBW::getDBW($tmp_info);
             try {
                 // 如果没有建库权限，可能会报错
                 $dbW->create_db($p_arr['db_name']);
@@ -204,7 +204,7 @@ class DbHelper{
             $table_field_belong_project_id = $p_arr['table_field_belong_project_id'];
 
             // 切换到指定的数据库，需要携带数据库名称信息，重新连一下数据库。
-            $dbR = new DBR($p_info_t_def);
+            $dbR = DBR::getDBR($p_info_t_def);
             $l_real_tbls = $dbR->getDBTbls($p_info_t_def['db_name']); // 获取当前连接库的所有数据表，加不加 $p_info_t_def['db_name'] 都可
 
             if ($l_real_tbls) {
@@ -280,7 +280,7 @@ class DbHelper{
         // 换另外一种更合理的算法
         $a_sql = cString::lineDelBySpe($a_sql,"--");  // 仅仅去掉行注释
         $a_sql = str_ireplace('ON UPDATE CURRENT_TIMESTAMP',DbHelper::get_s_ON_UPDATE_CURRENT_TIMESTAMP(),$a_sql);  // 替换掉其中的ON UPDATE CURRENT_TIMESTAMP为特定字符串执行sql的时候然后替换回来，因为里面还有sql关键词'update '
-        $dbW = new DBW($p_arr);
+        $dbW = DBW::getDBW($p_arr);
 
         if (!empty($a_spe_arr)) {
             $l_str = implode("|",$a_spe_arr);
@@ -428,12 +428,14 @@ class DbHelper{
         if (!$real_p_arr) $real_p_arr = $p_arr;
         $real_p_id = $real_p_arr['id'];
 
-        $dbR = new DBR($p_arr);
-        $dbW = new DBW($p_arr);
+        $dbR = DBR::getDBR($p_arr);
+        $dbW = DBW::getDBW($p_arr);
+        $dbW->getDsn();
+        $dbW->getDsn($p_arr);
 
         if ($p_arr['id'] != $real_p_id) {
             // 项目和字段定义表分离，不在同一个库里面的情况
-            $dbReal = new DBR($real_p_arr);
+            $dbReal = DBR::getDBR($real_p_arr);
             $all_table = $dbReal->getDBTbls($real_p_arr['db_name']); // 需要创建的项目的数据表
         } else {
             // 先获取所有的表
@@ -543,7 +545,7 @@ class DbHelper{
         }
         if (!$real_p_arr) $real_p_arr = $p_arr;
 
-        $dbR = new DBR($p_arr);
+        $dbR = DBR::getDBR($p_arr);
 
         // 自动完成所有表的导入，包括自身也需要导入
         $dbR->table_name = $t_def;
@@ -567,8 +569,8 @@ class DbHelper{
 
     // 往字段定义表中插入数据
     public static function ins2field_def($p_arr, $a_data_arr, $t_id=0, $f_def="field_def", $t_def="table_def",$if_repair=true, $real_p_arr=[]){
-        $dbR = new DBR($p_arr); // p_arr是字段定义表所在项目
-        $dbW = new DBW($p_arr);
+        $dbR = DBR::getDBR($p_arr); // p_arr是字段定义表所在项目
+        $dbW = DBW::getDBW($p_arr);
 
         if (!$real_p_arr) $real_p_arr = $p_arr;
 
@@ -582,7 +584,7 @@ class DbHelper{
 
         if ($p_arr['id'] != $real_p_arr['id']) {
             // 项目和字段定义表分离，不在同一个库里面的情况
-            $dbReal = new DBR($real_p_arr);
+            $dbReal = DBR::getDBR($real_p_arr);
             $all_field = $dbReal->getTblFields($_tbl_name["name_eng"]);
         } else {
             $all_field = $dbR->getTblFields($_tbl_name["name_eng"]);
@@ -742,7 +744,7 @@ class DbHelper{
                 /*$dsn = DbHelper::getDSNstrByProArrOrIniArr($l_p_s1);
                 $dbR->dbo = &DBO('', $dsn);
                 $dbR->SetCurrentSchema($l_p_s1['db_name']);*/
-                $dbR = new DBR($project_arr);
+                $dbR = DBR::getDBR($project_arr);
                 $dbR->table_name = empty($l_p_self_id["t_table_name"]) ? $table_def :$l_p_self_id["t_table_name"];
                 $l_t_all = $dbR->getAlls(" where status_!='stop' AND p_id = " . $l_p_s1['id'], 'id, name_eng, name_cn');
                 $l_rlt["t_all_"] = $l_t_all;
@@ -757,8 +759,8 @@ class DbHelper{
                 /*$dsn = DbHelper::getDSNstrByProArrOrIniArr($l_p_s1);
                 $dbR->dbo = &DBO('', $dsn);
                 $dbR->SetCurrentSchema($l_p_s1['db_name']);*/
-                $dbR = new DBR($project_arr);
-                //$dbR = null;$dbR = new DBR($l_p_s1);  // 涉及到数据库重连的问题，包含了数据库连接信息
+                $dbR = DBR::getDBR($project_arr);
+                //$dbR = null;$dbR = DBR::getDBR($l_p_s1);  // 涉及到数据库重连的问题，包含了数据库连接信息
                 $dbR->table_name = $l_tbl_name = $table_def; // 表定义表的数据必须获取到
                 $l_t_def_arr = $dbR->getOne(" where id = ".$a_data[$l_p_self_id["ziduan"]] . ' AND p_id = ' . $l_p_s1['id'] );  // 在没有$a_p_self_ids设置的情况下也能获取到数据
                 if (!$l_t_def_arr) {
@@ -768,7 +770,7 @@ class DbHelper{
                 //print_r($l_t_def_arr);exit;
 
                 // 需要将表级别的信息也一同获取到，例如表模板设计表的数据也需要一同获取到其信息
-                $dbReal = new DBR($l_p_s1);
+                $dbReal = DBR::getDBR($l_p_s1);
                 $l_real_tbls = $dbReal->getDBTbls();
                 $l_real_tbls = cArray::Index2KeyArr($l_real_tbls,array("key"=>"Name","value"=>"Name"));
                 $l_tmpl_design = TABLENAME_PREF . "tmpl_design";

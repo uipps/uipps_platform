@@ -45,9 +45,9 @@ class TemplateAddController extends AddController
         // 找到父级元素, 只有一级父级
         $p_id = $request["p_id"];  // 第一个父级id, 也是project id。
         //$l_name0_r = $GLOBALS['cfg']['SYSTEM_DB_DSN_NAME_R'];
-        //$dbR = new DBR($l_name0_r);  // 系统默认数据库连接信息，开始都从这个入口
+        //$dbR = DBR::getDBR($l_name0_r);  // 系统默认数据库连接信息，开始都从这个入口
         //$l_err = $dbR->errorInfo();
-        $dbR= new DBR();
+        $dbR= DBR::getDBR();
 
 
         // 获取发布主机列表 , 用于ui
@@ -179,7 +179,7 @@ class TemplateAddController extends AddController
                 }
 
                 // 创建该表
-                $dbW = new DBW($arr["p_def"]);
+                $dbW = DBW::getDBW($arr["p_def"]);
                 try {
                     $dbW->Query($l_sql);
                 } catch (\Exception $l_err) {
@@ -285,7 +285,7 @@ class TemplateAddController extends AddController
                 // 先创建一张数据表, 数据库连接信息使用$p_arr
                 // 应当依据模板类型，对应地创建相应的数据字段????甚至是同时创建多张表，
                 // 此处仅仅限定最基本的数据表字段, 另外新增的字段在模板域中去添加。
-                $dbW = new DBW($arr["p_def"]);
+                $dbW = DBW::getDBW($arr["p_def"]);
                 $sql_q = "`id` int(11) unsigned NOT NULL auto_increment COMMENT '自增ID',`creator` varchar(100) NOT NULL default '0' COMMENT '创建者',`createdate` date NOT NULL default '0000-00-00' COMMENT '创建日期',`createtime` time NOT NULL default '00:00:00' COMMENT '创建时间',`mender` varchar(100) default NULL COMMENT '修改者',`menddate` date default NULL COMMENT '修改日期',`mendtime` time default NULL COMMENT '修改时间',`expireddate` date NOT NULL default '0000-00-00' COMMENT '过期日期',`audited` enum('0','1') NOT NULL default '0' COMMENT '是否审核',`status_` enum('use','stop','test','del','scrap') NOT NULL default 'use' COMMENT '状态, 使用、停用等',`flag` int(11) NOT NULL default '0' COMMENT '标示, 预留',`arithmetic` text COMMENT '文档算法, 包括发布文档列表算法, [publish_docs]1:28:1,1:28:2,,,,',`unicomment_id` varchar(30) default NULL COMMENT '评论唯一ID, 1-2-36963:项目id-表id-评论id',`published_1` enum('0','1') NOT NULL default '0' COMMENT '是否发布, 0:不发布;1:发布,通常都是发布的',`url_1` varchar(255) default NULL COMMENT '文档发布成html的外网url,通常是省略了域名的相对地址',`updated_at` timestamp NOT NULL COMMENT '最近修改时间', PRIMARY KEY  (`id`),KEY `createdate` (`createdate`,`createtime`),KEY `menddate` (`menddate`,`mendtime`),KEY `expireddate` (`expireddate`),KEY `audited` (`audited`),KEY `status_` (`status_`),KEY `published_1` (`published_1`),KEY `url_1` (`url_1`)";
                 try {
                     $dbW->create_table($form["name_eng"], $sql_q);

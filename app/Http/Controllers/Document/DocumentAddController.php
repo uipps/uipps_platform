@@ -41,7 +41,7 @@ class DocumentAddController extends AddController
 
 
         // 配置其父级、自身级别字段列表。
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
         $a_p_self_ids = array(
             1=>array("ziduan"=>"p_id"),
             2=>array("ziduan"=>"t_id"),
@@ -58,7 +58,7 @@ class DocumentAddController extends AddController
         }
 
         //$dsn = DbHelper::getDSNstrByProArrOrIniArr($p_self_info["p_def"]);
-        //$dbR = null;$dbR = new DBR($p_self_info["p_def"]);  // 连接到相关数据库中去，如果有多级则需要循环进行直到找到对应的数据库和表
+        //$dbR = null;$dbR = DBR::getDBR($p_self_info["p_def"]);  // 连接到相关数据库中去，如果有多级则需要循环进行直到找到对应的数据库和表
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
         $TBL_def = TABLENAME_PREF."table_def";
         $FLD_def = TABLENAME_PREF."field_def";
@@ -143,7 +143,7 @@ class DocumentAddController extends AddController
             if (!isset($form['createdate']) || "0000-00-00"==$form["createdate"]) $request["createdate"] = $form["createdate"] = date("Y-m-d");
             if (!isset($form['createtime']) || "00:00:00"==$form["createtime"]) $request["createtime"] = $form["createtime"] = date("H:i:s");
 
-            $dbW = new DBW($p_self_info["p_def"]);
+            $dbW = DBW::getDBW($p_self_info["p_def"]);
             $dbW->table_name = $table_name;  // 字段定义表
             $rlt = $dbW->insertOne($data_arr);
             //$l_err = $dbW->errorInfo();

@@ -39,7 +39,7 @@ class PasswordEditController extends Controller
         //$_SESSION = session()->all();
 
 
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
         $dbR->table_name = "user";
         if (!$a_request->isMethod('get')) {
             // 获取用户信息
@@ -57,7 +57,7 @@ class PasswordEditController extends Controller
                     return $response['html_content'];  // 总是返回此结果
                 } else {
                     // 则进行重置密码
-                    $dbW = new DBW();
+                    $dbW = DBW::getDBW();
                     $dbW->table_name = "user";
                     $dbW->updateOne(array('password'=>md5($form['password'])), 'id=' . $_arr['id']);
 

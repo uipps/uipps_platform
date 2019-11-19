@@ -943,7 +943,7 @@ function createProjectBy($request) {
     $arr = [];
     $arr["table_name"] = $table_name;
     $arr['sql_order'] = 'order by list_order, id'; // 排序
-    $arr["dbR"] = new DBR();
+    $arr["dbR"] = DBR::getDBR();
     $arr["TBL_def"] = $l_prefix ."table_def";
     $arr["FLD_def"] = $l_prefix ."field_def";
 
@@ -951,7 +951,7 @@ function createProjectBy($request) {
 
     // 没有设置数据库英文名称，则自动设置一个数据库英文名称
     if (!isset($form['db_name']) || ''==$form['db_name']) {
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
         $dbR->table_name = $table_name;
         $a_proj = $dbR->getAlls('','db_name');
         $request['db_name'] = $form['db_name'] = DbHelper::getAutocreamentDbname($a_proj, 'db_name', $form);
@@ -960,10 +960,10 @@ function createProjectBy($request) {
     // 检查数据库是否能连上，再判断该创建的数据库是否不存在，不存在则创建数据库，并进行use;
     $tmp_info = $form;
     if (isset($tmp_info['db_name'])) unset($tmp_info['db_name']);
-    $dbr2 = new DBR($tmp_info);
+    $dbr2 = DBR::getDBR($tmp_info);
     $all_database_list = DbHelper::getAllDB($dbr2, []); // 获取全部数据库
     if (!in_array($form['db_name'], $all_database_list)) {
-        $dbW = new DBW($tmp_info);
+        $dbW = DBW::getDBW($tmp_info);
         try {
             // 如果没有建库权限，可能会报错
             $dbW->create_db($form['db_name']); // 返回true；数据库已经存在也返回true；
@@ -988,7 +988,7 @@ function createProjectBy($request) {
         Log::info('exists pid:' . $pid);
     } else {
         // 不存在
-        //$dbW = new DBW();
+        //$dbW = DBW::getDBW();
         //$dbW->table_name = $table_name;
         //$pid = $dbW->insertOne($data_arr);
         $pid = $p_obj->insertOneProject($data_arr);

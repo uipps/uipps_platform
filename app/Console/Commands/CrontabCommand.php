@@ -143,7 +143,7 @@ class CrontabCommand extends Command
         //  1. 检查table_def， field_def 两张表是否存在
         //$this->info('1. 检查table_def， field_def 两张表是否存在');
         // TODO 删除系统产生的migrations迁移表
-        $dbW = new DBW();
+        $dbW = DBW::getDBW();
         $dbW->statement('drop table if exists migrations'); // 这样写其实也可以
         $dbW->exec('DROP TABLE IF EXISTS ' . TABLENAME_PREF . 'migrations'); // 删除迁移库，加上表前缀
 
@@ -176,8 +176,8 @@ class CrontabCommand extends Command
                 // 2 存在则继续依据真实的表结构填充字段定义表
 //                $dsn = DbHelper::getDSNstrByProArrOrIniArr($p_arr);
 //                $dbR->dbo = &DBO('', $dsn);
-//                //$dbR = null;$dbR = new DBR($p_arr);
-//                $dbW = new DBW($p_arr);
+//                //$dbR = null;$dbR = DBR::getDBR($p_arr);
+//                $dbW = DBW::getDBW($p_arr);
 //                $l_data_arr = array('source'=>'db','creator'=>empty($_SESSION['user']['username'])?'admin':$_SESSION['user']['username']);
 //                //print_r($l_data_arr);
 //                DbHelper::fill_field($dbR,$dbW,$l_data_arr,$request['table_name'],TABLENAME_PREF.'field_def',TABLENAME_PREF.'table_def', $request['if_repair']);
@@ -194,7 +194,7 @@ class CrontabCommand extends Command
         $request = array_merge($tmp, $request);
 
         // 项目表中没有此项目的话，则需要入库一下，同时创建一个数据库
-        $dbR = new \DBR();
+        $dbR = DBR::getDBR();
         $l_srv_db_dsn = $dbR->getDSN("array");
         // 自动获取默认数组
         $l_ins_arr = $dbR->getInSertArr();
@@ -210,7 +210,7 @@ class CrontabCommand extends Command
 
         // 系统本身不应该在此处默认的dbr连接信息的数据库中
         //if ('SYSTEM'!=strtoupper($request['pro_type'])) {
-        $dbW = new \DBW();
+        $dbW = DBW::getDBW();
         $dbW->table_name = TABLENAME_PREF .'project';
         $pid = $dbW->insertOne($data_arr);
         if ($pid <= 0){
@@ -267,5 +267,4 @@ class CrontabCommand extends Command
         file_put_contents($l_path . '/' .$l_file, $content); // 覆盖原文件
         return 3;
     }
-
 }

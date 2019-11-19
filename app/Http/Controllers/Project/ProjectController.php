@@ -36,7 +36,7 @@ class ProjectController extends ListController
         $request['do'] = 'project_list';
 
 
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
         $dbR->table_name = $table_name = "project";
 
         $dsn = $dbR->getDsn(); // mysql:host=127.0.0.1;port=3307;dbname=uipps_platform

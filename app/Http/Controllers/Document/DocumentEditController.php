@@ -42,7 +42,7 @@ class DocumentEditController extends AddController
 
 
 
-        $dbR = new DBR();
+        $dbR = DBR::getDBR();
 
         $a_p_self_ids = array(
             1=>array("ziduan"=>"p_id"),
@@ -62,7 +62,7 @@ class DocumentEditController extends AddController
         }
 
         //$dsn = DbHelper::getDSNstrByProArrOrIniArr($p_self_info["p_def"]);$dbR->dbo = &DBO('', $dsn);
-        //$dbR = null;$dbR = new DBR($p_self_info["p_def"]);  // 连接到相关数据库中去，如果有多级则需要循环进行直到找到对应的数据库和表
+        //$dbR = null;$dbR = DBR::getDBR($p_self_info["p_def"]);  // 连接到相关数据库中去，如果有多级则需要循环进行直到找到对应的数据库和表
         // 应该自动获取表定义表和字段定义表,此处省略并人为指定????
         $TBL_def = TABLENAME_PREF."table_def";
         $FLD_def = TABLENAME_PREF."field_def";
@@ -144,7 +144,7 @@ class DocumentEditController extends AddController
             if (array_key_exists("menddate", $arr["f_info"])) $data_arr["menddate"] = date("Y-m-d");
             if (array_key_exists("mendtime", $arr["f_info"])) $data_arr["mendtime"] = date("H:i:s");
 
-            $dbW = new DBW($p_self_info["p_def"]);
+            $dbW = DBW::getDBW($p_self_info["p_def"]);
             $dbW->table_name = $table_name;  // 当前需要操作的表名由t_id,t_def获取到
             $conditon = " id = ".$request["id"]." ";
 

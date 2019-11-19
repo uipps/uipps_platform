@@ -37,13 +37,13 @@ class ListController extends Controller
         if (isset($arr['p_def']) && $arr['p_def']['table_field_belong_project_id'] > 0 && ($arr['p_def']['id'] != $arr['p_def']['table_field_belong_project_id'])) {
             $p_obj = new \App\Repositories\Admin\ProjectRepository();
             $p_info_t_def = $p_obj->getProjectById($arr['p_def']['table_field_belong_project_id']);
-            $dbR = new \DBR($p_info_t_def); // 字段定义表不在项目所在库
+            $dbR = \DBR::getDBR($p_info_t_def); // 字段定义表不在项目所在库
             //$p_id = $arr['p_def']['id'];
         } elseif(isset($arr['p_def'])) {
-            $dbR = new \DBR($arr['p_def']); // 字段定义表在项目数据库
+            $dbR = \DBR::getDBR($arr['p_def']); // 字段定义表在项目数据库
             //$p_id = $arr['p_def']['id'];
         } else {
-            $dbR = new \DBR();
+            $dbR = \DBR::getDBR();
             //$dbR = $arr['dbR'];
             //$p_id = 1;
         }
@@ -53,11 +53,11 @@ class ListController extends Controller
         if (array_key_exists("f_info",$arr)) {
             $l_fieldarr = getFieldArr($arr["f_info"],array("key"=>"name_eng","value"=>"name_cn"));
         }elseif (isset($arr['p_def'])) {
-            $dbReal = new \DBR($arr['p_def']);
+            $dbReal = \DBR::getDBR($arr['p_def']);
             $l_tmp = \DbHelper::getTblFields($dbReal, $arr['table_name']);
             $l_fieldarr = getFieldArr($l_tmp);
         } else {
-            $dbReal = new \DBR();
+            $dbReal = \DBR::getDBR();
             $l_tmp = \DbHelper::getTblFields($dbReal, $arr['table_name']);
             $l_fieldarr = getFieldArr($l_tmp);
         }
@@ -70,7 +70,7 @@ class ListController extends Controller
 
         // 分页
         if (isset($arr['p_def']) && isset($arr['t_def']) && isset($arr['t_def']['name_eng']) && $arr['t_def']['name_eng']) {
-            $dbR = new \DBR($arr['p_def']);
+            $dbR = \DBR::getDBR($arr['p_def']);
             $dbR->table_name = $arr['table_name'];
         }
         $pagebar_arr = getPagebar($dbR, $this->pageSize, $this->flag,$this->pagesize_flag, $request, $sql_where);

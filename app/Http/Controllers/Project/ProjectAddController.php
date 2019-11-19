@@ -57,7 +57,7 @@ class ProjectAddController extends AddController
         $TBL_def = $l_prefix ."table_def";
         $FLD_def = $l_prefix ."field_def";
 
-        $arr["dbR"] = new DBR();
+        $arr["dbR"] = DBR::getDBR();
 
         $arr["TBL_def"] = $TBL_def;
         $arr["FLD_def"] = $FLD_def;
@@ -100,7 +100,7 @@ class ProjectAddController extends AddController
         } else {
 
             if (!isset($form['db_name']) || ''==$form['db_name']) {
-                $dbR = new DBR();
+                $dbR = DBR::getDBR();
                 $dbR->table_name = $table_name;
 
                 // 从数据表中获取
@@ -114,11 +114,11 @@ class ProjectAddController extends AddController
             // 检查数据库是否能连上，再判断该创建的数据库是否不存在，不存在则创建数据库，并进行use;
             $tmp_info = $form;
             if (isset($tmp_info['db_name'])) unset($tmp_info['db_name']);
-            $dbr2 = new DBR($tmp_info);
+            $dbr2 = DBR::getDBR($tmp_info);
             $all_database_list = DbHelper::getAllDB($dbr2, []); // 获取全部数据库
             //$b = $dbr2->GetCurrentSchema(); echo $b . "\r\n"; // 空串
             if (!in_array($form['db_name'], $all_database_list)) {
-                $dbW = new DBW($tmp_info);
+                $dbW = DBW::getDBW($tmp_info);
                 try {
                     // 如果没有建库权限，可能会报错
                     $dbW->create_db($form['db_name']); // 返回true；数据库已经存在也返回true；
@@ -130,8 +130,8 @@ class ProjectAddController extends AddController
 
             // 切换到新创建的数据库，需要携带数据库名称信息，重新连一下数据库。
             /* TODO 临时测试2019.08.30，之后请删除
-            $dbR = new DBR($form);
-            $dbW = new DBW($form);
+            $dbR = DBR::getDBR($form);
+            $dbW = DBW::getDBW($form);
             $l_real_tbls = $dbR->getDBTbls($form['db_name']); // 获取所有数据表
             if ($l_real_tbls) {
                 //$l_real_tbls = \cArray::Index2KeyArr($l_real_tbls, array("key"=>"Name", "value"=>"Name"));
@@ -165,7 +165,7 @@ class ProjectAddController extends AddController
                 $pid = $project_exists_list[$l_dsn]['id'];
             } else {
                 // 不存在
-                $dbW = new DBW();
+                $dbW = DBW::getDBW();
                 $dbW->table_name = $table_name;
                 $pid = $dbW->insertOne($data_arr);
             }

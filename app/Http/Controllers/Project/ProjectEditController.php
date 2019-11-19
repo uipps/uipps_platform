@@ -57,7 +57,7 @@ class ProjectEditController extends AddController
         $TBL_def = TABLENAME_PREF."table_def";
         $FLD_def = TABLENAME_PREF."field_def";
 
-        $arr["dbR"] = new DBR();
+        $arr["dbR"] = DBR::getDBR();
 
         $arr["TBL_def"] = $TBL_def;
         $arr["FLD_def"] = $FLD_def;
@@ -117,7 +117,7 @@ class ProjectEditController extends AddController
             if (array_key_exists("menddate", $arr["f_info"])) $data_arr["menddate"] = date("Y-m-d");
             if (array_key_exists("mendtime", $arr["f_info"])) $data_arr["mendtime"] = date("H:i:s");
 
-            $dbW = new DBW();
+            $dbW = DBW::getDBW();
             $dbW->table_name = $table_name;
             $conditon = " id = ".$request["id"]." ";
             cArray::delSameValue($data_arr,$l_rlt);  // 剔除掉没有修改的数据项

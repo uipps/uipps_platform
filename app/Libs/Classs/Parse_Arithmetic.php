@@ -173,7 +173,7 @@ class Form
             if (array_key_exists("project",$l_arr)) {
                 // 获取数据库连接信息
                 $l_p_info = Parse_SQL::getPinfoByProjCNname($l_arr["project"]);
-                $dbR = new DBR($l_p_info);
+                $dbR = DBR::getDBR($l_p_info);
             }
             if (array_key_exists("polym",$l_arr)){
                 // 样式暂时未实现
@@ -235,7 +235,7 @@ class Form
         if (array_key_exists("project",$l_arr)) {
             // 获取数据库连接信息
             $l_p_info = Parse_SQL::getPinfoByProjCNname($l_arr["project"]);
-            $dbR = new DBR($l_p_info);
+            $dbR = DBR::getDBR($l_p_info);
         }
         if (array_key_exists("polym",$l_arr)){
             // 样式暂时未实现
@@ -436,7 +436,7 @@ class Application
         if (array_key_exists("project",$l_arr)) {
             // 获取数据库连接信息
             $l_p_info = Parse_SQL::getPinfoByProjCNname($l_arr["project"]);
-            $dbR = new DBR($l_p_info);
+            $dbR = DBR::getDBR($l_p_info);
         }
         if (array_key_exists("polym",$l_arr)){
             // 样式暂时未实现
@@ -1121,7 +1121,7 @@ class Parse_SQL
     // 通过项目中文名获取项目信息
     public static function getPinfoByProjCNname($a_str_project){
         // 需要获取到项目id等数据，暂时不支持这样，只有在跨项目的时候才允许，或者以后再完善
-        $dbR = new DBR($GLOBALS['cfg']['SYSTEM_DB_DSN_NAME_R']);  // 连项目本身， 去获取项目名称等数据
+        $dbR = DBR::getDBR($GLOBALS['cfg']['SYSTEM_DB_DSN_NAME_R']);  // 连项目本身， 去获取项目名称等数据
         $dbR->table_name = TABLENAME_PREF."project";
         $l_p_arr = $dbR->getAlls("","id,name_cn");
         if (!$l_p_arr) {

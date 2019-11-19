@@ -32,13 +32,13 @@ class AddController extends Controller
         if (isset($a_arr['p_def']) && $a_arr['p_def']['table_field_belong_project_id'] > 0 && ($a_arr['p_def']['id'] != $a_arr['p_def']['table_field_belong_project_id'])) {
             $p_obj = new \App\Repositories\Admin\ProjectRepository();
             $p_info_t_def = $p_obj->getProjectById($a_arr['p_def']['table_field_belong_project_id']);
-            $dbR = new \DBR($p_info_t_def); // 字段定义表不在项目所在库
+            $dbR = \DBR::getDBR($p_info_t_def); // 字段定义表不在项目所在库
             $t_f_p_id = $a_arr['p_def']['table_field_belong_project_id']; // 字段定义表所在项目ID
         } elseif(isset($a_arr['p_def'])) {
-            $dbR = new \DBR($a_arr['p_def']); // 字段定义表在项目数据库
+            $dbR = \DBR::getDBR($a_arr['p_def']); // 字段定义表在项目数据库
             $t_f_p_id = $a_arr['p_def']['id'];
         } else {
-            $dbR = new \DBR();
+            $dbR = \DBR::getDBR();
             //$dbR = $a_arr["dbR"];
             $t_f_p_id = 1; // TODO 是否固定值？还是自动获取
         }

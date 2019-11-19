@@ -43,7 +43,7 @@ class TempdefAddController extends AddController
         // 模板定义表增加的时候其实需要修改表结构，同时在字段定义表中需要增加记录
         // 找到父级元素, 有两级父级
         $p_id = $request["p_id"];  // 第一个父级id, 也是project id。
-        $dbR = new DBR();      // 系统默认数据库连接信息，开始都从这个入口
+        $dbR = DBR::getDBR();      // 系统默认数据库连接信息，开始都从这个入口
 
         $a_p_self_ids = array(
             1=>array("ziduan"=>"p_id"),
@@ -128,7 +128,7 @@ class TempdefAddController extends AddController
                 $request["name_eng"] = $form["name_eng"] = DbHelper::getAutocreamentFieldname($a_tmpl,"name_eng");
             }
 
-            $dbW = new DBW($arr["p_def"]);
+            $dbW = DBW::getDBW($arr["p_def"]);
 
             // 如果字段算法类型为Application::SQLResult等以Application::开头的则不能修改表结构，只在字段定义表中添加一条记录即可
             $l_temptype = cArray::getTempTypeCNnameArr();

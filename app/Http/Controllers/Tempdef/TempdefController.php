@@ -40,7 +40,7 @@ class TempdefController extends ListController
 
 
         // 获取发布主机列表 , 用于ui
-        $dbR = new \DBR();
+        $dbR = \DBR::getDBR();
         $a_p_self_ids = array(
             1=>array("ziduan"=>"p_id"),
             2=>array("ziduan"=>"t_id"),
@@ -59,7 +59,7 @@ class TempdefController extends ListController
         $TBL_def = TABLENAME_PREF."table_def";
         $FLD_def = TABLENAME_PREF."field_def";
 
-        // $dbR = new DBR($p_arr); 不需要此步骤，在上面的DbHelper::getProTblFldArr已经自动切换了
+        // $dbR = \DBR::getDBR($p_arr); 不需要此步骤，在上面的DbHelper::getProTblFldArr已经自动切换了
         $dbR->table_name = $table_name = TABLENAME_PREF."field_def";
 
         $arr = array();

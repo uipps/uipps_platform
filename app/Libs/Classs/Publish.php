@@ -101,7 +101,7 @@ class Publish
         if (isset($arr["f_data"][$l_field]) && $arr["f_data"][$l_field]!=$l_url) {
             // 当修改数据的时候，数据库中原有的如果同新的不一样需要进行更新，否则无需更新此字段
             if (isset($arr["dbW"])) $dbW = $arr["dbW"];
-            else $dbW = new DBW($arr["p_def"]);
+            else $dbW = DBW::getDBW($arr["p_def"]);
             $dbW->table_name = $arr["t_def"]["name_eng"];
             $conditon = " id = ".$arr["f_data"]["id"]." ";
             $l_data_arr = array($l_field=>$l_url);
