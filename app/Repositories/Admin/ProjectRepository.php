@@ -17,7 +17,7 @@ class ProjectRepository extends ProjectRepositoryImpl
         return 'platform-project-list-';
     }
 
-    public function getProjectById($pid) {
+    /*public function getProjectById($pid) {
         $cache_key = $this->GetCacheKey($pid);
 
         $cached_result = Cache::get($cache_key);
@@ -48,7 +48,7 @@ class ProjectRepository extends ProjectRepositoryImpl
         }
         Cache::add($cache_key, $rlt, self::CACHE_TIME_DSN_PROJECT_LIST);
         return $rlt;
-    }
+    }*/
 
     // 插入一条项目记录，同时要删除cache（这里就简单删除cache即可）
     public function insertOneProject($data_arr) {
