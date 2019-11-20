@@ -159,7 +159,7 @@ class ProjectAddController extends AddController
             // 项目是否已经存在于项目表中（修改项目的时候）TODO
             $p_obj = new \App\Repositories\Admin\ProjectRepository();
             $project_exists_list = $p_obj->getProjectDsnList();
-            $l_dsn = DbHelper::getConnectName($form, true, false);
+            $l_dsn = DbHelper::getConnectName($form,false);
             if ($project_exists_list && isset($project_exists_list[$l_dsn])) {
                 // 如果已经存在，获取id
                 $pid = $project_exists_list[$l_dsn]['id'];

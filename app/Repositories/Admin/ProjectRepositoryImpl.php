@@ -38,7 +38,7 @@ class ProjectRepositoryImpl extends BaseRepository
         // 按照dsn作为可以重新组织数组
         $rlt = [];
         foreach ($db_result_list as $row) {
-            $l_dsn = \DbHelper::getConnectName($row, true, false);
+            $l_dsn = \DbHelper::getConnectName($row, false, $with_dbname);
             $rlt[$l_dsn] = $row;
         }
         return $rlt;

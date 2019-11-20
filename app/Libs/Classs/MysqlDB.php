@@ -3,6 +3,7 @@
 class MysqlDB
 {
     public $dbo = null;
+    public $dsn = [];
     public $sql = null;
     public $schema = null;
     public $assoc = false;
@@ -10,6 +11,9 @@ class MysqlDB
     public $connectError = array();// 连接的错误信息
 
     public function ConnectDB($dsn=array(), $options=false){
+        $this->dsn = $dsn;
+        //echo "\r\n" . __FILE__ . ' ' . __LINE__ . '$this->dsn:'; var_dump($this->dsn);
+
         if (!$dsn) {
             //$this->dbo = \DB::connection();
             $this->dbo = \DB::reconnect();
@@ -17,7 +21,7 @@ class MysqlDB
         }
         if (is_array($dsn) && isset($dsn['db_host'])) {
             DbHelper::getConfigInfoByProjectData($dsn);
-            $connect_name = DbHelper::getConnectName($dsn);
+            $connect_name = DbHelper::getConnectName($dsn,true);
             //$this->dbo = \DB::connection($connect_name);
             $this->dbo = \DB::reconnect($connect_name);
             return ;
@@ -157,8 +161,9 @@ class MysqlDB
         $this->Disconnect($this->dbo);
     }*/
 
-    public function getDsn(array $config = [])
+    public function getDsn()
     {
+        $config = $this->dsn;
         //$app = new Application();
         $app = Illuminate\Container\Container::getInstance();
         //$config = $app->make('config')->get('app');
@@ -168,9 +173,11 @@ class MysqlDB
             $connections = $app['config']['database.connections'];
             $config = $connections[$default];
         }
-        return $this->hasSocket($config)
+        $rlt = $this->hasSocket($config)
             ? $this->getSocketDsn($config)
             : $this->getHostDsn($config);
+        //echo '$rlt:' ; var_dump($rlt);
+        return $rlt;
     }
     protected function hasSocket(array $config)
     {

@@ -18,7 +18,7 @@ class DbHelper{
     // 将数据库project表的数组或mysql_config.ini中数组类型变为dsn字符串
     public static function getDSNstrByProArrOrIniArr($dsn){
         if (is_array($dsn))
-            $dsn = self::getConnectName($dsn, true, false);
+            $dsn = self::getConnectName($dsn, false);
         return $dsn;
     }
 
@@ -425,13 +425,16 @@ class DbHelper{
         if (""==$tbl_name ) {
             return null;
         }
+        //echo "\r\n" . __FILE__ . ' line：' . __LINE__ . ' , $p_arr:';print_r($p_arr);
+        //echo "\r\n" . __FILE__ . ' line：' . __LINE__ . ' , $real_p_arr:';print_r($real_p_arr);
+
         if (!$real_p_arr) $real_p_arr = $p_arr;
         $real_p_id = $real_p_arr['id'];
 
         $dbR = DBR::getDBR($p_arr);
         $dbW = DBW::getDBW($p_arr);
-        $dbW->getDsn();
-        $dbW->getDsn($p_arr);
+        //echo "\r\n" . __FILE__ . ' line：' . __LINE__ . ' , ';var_dump($dbW->getDsn());
+        //echo "\r\n" . __FILE__ . ' line：' . __LINE__ . ' , ';var_dump($dbR->getDsn());
 
         if ($p_arr['id'] != $real_p_id) {
             // 项目和字段定义表分离，不在同一个库里面的情况
@@ -503,6 +506,8 @@ class DbHelper{
             $creator = $_SESSION['user']['id'];
         }
         $dbW->table_name = $t_def;
+        //echo "\r\n" . __FILE__ . ' line：' . __LINE__ . ' , $dbW->getDsn(): ';var_dump($dbW->getDsn());
+        //echo "\r\n" . __FILE__ . ' line：' . __LINE__ . ' , $dbR->getDsn(): ';var_dump($dbR->getDsn());
         //print_r($dbW->getExistorNot("name_eng='".$name_eng."'"));
         if($dbW->getExistorNot("name_eng='".$name_eng."'  AND p_id = $p_id ")){
             // 表如果存在是否需要进行修复???? 对于tpl_type等的修改基于什么呢？如何获取这样的数据呢？
@@ -1099,7 +1104,7 @@ class DbHelper{
             ],*/
 
         ];
-        $connect_name = self::getConnectName($p_arr);
+        $connect_name = self::getConnectName($p_arr,true,true);
 
         $db_connect_info['host']     = $p_arr['db_host'];
         $db_connect_info['port']     = $p_arr['db_port'];
@@ -1129,9 +1134,9 @@ class DbHelper{
     public static function getDBTbls($p_arr, $assoc=true) {
         self::getConfigInfoByProjectData($p_arr);
         $sql = "show table status from " . cString_SQL::FormatField($p_arr['db_name']);
-        $connect_name = self::getConnectName($p_arr);
+        $connect_name = self::getConnectName($p_arr,true);
         //$rlt = collect(DB::connection($connect_name)->select($sql))->toArray();
-        $rlt = DB::connection($connect_name)->select($sql); // 返回数组, 无需toArray
+        $rlt = DB::reconnect($connect_name)->select($sql); // 返回数组, 无需toArray
         if ($rlt) {
             $rlt = cArray::ObjectToArray($rlt);
         }
@@ -1143,19 +1148,19 @@ class DbHelper{
 
         if (is_array($p_arr)) {
             self::getConfigInfoByProjectData($p_arr);
-            $connect_name = self::getConnectName($p_arr);
+            $connect_name = self::getConnectName($p_arr,true);
         } else {
             $connect_name = $p_arr; // 数据库配置的连接名
         }
         $sql = "SHOW $FULL COLUMNS FROM ".cString_SQL::FormatField($table_name); // 或 show FULL fields from table 或 desc table
-        $rlt = DB::connection($connect_name)->select($sql);
+        $rlt = DB::reconnect($connect_name)->select($sql);
         if ($rlt) {
             $rlt = cArray::ObjectToArray($rlt);
         }
         return $rlt;
     }
     // 由于config::set的限制，必须保证返回的字符串中没有点符号'.'
-    public static function getConnectName($p_arr, $with_dbname = false, $replace_dot = true) {
+    public static function getConnectName($p_arr, $replace_dot = true, $with_dbname = true) {
         //return $p_arr'db_name'] . '_m';
         if (!is_array($p_arr)) {
             throw new \Exception('Invalid array p_arr');
@@ -1169,7 +1174,7 @@ class DbHelper{
         } else {
             throw new \Exception('Invalid array p_arr');
         }
-        if ($with_dbname) $dsn = $dsn . $p_arr['db_name'];
+        if ($with_dbname) $dsn = $dsn . (isset($p_arr['db_name'])?$p_arr['db_name']:'');
 
         if ($replace_dot)
             return str_replace('.', self::DOT_REPLACE_TO_STR, $dsn); // 保证没有.符号, 防止config.set的时候出现问题

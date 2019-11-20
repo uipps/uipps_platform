@@ -12,7 +12,7 @@ class DBW
             $alias = '';
         } else if (is_array($dsn) && isset($dsn['db_host'])) {
             // 拼装对应的key，作为树的key
-            $alias = DbHelper::getConnectName($dsn);
+            $alias = DbHelper::getConnectName($dsn,false);
         } else {
             throw new \Exception('Invalid array p_arr:' . __FILE__ . ' ' . __LINE__);
         }
