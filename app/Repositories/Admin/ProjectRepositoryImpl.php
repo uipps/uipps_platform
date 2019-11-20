@@ -30,9 +30,18 @@ class ProjectRepositoryImpl extends BaseRepository
 
     public function getProjectDsnList($with_dbname = true) {
         $db_result = Project::get();
-        if ($db_result)
-            return $db_result->toArray(); // 节省内存
-        return $db_result;
+        if (!$db_result)
+            return $db_result;
+
+        $db_result_list = $db_result->toArray(); // 节省内存
+
+        // 按照dsn作为可以重新组织数组
+        $rlt = [];
+        foreach ($db_result_list as $row) {
+            $l_dsn = \DbHelper::getConnectName($row, true, false);
+            $rlt[$l_dsn] = $row;
+        }
+        return $rlt;
     }
 
     // 插入单条记录
