@@ -69,7 +69,7 @@ class TemplateAddController extends AddController
         $FLD_def = TABLENAME_PREF."field_def";
 
         $arr = array();
-        $arr["dbR"] = $dbR;
+        $arr["dbR"] = null;//$dbR;
         $arr["table_name"] = $TBL_def;  // 执行插入操作的数据表
         $arr["parent_ids_arr"] = array(1=>"p_id");//,2=>"id"可有可无，编辑的时候一定要有
         $arr["TBL_def"] = $TBL_def;
@@ -313,6 +313,19 @@ class TemplateAddController extends AddController
                 if (array_key_exists("creator",    $arr["f_info"])) $data_arr["creator"] = $_SESSION["user"]["username"];
                 if (array_key_exists("createdate", $arr["f_info"])) $data_arr["createdate"] = ("0000-00-00"==$data_arr["createdate"] || empty($data_arr["createdate"])) ? date("Y-m-d") : $data_arr["createdate"];
                 if (array_key_exists("createtime", $arr["f_info"])) $data_arr["createtime"] = ("00:00:00"==$data_arr["createtime"] || empty($data_arr["createtime"]))   ? date("H:i:s") : $data_arr["createtime"];
+                // 表定义表和字段定义表有可能是挂靠在其他项目上的
+                if ($arr['p_def']['table_field_belong_project_id'] > 0 && ($arr['p_def']['id'] != $arr['p_def']['table_field_belong_project_id'])) {
+                    // 需要获取对应的项目信息，并且检查该项目中的是否存在表定义表和字段定义表，如果该项目也挂靠在其他项目则报错；暂不支持多级挂靠，避免出现互相挂靠而死循环
+                    // $p_info_t_def = \App\Models\Admin\Project::find(1); 也可，不过不好加缓存
+                    $p_obj = new \App\Repositories\Admin\ProjectRepository();
+                    $p_info_t_def = $p_obj->getProjectById($arr['p_def']['table_field_belong_project_id']);
+                    // 切换到指定的数据库，需要携带数据库名称信息，重新连一下数据库。
+                } else {
+                    // 沿用$arr["p_def"]的DBW
+                    $p_info_t_def = $arr['p_def'];
+                }
+                //$dbW = null;
+                $dbW = DBW::getDBW($p_info_t_def); // 后面插入表数据需要在这个连接上操作
                 $dbW->table_name = $table_name;  // 表定义表
                 $tid = $dbW->insertOne($data_arr);
                 //$l_err = $dbW->errorInfo();
@@ -353,7 +366,7 @@ if (isset($form[$a_key])){
 
 return $l_url;')
                 );
-                DbHelper::ins2field_def($arr["p_def"], $l_data_arr,$tid,$FLD_def,$TBL_def);
+                DbHelper::ins2field_def($p_info_t_def, $l_data_arr,$tid,$FLD_def,$TBL_def, true, $arr['p_def']);
 
 // 添加成功以后，需要对定义的各种任务需要一一完成(即执行相应的成功后算法)
                 Parse_Arithmetic::do_arithmetic_by_add_action($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie);
