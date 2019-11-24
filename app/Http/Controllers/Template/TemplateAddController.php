@@ -373,7 +373,7 @@ return $l_url;')
             }
             //$response['html_content'] = "";
             //return "main.php?do=template_list".$arr["parent_rela"]["parent_ids_url_build_query"];  // 总是返回此结果
-            $response['html_content'] = "<script type='text/javascript'>window.parent.frames['frmMainMenu'].location.reload();window.parent.frames['frmCenter'].location.href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."';</script>".NEW_LINE_CHAR;
+            $response['html_content'] = "<script type='text/javascript'>window.parent.frames['frmMainMenu'].location.reload();window.parent.frames['frmCenter'].location.href='/". $this->type_name . "/list?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."';</script>".NEW_LINE_CHAR;
             $response['ret'] = array('ret'=>0);
             return $response['html_content'];  // 总是返回此结果
         }
