@@ -29,7 +29,7 @@ class PasswordEditController extends Controller
         $actionMap = [];
         $actionError = [];
         $response = [];
-        $form = $a_request->all();
+        $form = $a_request->post();
         $get = [];
         $cookie = [];
         $files = [];

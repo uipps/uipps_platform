@@ -216,7 +216,7 @@ class CrontabCommand extends Command
         if ($pid <= 0){
             // sql有错误，后面的就不用执行了。
             $response['html_content'] = self::NEW_LINE_CHAR . date('Y-m-d H:i:s') . ' FILE: '.__FILE__.' '. ' FUNCTION: '.__FUNCTION__.' Line: '. __LINE__ . ' SQL: '.$dbW->getSQL().', _arr:' . var_export($data_arr, TRUE);
-            $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+            $response['ret'] = array('ret'=>1,'msg'=>'failed');
             return null;
         }
         //$pid = $dbW->LastID();

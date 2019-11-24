@@ -6,8 +6,10 @@ use App\Http\Controllers\AddController;
 use App\Services\Admin\UserService;
 use Illuminate\Http\Request;
 use DBR;
+use DBW;
 use Parse_Arithmetic;
 use DbHelper;
+use cArray;
 
 class TemplateAddController extends AddController
 {
@@ -31,10 +33,10 @@ class TemplateAddController extends AddController
         $actionMap = [];
         $actionError = [];
         $response = [];
-        $form = [];
-        $get = [];
-        $cookie = [];
-        $files = [];
+        $form = $a_request->post();
+        $get = $a_request->query();
+        $cookie = $a_request->cookie();
+        $files = $a_request->file();
 
         $request = $a_request->all();
         $request['do'] = 'template_add';
@@ -186,7 +188,7 @@ class TemplateAddController extends AddController
                     //$l_err = $dbW->errorInfo();
                     //if ($l_err[1]>0){
                     $response['html_content'] = "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . " l_err:" . var_export($l_err->getMessage(), TRUE);
-                    $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                    $response['ret'] = array('ret'=>1,'msg'=>$l_err->getMessage());
                     return $response['html_content'];
                 }
                 // ----- 建表完成end
@@ -219,8 +221,8 @@ class TemplateAddController extends AddController
                 //$l_err = $dbW->errorInfo();
                 if ($tid <= 0){
                     // 数据库连接失败后
-                    $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . $l_err[2]. ".";
-                    $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                    $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . ".";
+                    $response['ret'] = array('ret'=>1,'msg'=>'');
                     return $response['html_content'];
                 }
 
@@ -246,8 +248,8 @@ class TemplateAddController extends AddController
                     //$l_err = $dbW->errorInfo();
                     if ($fid<=0){
                         // 数据库连接失败后
-                        $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . $l_err[2]. ".";
-                        $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                        $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " .  ".";
+                        $response['ret'] = array('ret'=>1,'msg'=>'failed');
                         return $response['html_content'];
                     }
                 }
@@ -274,8 +276,8 @@ class TemplateAddController extends AddController
                     $id = $dbW->insertOne($l_field_old);
                     if ($id<=0){
                         // 数据库连接失败后
-                        $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . $l_err[2]. ".";
-                        $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                        $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . ".";
+                        $response['ret'] = array('ret'=>1,'msg'=>'failed');
                         return $response['html_content'];
                     }
                     usleep(100);
@@ -291,8 +293,8 @@ class TemplateAddController extends AddController
                     $dbW->create_table($form["name_eng"], $sql_q);
                 } catch (\Exception $l_err) {
                     // 数据库连接失败后
-                    $response['html_content'] = date("Y-m-d H:i:s") . " create_table faild! " . $l_err[2]. ".";
-                    $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                    $response['html_content'] = date("Y-m-d H:i:s") . " create_table faild! " . $l_err->getMessage(). ".";
+                    $response['ret'] = array('ret'=>1,'msg'=>$l_err->getMessage());
                     return $response['html_content'];
                 }
 
@@ -303,7 +305,7 @@ class TemplateAddController extends AddController
                 // 1) 先入表定义表
                 $data_arr = DbHelper::getInsertArrByFormFieldInfo($form, $arr["f_info"], false);
                 if (array_key_exists("___ERR___", $data_arr)) {
-                    $response['html_content'] = date("Y-m-d H:i:s") . "field empty: ". var_export($data_arr["___ERR___"], TRUE);
+                    $response['html_content'] = date("Y-m-d H:i:s") . ' file:' . __FILE__ . ' line:' . __LINE__ . " field empty: ". var_export($data_arr["___ERR___"], TRUE);
                     $response['ret'] = array('ret'=>1);
                     return $response['html_content'];
                 }
@@ -316,8 +318,8 @@ class TemplateAddController extends AddController
                 //$l_err = $dbW->errorInfo();
                 if ($tid<=0){
                     // 数据库连接失败后
-                    $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . $l_err[2]. ".";
-                    $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                    $response['html_content'] = date("Y-m-d H:i:s") . " ----- insert error! " . ".";
+                    $response['ret'] = array('ret'=>1,'msg'=>'failed');
                     return $response['html_content'];
                 }
 

@@ -31,10 +31,10 @@ class TempdefEditController extends AddController
         $actionMap = [];
         $actionError = [];
         $response = [];
-        $form = [];
-        $get = [];
-        $cookie = [];
-        $files = [];
+        $form = $a_request->post();
+        $get = $a_request->query();
+        $cookie = $a_request->cookie();
+        $files = $a_request->file();
 
         $request = $a_request->all();
         $request['do'] = 'tempdef_edit';
@@ -197,7 +197,7 @@ class TempdefEditController extends AddController
                 $dbW->updateOne($data_arr, $conditon);
             } catch (\Exception $l_err) {
                 $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err->getMessage(),true). ". SQL:".$dbW->getSQL() . " 更新数据出错, <a href='?do=".$this->type_name."_edit".$arr["parent_rela"]["parent_ids_url_build_query"]."'>重新编辑</a> ";
-                $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                $response['ret'] = array('ret'=>1,'msg'=>$l_err->getMessage());
                 return $response['html_content'];  // 总是返回此结果
             }
 

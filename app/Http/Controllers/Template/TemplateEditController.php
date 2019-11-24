@@ -31,10 +31,10 @@ class TemplateEditController extends AddController
         $actionMap = [];
         $actionError = [];
         $response = [];
-        $form = [];
-        $get = [];
-        $cookie = [];
-        $files = [];
+        $form = $a_request->post();
+        $get = $a_request->query();
+        $cookie = $a_request->cookie();
+        $files = $a_request->file();
 
         $request = $a_request->all();
         $request['do'] = 'template_edit';
@@ -147,7 +147,7 @@ class TemplateEditController extends AddController
                         $dbW->rename_table($l_rlt["name_eng"],$data_arr["name_eng"]);
                     } catch (\Exception $l_err) {
                         $response['html_content'] = date("Y-m-d H:i:s") . var_export($l_err->getMessage(), true). " 修改表名error,sql: ". $dbW->getSQL() .NEW_LINE_CHAR;
-                        $response['ret'] = array('ret'=>1,'msg'=>$l_err[2]);
+                        $response['ret'] = array('ret'=>1,'msg'=>$l_err->getMessage());
                         return $response['html_content'];
                     }
                 }else {

@@ -42,7 +42,7 @@ class cString {
     }
 
     // 中文需要转义，没有中文就用英文替代
-    public function getNameCN($a_key,$table_name_cn){
+    public static function getNameCN($a_key,$table_name_cn){
         if (!empty($table_name_cn)) {
             return convCharacter($table_name_cn,true);
         }else {
@@ -50,7 +50,7 @@ class cString {
         }
     }
 
-    public function GetAliasByDsnString($dsn,$l_name=""){
+    public static function GetAliasByDsnString($dsn,$l_name=""){
         if (is_string($dsn) && ""!=$dsn) {
             $l_b = parse_url($dsn);
             if (isset($l_b["path"]) && "/"!=trim($l_b["path"])) {
@@ -70,7 +70,7 @@ class cString {
      * @param array or string: $l_content
      * @return string
      */
-    public function GetContType(&$request,$l_content){
+    public static function GetContType(&$request,$l_content){
         if (!function_exists('json_decode')) {
             require_once('JSON.php');
             $json = new Services_JSON();
@@ -149,7 +149,7 @@ class cString {
      * @param array $a_ge 常见的表示主机的数组索引名称
      * @return string
      */
-    public function parse_mysql_ini($a_data){
+    public static function parse_mysql_ini($a_data){
         $a_ge=array(
             "mysql_dsn"=>array(),
             "dsn"=>array(),

@@ -85,12 +85,12 @@ class DbHelper{
         return $defaul_dbname;
     }
 
-    public function getAutocreamentTBname($a_proj, $a_f_name="Name", $a_data=array(), $a_default=''){
+    public static function getAutocreamentTBname($a_proj, $a_f_name="Name", $a_data=array(), $a_default=''){
         if (''==$a_default) $a_default = $GLOBALS['cfg']['DB_TB_DEFALUT_TYPE'];
         return DbHelper::getAutocreamentDbname($a_proj, $a_f_name, $a_data, $a_default);
     }
 
-    public function getAutocreamentFieldname($a_proj, $a_f_name="Field", $a_data=array(), $a_default=''){
+    public static function getAutocreamentFieldname($a_proj, $a_f_name="Field", $a_data=array(), $a_default=''){
         if (''==$a_default) $a_default = $GLOBALS['cfg']['DB_FIELD_DEFALUT_TYPE'];
         return DbHelper::getAutocreamentDbname($a_proj, $a_f_name, $a_data, $a_default);
     }
@@ -306,7 +306,7 @@ class DbHelper{
                     // 需要进行错误处理，稍后完善???? sql有错误，后面的就不用执行了。
                     echo "\r\n".  date("Y-m-d H:i:s") . " FILE: ".__FILE__." ". " FUNCTION: ".__FUNCTION__." Line: ". __LINE__."\n" . "sql: $l_sql,  _arr:" . $l_err->getCode() . ' '. var_export($l_err->getMessage(), TRUE);
                     exit;
-                    //return $l_err[2];
+                    //return $l_err->getMessage();
                 }
             }
         }
@@ -375,30 +375,30 @@ class DbHelper{
                 }
             }
 
-            if (""===$form_d || is_null($form_d)) { // 千万不要用empty进行判断，因为0也是empty
-                if ("NO"==strtoupper( $l_arr["is_null"] )) {
+            if ('' === $form_d || is_null($form_d)) { // 千万不要用empty进行判断，因为0也是empty
+                if ('NO'==strtoupper( $l_arr['is_null'] )) {
                     // 不为空的字段必须填写或采用默认值
-                    if (""!=($l_arr["default"]) && false === strpos( strtoupper(trim($l_arr["default"])), 'CURRENT_TIMESTAMP') ) {
-                        // not null类型的默认值不可能为null，因此只需要判断""即可 剔除特殊情况默认 CURRENT_TIMESTAMP
-                        $data_arr[$l_arr["name_eng"]] = $l_arr["default"];
-                    }else if ( "ENUM"==strtoupper(trim($l_arr["type"])) ){
-                        if (is_array($l_arr["length"])) {
+                    if (false === strpos( strtoupper(trim($l_arr['default'])), 'CURRENT_TIMESTAMP') ) {
+                        // not null类型的默认值不可能为null，因此只需要判断''即可 剔除特殊情况默认 CURRENT_TIMESTAMP
+                        $data_arr[$l_arr['name_eng']] = $l_arr['default'];
+                    }else if ( 'ENUM'==strtoupper(trim($l_arr['type'])) ){
+                        if (is_array($l_arr['length'])) {
                             // 数组中找不到空值则说明有错
-                            if (!in_array("", $l_arr["length"])) {
-                                $data_arr["___ERR___"][] = __FILE__ . ' ' . __LINE__ . ' ' . $l_arr["name_eng"];
+                            if (!in_array('', $l_arr['length'])) {
+                                $data_arr['___ERR___'][] = __FILE__ . ' ' . __LINE__ . ' ' . $l_arr['name_eng'];
                             }
                         }else {
                             // 枚举串中找不到空值则说明有错
-                            if ( false===strpos( $l_arr["length"], "''")) {
-                                $data_arr["___ERR___"][] = __FILE__ . ' ' . __LINE__ . ' ' . $l_arr["name_eng"];
+                            if ( false===strpos( $l_arr['length'], "''")) {
+                                $data_arr['___ERR___'][] = __FILE__ . ' ' . __LINE__ . ' ' . $l_arr['name_eng'];
                             }
                         }
                         // 如果是枚举型，并且有一个''的枚举项，不填写数据也不需要写该字段sql也能入库。
-                        //$data_arr[$l_arr["name_eng"]] = '';  // 是否赋值无关紧要,sql没有此字段也能入库。
+                        //$data_arr[$l_arr['name_eng']] = '';  // 是否赋值无关紧要,sql没有此字段也能入库。
                     }else {
                         // 自增和时间类型的可以不用填写, 否则返回一个错误
-                        if ("auto_increment"!=strtolower(trim($l_arr["extra"])) && "timestamp" != strtolower(trim($l_arr["type"]))) {
-                            $data_arr["___ERR___"][] = __FILE__ . ' ' . __LINE__ . ' ' . $l_arr["name_eng"];
+                        if ('auto_increment'!=strtolower(trim($l_arr['extra'])) && 'timestamp' != strtolower(trim($l_arr['type']))) {
+                            $data_arr['___ERR___'][] = __FILE__ . ' ' . __LINE__ . ' ' . $l_arr['name_eng'];
                         }
                     }
                 }else {
@@ -406,13 +406,13 @@ class DbHelper{
                     // 另一方法，也可能是后台发布，没有经过前端算法进行赋值的，也能运行到此步骤
                     if ($with_null) {
                         if (''===$form_d) $form_d = null;
-                        $data_arr[$l_arr["name_eng"]] = $form_d;
+                        $data_arr[$l_arr['name_eng']] = $form_d;
                     }
                 }
             }else {
                 // 添加或修改数据的时候，先进行还原数据, 保证数据在入库之前先要进行htmlspecialchars一下
                 // 实际测试中发现不需要 htmlspecialchars_decode($form_d) 这样，也许有其他地方进行了转换。以后研究????
-                $data_arr[$l_arr["name_eng"]] = $form_d;
+                $data_arr[$l_arr['name_eng']] = $form_d;
             }
         }
 

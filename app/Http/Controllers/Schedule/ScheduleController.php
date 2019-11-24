@@ -31,10 +31,10 @@ class ScheduleController extends ListController
         $actionMap = [];
         $actionError = [];
         $response = [];
-        $form = [];
-        $get = [];
-        $cookie = [];
-        $files = [];
+        $form = $a_request->post();
+        $get = $a_request->query();
+        $cookie = $a_request->cookie();
+        $files = $a_request->file();
 
         $request = $a_request->all();
         $request['do'] = 'schedule_list';
