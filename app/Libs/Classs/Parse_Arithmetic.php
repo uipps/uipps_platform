@@ -1604,7 +1604,9 @@ function __call_back_addDollarBracePRO2str($a_str){
     return '${_PROJECT_'.$a_str.'}';
 }
 function __call_back_ReplaceValue(&$item1, $key, $prefix){
-    $item1 = $prefix[$item1];
+    if (isset($prefix[$item1]))
+        $item1 = $prefix[$item1];
+    //else $item1 = null; TODO
 }
 
 function __call_back_addslashesSingleQuote2str($a_str){
