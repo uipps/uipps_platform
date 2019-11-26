@@ -155,6 +155,18 @@ class TemplateEditController extends AddController
                 }
             }
 
+            // 表定义表和字段定义表有可能是挂靠在其他项目上的
+            if ($arr['p_def']['table_field_belong_project_id'] > 0 && ($arr['p_def']['id'] != $arr['p_def']['table_field_belong_project_id'])) {
+                // 需要获取对应的项目信息，并且检查该项目中的是否存在表定义表和字段定义表，如果该项目也挂靠在其他项目则报错；暂不支持多级挂靠，避免出现互相挂靠而死循环
+                // $p_info_t_def = \App\Models\Admin\Project::find(1); 也可，不过不好加缓存
+                $p_obj = new \App\Repositories\Admin\ProjectRepository();
+                $p_info_t_def = $p_obj->getProjectById($arr['p_def']['table_field_belong_project_id']);
+                // 切换到指定的数据库，需要携带数据库名称信息，重新连一下数据库。
+            } else {
+                // 沿用$arr["p_def"]的DBW
+                $p_info_t_def = $arr['p_def'];
+            }
+            $dbW = DBW::getDBW($p_info_t_def); // 后面插入表数据需要在这个连接上操作
             $dbW->table_name = $table_name;  // 表定义表
             $conditon = " id = ".$request["id"]." ";
             cArray::delSameValue($data_arr,$l_rlt);  // 剔除掉没有修改的数据项
@@ -174,7 +186,7 @@ class TemplateEditController extends AddController
                 //return "main.php?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"];  // 删除处理直接返回到列表页面
                 return redirect('/'.$this->type_name.'/list?_='.$arr["parent_rela"]["parent_ids_url_build_query"]);
             }
-            $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ";
+            $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='/".$this->type_name."/list?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ";
             $response['ret'] = array('ret'=>0);
             return $response['html_content'];  // 总是返回此结果
 

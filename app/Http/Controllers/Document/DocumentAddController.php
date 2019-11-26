@@ -6,6 +6,7 @@ use App\Http\Controllers\AddController;
 use App\Services\Admin\UserService;
 use Illuminate\Http\Request;
 use DBR;
+use DBW;
 use Parse_Arithmetic;
 use DbHelper;
 
@@ -182,7 +183,7 @@ class DocumentAddController extends AddController
                             \Publish::toPublishing($arr,$actionMap,$actionError,$request,$response,$form,$get,$cookie,$l_data_arr,$l_tmpl_one);
                     }
                     // 成功就跳转到列表页面
-                    $response['html_content'] = date("Y-m-d H:i:s") . " 成功发布并保存了信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
+                    $response['html_content'] = date("Y-m-d H:i:s") . " 成功发布并保存了信息, <a href='/".$this->type_name."/list?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
                     $response['ret'] = array('ret'=>0);
 
                 } else {
@@ -191,7 +192,7 @@ class DocumentAddController extends AddController
                     // 成功就跳转到列表页面, 有时候作为接口或者内部被调用的时候，并不希望进行跳转动作。是否跳转依据参数 page_no_jump
                     $response['ret'] = array_merge(array('ret'=>0),$data_arr);
 
-                    $response['html_content'] = date("Y-m-d H:i:s") . " 成功添加了信息, <a href='?do=" . $this->type_name . "_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
+                    $response['html_content'] = date("Y-m-d H:i:s") . " 成功添加了信息, <a href='/" . $this->type_name . "/list?do=" . $this->type_name . "_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
 
                 }
 

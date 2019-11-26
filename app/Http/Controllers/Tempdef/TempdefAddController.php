@@ -6,8 +6,10 @@ use App\Http\Controllers\AddController;
 use App\Services\Admin\UserService;
 use Illuminate\Http\Request;
 use DBR;
+use DBW;
 use Parse_Arithmetic;
 use DbHelper;
+use cArray;
 
 class TempdefAddController extends AddController
 {
@@ -61,7 +63,7 @@ class TempdefAddController extends AddController
 
 
         $arr = array();
-        $arr["dbR"] = $dbR;
+        $arr["dbR"] = null;//$dbR;
         $arr["table_name"] = $FLD_def;  // 执行插入操作的数据表
         $arr["parent_ids_arr"] = array(1=>"p_id", 2=>"t_id");//,2=>"id"可有可无，编辑的时候一定要有
         $arr["TBL_def"] = $TBL_def;
@@ -165,12 +167,23 @@ class TempdefAddController extends AddController
             if (array_key_exists("creator",    $arr["f_info"])) $data_arr["creator"] = $_SESSION["user"]["username"];
             if (array_key_exists("createdate", $arr["f_info"])) $data_arr["createdate"] = ("0000-00-00"==$data_arr["createdate"] || empty($data_arr["createdate"])) ? date("Y-m-d") : $data_arr["createdate"];
             if (array_key_exists("createtime", $arr["f_info"])) $data_arr["createtime"] = ("00:00:00"==$data_arr["createtime"] || empty($data_arr["createtime"]))   ? date("H:i:s") : $data_arr["createtime"];
-            $dbW->table_name = $table_name;  // 字段定义表
 
+            // 表定义表和字段定义表有可能是挂靠在其他项目上的
+            if ($arr['p_def']['table_field_belong_project_id'] > 0 && ($arr['p_def']['id'] != $arr['p_def']['table_field_belong_project_id'])) {
+                // 需要获取对应的项目信息，并且检查该项目中的是否存在表定义表和字段定义表，如果该项目也挂靠在其他项目则报错；暂不支持多级挂靠，避免出现互相挂靠而死循环
+                // $p_info_t_def = \App\Models\Admin\Project::find(1); 也可，不过不好加缓存
+                $p_obj = new \App\Repositories\Admin\ProjectRepository();
+                $p_info_t_def = $p_obj->getProjectById($arr['p_def']['table_field_belong_project_id']);
+                // 切换到指定的数据库，需要携带数据库名称信息，重新连一下数据库。
+            } else {
+                // 沿用$arr["p_def"]的DBW
+                $p_info_t_def = $arr['p_def'];
+            }
+            $dbW = DBW::getDBW($p_info_t_def); // 后面插入表数据需要在这个连接上操作
+
+            $dbW->table_name = $table_name;  // 字段定义表
             try {
                 $fid = $dbW->insertOne($data_arr);
-
-
             } catch (\Exception $l_err) {
                 //$l_err = $dbW->errorInfo();
                 //$fid = $dbW->LastID();  // 获取字段id
@@ -186,7 +199,7 @@ class TempdefAddController extends AddController
 
             if ($fid>0) {
                 $response['ret'] = array('ret'=>0);
-                $response['html_content'] = date("Y-m-d H:i:s") . " 成功添加了信息, <a href='?do=tempdef_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;  // 总是返回此结果
+                $response['html_content'] = date("Y-m-d H:i:s") . " 成功添加了信息, <a href='/tempdef/list?do=tempdef_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;  // 总是返回此结果
                 return $response['html_content'];
             } else {
                 $response['html_content'] = date("Y-m-d H:i:s") . var_export($data_arr,true) . $dbW->getSQL() . " insert err!!!!";

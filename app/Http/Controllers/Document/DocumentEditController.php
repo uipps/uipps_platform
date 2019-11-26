@@ -10,6 +10,7 @@ use DBW;
 use Parse_Arithmetic;
 use DbHelper;
 use cArray;
+use Publish;
 
 class DocumentEditController extends AddController
 {
@@ -157,7 +158,7 @@ class DocumentEditController extends AddController
                 $l_rlt = $dbW->updateOne($data_arr, $conditon, $request['__if_add_count__']); // 参数3表示仅仅增加计数 // echo $dbW->getSQL();
 
                 // 增加计数成功后
-                $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
+                $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='/".$this->type_name."/list?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
                 $response['ret'] = array('ret'=>0);
                 return $response['html_content'];  // 总是返回此结果
             }
@@ -218,12 +219,12 @@ class DocumentEditController extends AddController
                 }else {
                     $l_html = "<br />修改的字段:". var_export(array_keys($data_arr),true) ;
                 }
-                $response['html_content'] = date("Y-m-d H:i:s") . $l_html . "<br /> 成功发布并保存了信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
+                $response['html_content'] = date("Y-m-d H:i:s") . $l_html . "<br /> 成功发布并保存了信息, <a href='/".$this->type_name."/list?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
                 $response['ret'] = array('ret'=>0);
                 return $response['html_content'];  // 总是返回此结果
             }else {
                 // 成功就跳转到列表页面
-                $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
+                $response['html_content'] = date("Y-m-d H:i:s") . "<br />修改的字段:". var_export(array_keys($data_arr),true) . "<br /> 成功修改信息, <a href='/".$this->type_name."?do=".$this->type_name."_list".$arr["parent_rela"]["parent_ids_url_build_query"]."'>返回列表页面</a> ".NEW_LINE_CHAR;
                 $response['ret'] = array('ret'=>0);
                 return $response['html_content'];  // 总是返回此结果
             }
