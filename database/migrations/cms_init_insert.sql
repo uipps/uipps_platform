@@ -1163,7 +1163,7 @@ if (isset($a_arr["t_def"]["tmpl_design"][0]["default_field"])) {
 
 if (isset($form[$a_key])){
     $l_url=$form[$a_key];
-}else if (""!=trim($a_arr["f_data"][$a_key])){
+}else if (isset($a_arr["f_data"]) && ""!=trim($a_arr["f_data"][$a_key])){
     $l_url=$a_arr["f_data"][$a_key];
 }else if (""!=isset($l_tmpl_design_arr[$a_key]["default_url"])){
     $l_url=$l_tmpl_design_arr[$a_key]["default_url"];
