@@ -378,7 +378,9 @@ class DbHelper{
             if ('' === $form_d || is_null($form_d)) { // 千万不要用empty进行判断，因为0也是empty
                 if ('NO'==strtoupper( $l_arr['is_null'] )) {
                     // 不为空的字段必须填写或采用默认值
-                    if (false === strpos( strtoupper(trim($l_arr['default'])), 'CURRENT_TIMESTAMP') ) {
+                    // 自增和时间类型的可以不用填写, 否则返回一个错误
+                    if (false === strpos( strtoupper(trim($l_arr['default'])), 'CURRENT_TIMESTAMP') &&
+                        'auto_increment'!=strtolower(trim($l_arr['extra'])) ) {
                         // not null类型的默认值不可能为null，因此只需要判断''即可 剔除特殊情况默认 CURRENT_TIMESTAMP
                         $data_arr[$l_arr['name_eng']] = $l_arr['default'];
                     }else if ( 'ENUM'==strtoupper(trim($l_arr['type'])) ){
