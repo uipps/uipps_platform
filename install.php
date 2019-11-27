@@ -3,7 +3,8 @@
 $root_path = __DIR__;
 
 $cmd_list = [
-    //'cd /d ' . $root_path . ' ; composer update',
+    //'composer config repo.packagist composer https://packagist.phpcomposer.com -d ' . $root_path,
+    //'composer update -d ' . $root_path,  // 或者 --working-dir=$root_path 或 -d=$root_path（windows系统不认，会报错）
     'php ' . $root_path . '/artisan migrate:fresh',
     'php ' . $root_path . '/artisan db:seed --class=project',
     'php ' . $root_path . '/artisan initproject InitTableField',
