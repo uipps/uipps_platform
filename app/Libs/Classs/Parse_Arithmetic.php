@@ -1319,26 +1319,28 @@ class Parse_Arithmetic
     public static function Int_FillDefDuo(&$arr, &$response, &$request){
         // 继续注册 算法字段的数据进来, 在各个算法的时候已经注册了
         $l_pa_arr1 = array();
-        if (is_array($response["arithmetic"])) {
-            foreach ($response["arithmetic"] as $l_fi=>$l__v){
-                if (is_array($l__v)) {
-                    if (array_key_exists("pa_val",$l__v)) {
-                        if (is_array($l__v["pa_val"])) {
-                            if (array_key_exists($l_fi,$request)) {
-                                $l_pa_arr1[$l_fi] = $request[$l_fi];
-                            }
-                        }else {
-                            $l_pa_arr1[$l_fi] = $l__v["pa_val"];
+        if (!isset($response["arithmetic"]) || !is_array($response["arithmetic"]))
+            return 0;
+
+        foreach ($response["arithmetic"] as $l_fi=>$l__v){
+            if (is_array($l__v)) {
+                if (array_key_exists("pa_val",$l__v)) {
+                    if (is_array($l__v["pa_val"])) {
+                        if (array_key_exists($l_fi,$request)) {
+                            $l_pa_arr1[$l_fi] = $request[$l_fi];
                         }
+                    }else {
+                        $l_pa_arr1[$l_fi] = $l__v["pa_val"];
                     }
-                }else {
-                    $l_pa_arr1[$l_fi] = $l__v;
                 }
+            }else {
+                $l_pa_arr1[$l_fi] = $l__v;
             }
         }
         if (!empty($l_pa_arr1)) {
             Parse_Arithmetic::Int_FillREQUESTValue($arr, $response, $arr['f_def_duo'], $l_pa_arr1);
         }
+        return 1;
     }
 
     public static function Int_FillALL(&$arr, &$response, &$request){
