@@ -42,7 +42,7 @@ $GLOBALS['language']['TPL_QINGNINXUANZHONGYITIAOXINXI_STR'] = '请您选中一�
 
 
 // 管理系统名称
-$GLOBALS['language']['SYSTEM_NAME_STR'] = "智能发布平台";// 以后从数据库中获取
+$GLOBALS['language']['SYSTEM_NAME_STR'] = "建站管理系统";// 以后从数据库中获取
 
 // 数据库相关
 $GLOBALS['language']['DB_DEFALUT_TYPE_STR'] = '默认数据库前缀';

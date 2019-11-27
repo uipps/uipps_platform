@@ -14,7 +14,7 @@ class project extends Seeder
         // 项目表初始项目 - 项目本身
         DB::table('project')->insert([
             'id' => 1,
-            'name_cn' => '智能发布平台',
+            'name_cn' => '建站管理系统',
             'type' => 'SYSTEM',
             'parent_id' => 0,
             'table_field_belong_project_id' => 0,
@@ -48,7 +48,7 @@ class project extends Seeder
             'description' => '',
             'host_id' => 0,
             'res_pub_map' => 0,
-            'website_name_cn' => '智能发布平台',
+            'website_name_cn' => '建站管理系统',
             'waiwang_url' => 'http://www.uipps.com',
             'bendi_uri' => '/data0/htdocs/www',
             'created_at' => time(),

@@ -9,7 +9,7 @@ sql=select CONCAT(id,"id-级别",levelnum),id from dpps_grab_request where level
 -无-,0' where name_eng='parent_id' and t_id = (select id from dpps_table_def where name_eng='dpps_grab_request');
 
 update `dpps_field_def` set `f_type`='Form::DB_Select', `arithmetic`='[project]
-name=通用发布系统
+name=建站管理系统
 [query]
 sql=select CONCAT(name_cn,"-",id),id from dpps_project where `type` in ("CMS") order by id' where name_eng='p_id_to' and t_id = (select id from dpps_table_def where name_eng='dpps_grab_request');
 

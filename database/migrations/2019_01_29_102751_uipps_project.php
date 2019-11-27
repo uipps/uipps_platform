@@ -76,7 +76,7 @@ class UippsProject extends Migration
             $table->string('description', 255)->nullable()->default('')->comment('描述');
             $table->unsignedInteger('host_id')->nullable()->default(0)->comment('主机id');
             $table->unsignedInteger('res_pub_map')->nullable()->default(0)->comment('发布地图');
-            $table->string('website_name_cn', 200)->default('智能发布平台')->comment('网站中文名称, 该项目的');
+            $table->string('website_name_cn', 200)->default('建站管理系统')->comment('网站中文名称, 该项目的');
             $table->string('waiwang_url', 255)->default('http://www.uipps.com')->comment('外网URL');
             $table->string('bendi_uri', 255)->default('/data0/htdocs/www')->comment('本地URI, D:/www/htdocs/www.uipps.com');
 
