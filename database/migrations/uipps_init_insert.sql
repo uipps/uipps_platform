@@ -63,7 +63,7 @@ sql=select CONCAT(name_cn,"-",id),id from project order by id' where name_eng='s
 
 update  field_def set `f_type`='Form::DB_Select', `arithmetic`='[code]<?php
 			$l_name0_r = $GLOBALS[''cfg''][''SYSTEM_DB_DSN_NAME_R''];
-			$dbR = new DBR($l_name0_r);
+			$dbR = DBR::getDBR($l_name0_r);
 
 			// 首先获取所属的项目，
 			if (isset($a_arr["default_over"]["suoshuxiangmu_id"])) {

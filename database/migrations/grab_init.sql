@@ -15,7 +15,7 @@ sql=select CONCAT(name_cn,"-",id),id from dpps_project where `type` in ("CMS") o
 
 update `dpps_field_def` set `f_type`='Form::DB_Select', `arithmetic`='[code]
 			$l_name0_r = $GLOBALS[''cfg''][''SYSTEM_DB_DSN_NAME_R''];
-			$dbR = new DBR($l_name0_r);
+			$dbR = DBR::getDBR($l_name0_r);
 
 			// 首先获取所属的项目，
 			if (isset($a_arr["default_over"]["p_id_to"])) {
@@ -161,12 +161,12 @@ update `dpps_field_def` set `createdate`=DATE_FORMAT(NOW(),'%Y-%m-%d') where cre
 update `dpps_field_def` set `createtime`=DATE_FORMAT(NOW(),'%H:%i:%s') where createtime='00:00:00';
 
 -- 站台网-交友频道 的抓取  ALTER TABLE `dpps_grab_request` AUTO_INCREMENT =1 ;
--- INSERT INTO `dpps_grab_request` (`name_cn`, `url`, `arithmetic`, `creator`, `createdate`, `createtime`, `parent_id`, `p_id_to`, `t_id_to`, `levelnum`, `domain`, `startdate`, `starttime`, `status_`, `if_article`, `arti_total`, `arti_hidden`, `if_album`, `album_toal`) VALUES ('站台网-交友', 'http://www.zhantai.com', '[code]<?php\r\n// 此处涉及到多处项目, 先去共用数据库中获取到站台网的城市数据。然后获取生活表中交友下属的所有栏目信息\r\n$dbR = new DBR();\r\n$l_err = $dbR->errorInfo();\r\nif ($l_err[1]>0){\r\n	// 数据库连接失败后\r\n	echo date("Y-m-d H:i:s") . " 出错了， 错误信息： " . $l_err[2]. ".";\r\n	return null;\r\n}\r\n$dbR->table_name = TABLENAME_PREF."project";\r\n$p_arr_gongyong = $dbR->GetOne("where name_cn=''共用数据''");\r\n$p_arr_shenghuo = $dbR->GetOne("where name_cn=''生活频道''");\r\nif (!($p_arr_gongyong) || !($p_arr_shenghuo)) {\r\n	echo " error message： " .$p_arr->userinfo .  NEW_LINE_CHAR;//作为错误信息显示出来\r\n	return null;\r\n}\r\n\r\n// 获取城市列表\r\n$dbR = new DBR($p_arr_gongyong);\r\n$dbR->table_name = "region_sheng";\r\n$l_city = $dbR->getAlls("where status_=''use'' and name_eng_zhantai != '''' ", "id,name_eng,name_cn,name_eng_zhantai");\r\n\r\n// 获取生活频道交友所属的二级栏目配置, 级别为2\r\n$dbR = new DBR($p_arr_shenghuo);\r\n$dbR->table_name = "aups_t003";\r\n$l_jiaoyou = $dbR->getAlls("where status_=''use'' and aups_f071=2 and aups_f078= ''交友聚会'' ", "id,zhantai_lanmu,aups_f070");\r\n\r\n// 进行拼装\r\n$l_urls = array();\r\nif (!empty($l_city) && !empty($l_jiaoyou)) {\r\n	foreach ($l_city as $l_c) {\r\n		foreach ($l_jiaoyou as $l_j) {\r\n			$l_urls[] = "http://www.jiaov.us/". trim($l_c[''name_eng_zhantai''], "/") . "/". trim($l_j[''zhantai_lanmu''],"/"). "/";\r\n		}\r\n	}\r\n}\r\nreturn $l_urls;', 'admin', DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), 0, 19, 2, 1, 'zhantai.com', '0000-00-00', '00:00:00', 'in', '1', NULL, NULL, '0', NULL);
+-- INSERT INTO `dpps_grab_request` (`name_cn`, `url`, `arithmetic`, `creator`, `createdate`, `createtime`, `parent_id`, `p_id_to`, `t_id_to`, `levelnum`, `domain`, `startdate`, `starttime`, `status_`, `if_article`, `arti_total`, `arti_hidden`, `if_album`, `album_toal`) VALUES ('站台网-交友', 'http://www.zhantai.com', '[code]<?php\r\n// 此处涉及到多处项目, 先去共用数据库中获取到站台网的城市数据。然后获取生活表中交友下属的所有栏目信息\r\n$dbR = DBR::getDBR();\r\n$l_err = $dbR->errorInfo();\r\nif ($l_err[1]>0){\r\n	// 数据库连接失败后\r\n	echo date("Y-m-d H:i:s") . " 出错了， 错误信息： " . $l_err[2]. ".";\r\n	return null;\r\n}\r\n$dbR->table_name = TABLENAME_PREF."project";\r\n$p_arr_gongyong = $dbR->GetOne("where name_cn=''共用数据''");\r\n$p_arr_shenghuo = $dbR->GetOne("where name_cn=''生活频道''");\r\nif (!($p_arr_gongyong) || !($p_arr_shenghuo)) {\r\n	echo " error message： " .$p_arr->userinfo .  NEW_LINE_CHAR;//作为错误信息显示出来\r\n	return null;\r\n}\r\n\r\n// 获取城市列表\r\n$dbR = new DBR($p_arr_gongyong);\r\n$dbR->table_name = "region_sheng";\r\n$l_city = $dbR->getAlls("where status_=''use'' and name_eng_zhantai != '''' ", "id,name_eng,name_cn,name_eng_zhantai");\r\n\r\n// 获取生活频道交友所属的二级栏目配置, 级别为2\r\n$dbR = new DBR($p_arr_shenghuo);\r\n$dbR->table_name = "aups_t003";\r\n$l_jiaoyou = $dbR->getAlls("where status_=''use'' and aups_f071=2 and aups_f078= ''交友聚会'' ", "id,zhantai_lanmu,aups_f070");\r\n\r\n// 进行拼装\r\n$l_urls = array();\r\nif (!empty($l_city) && !empty($l_jiaoyou)) {\r\n	foreach ($l_city as $l_c) {\r\n		foreach ($l_jiaoyou as $l_j) {\r\n			$l_urls[] = "http://www.jiaov.us/". trim($l_c[''name_eng_zhantai''], "/") . "/". trim($l_j[''zhantai_lanmu''],"/"). "/";\r\n		}\r\n	}\r\n}\r\nreturn $l_urls;', 'admin', DATE_FORMAT(NOW(), '%Y-%m-%d'), DATE_FORMAT(NOW(), '%H:%i:%s'), 0, 19, 2, 1, 'zhantai.com', '0000-00-00', '00:00:00', 'in', '1', NULL, NULL, '0', NULL);
 
 update `dpps_grab_request` set `arithmetic` = '[code]<?php
 // 此处涉及到多处项目, 先去共用数据库中获取到站台网的城市数据。然后获取生活表中交友下属的所有栏目信息
 $l_name0_r = $GLOBALS[''cfg''][''SYSTEM_DB_DSN_NAME_R''];
-$dbR = new DBR($l_name0_r);
+$dbR = DBR::getDBR($l_name0_r);
 $l_err = $dbR->errorInfo();
 if ($l_err[1]>0){
 	// 数据库连接失败后
