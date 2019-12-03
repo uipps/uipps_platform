@@ -58,7 +58,7 @@ class TemplateEditController extends AddController
         $FLD_def = TABLENAME_PREF."field_def";
 
         $arr = array();
-        $arr["dbR"] = $dbR;
+        //$arr["dbR"] = $dbR;
         $arr["table_name"] = $TBL_def;  // 执行插入操作的数据表
         $arr["parent_ids_arr"] = array(1=>"p_id",2=>"id");
         $arr["tpl_zengjia"]  = $GLOBALS['language']['TPL_XIUGAI_STR'];

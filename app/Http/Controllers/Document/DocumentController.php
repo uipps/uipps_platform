@@ -69,7 +69,7 @@ class DocumentController extends ListController
         $FLD_def = "field_def";
 
         $arr = array();
-        $arr["dbR"] = $dbR;
+        //$arr["dbR"] = $dbR;
         $arr["table_name"] = $table_name;
         $arr["TBL_def"] = $TBL_def;
         $arr["FLD_def"] = $FLD_def;
