@@ -84,7 +84,7 @@ class ListController extends Controller
         $arr["_arr"] = $l_arr;
         // 先获取模板
         //$content = file_get_contents(resource_path() . '/views/admin/' . $arr["tplname"] . env('BLADE_SUFFIX'));
-        $l_file = $arr["tplname"] . '.html';
+        $l_file = $arr['tplname'] . ( (false!==strpos($arr['tplname'], '.php')) ? '': '.html');
         $l_path = resource_path() . '/views/admin/';
         $content = file_get_contents($l_path . $l_file);
         // 加入头尾
