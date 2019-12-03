@@ -69,7 +69,7 @@ class DocumentEditController extends AddController
         $FLD_def = TABLENAME_PREF."field_def";
 
         $arr = array();
-        $arr["dbR"] = $dbR;
+        //$arr["dbR"] = $dbR;
         $arr["table_name"] = $TBL_def;  // 执行插入操作的数据表
         $arr["parent_ids_arr"] = array(1=>"p_id",2=>"t_id",3=>"id");//,2=>"id"可有可无，编辑的时候一定要有
         $arr["tpl_zengjia"]  = $GLOBALS['language']['TPL_XIUGAI_STR'];
@@ -183,7 +183,7 @@ class DocumentEditController extends AddController
                 $l_tmpl = array();
             }
             if (!empty($l_tmpl)) {
-                $arr["dbW"] = $dbW;
+                //$arr["dbW"] = $dbW;
 
                 // 需要进行文档发布
                 $l_data_arr = array_merge($request,$data_arr);

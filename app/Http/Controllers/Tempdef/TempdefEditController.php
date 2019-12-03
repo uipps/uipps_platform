@@ -67,7 +67,7 @@ class TempdefEditController extends AddController
         $dbR->table_name = $table_name = $FLD_def;
 
         $arr = array();
-        $arr["dbR"] = $dbR;
+        //$arr["dbR"] = $dbR;
         $arr["table_name"] = $table_name;  // 执行插入操作的数据表
         $arr["parent_ids_arr"] = array(1=>"p_id", 2=>"t_id",3=>"id");//,2=>"id"可有可无，编辑的时候一定要有
         $arr["tpl_zengjia"]  = $GLOBALS['language']['TPL_XIUGAI_STR'];

@@ -54,7 +54,7 @@ class ProjectController extends ListController
         $arr['html_title'] = $GLOBALS['language']['TPL_XIANGMU_STR'].$GLOBALS['language']['TPL_LIEBIAO_STR'];
         $arr['html_name']  = $GLOBALS['language']['TPL_XIANGMU_STR'].$GLOBALS['language']['TPL_LIEBIAO_STR'];
         $arr['sql_order'] = 'order by id desc';
-        $arr['dbR'] = $dbR;
+        //$arr['dbR'] = $dbR;
 
 
         // 需要加入权限限制所能查看的数据表

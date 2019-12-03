@@ -65,7 +65,7 @@ class DocumentAddController extends AddController
         $FLD_def = TABLENAME_PREF."field_def";
 
         $arr = array();
-        $arr["dbR"] = $dbR;
+        //$arr["dbR"] = $dbR;
         $arr["table_name"] = $TBL_def;  // 执行插入操作的数据表
         $arr["parent_ids_arr"] = array(1=>"p_id",2=>"t_id");//,2=>"id"可有可无，编辑的时候一定要有
         $arr["TBL_def"] = $TBL_def;
@@ -169,7 +169,7 @@ class DocumentAddController extends AddController
                 }
                 if (!empty($l_tmpl)) {
                     // 需要进行文档发布, 需要用到主库操作
-                    $arr["dbW"] = $dbW;
+                    //$arr["dbW"] = $dbW;
 
                     $l_data_arr = array_merge($request,$data_arr);
                     foreach ($l_tmpl as $l_tmpl_one){

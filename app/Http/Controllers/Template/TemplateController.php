@@ -76,7 +76,7 @@ class TemplateController extends ListController
                 )
             )
         );
-        $arr["dbR"] = $dbR;
+        //$arr["dbR"] = $dbR;
 
         $this->Init($request, $arr); // 初始化一下, 需要用到的数据的初始化动作,在parent::之前调用
 
