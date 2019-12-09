@@ -167,10 +167,11 @@ class ProjectController extends ListController
             "show"=>$show,
             "show_title"=>$show_title,
             "get_csrf_token"=>csrf_token(),
+            "title"=>'xiangmu-liebiao',
         );
 
         $content = replace_template_para($data_arr,$resp);
-        //return $content;
-        return view('admin.project_list2', []); // TODO 传递数据
+        return $content;
+        //return view('admin.project_list2', []); // TODO 传递数据
     }
 }

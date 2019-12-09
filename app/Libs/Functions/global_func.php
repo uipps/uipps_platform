@@ -125,9 +125,11 @@ function buildH($arr,$ziduan,$val_replace=array(),$a_no_need_field=array("id",'u
             }
             // 每行采用不同颜色
             if (0==$key%2) {
-                $str .= "<tr height='30' bgcolor='#F6FBE9' align='center'>";
+                //$str .= "<tr height='30' bgcolor='#F6FBE9' align='center'>";
+                $str .= "<tr>";
             }else {
-                $str .= "<tr height='30' bgcolor='#D9E2D0' align='center'>";
+                //$str .= "<tr height='30' bgcolor='#D9E2D0' align='center'>";
+                $str .= "<tr>";
             }
             // 对应的标题
             if (0==$key) $str_title .= "";
@@ -194,10 +196,11 @@ function buildH($arr,$ziduan,$val_replace=array(),$a_no_need_field=array("id",'u
                     }
                     if (isset($val['status_']) && 'del'==$val['status_']) $display_v = '<strike>'.$display_v.'</strike>';
 
-                    $str .= "<td nowrap". $__atri .">".convCharacter($display_v)."</td>";
+                    $str .= "<td ". $__atri .">".convCharacter($display_v)."</td>";
                 }
                 if (0==$key){
-                    $str_title .= "<td nowrap align='center'". $__atri .">".$l_f_name_cn."</td>";
+                    //$str_title .= "<td nowrap align='center'". $__atri .">".$l_f_name_cn."</td>";
+                    $str_title .= "<td ". $__atri .">".$l_f_name_cn."</td>";
                 }
             }
 

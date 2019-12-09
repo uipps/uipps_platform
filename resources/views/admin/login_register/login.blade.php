@@ -66,7 +66,7 @@
                 errnum++;
                 errsrt += "- “密码”是必填项！ \n";
             }
-            {{$l_yanzhengma_js}}
+            <!--{$l_yanzhengma_js}-->
 
             if (errnum>0) {
                 alert(errsrt+"\n\n多谢您的支持 :D");
@@ -81,16 +81,16 @@
     </script>
     <div class="account-box">
         <div class="account-logo-box">
-            <h3 class="text-uppercase font-bold m-b-5 m-t-50">{{$system_name}}登录</h3>
+            <h3 class="text-uppercase font-bold m-b-5 m-t-50"><!--{$system_name}-->登录</h3>
         </div>
         <div class="account-content">
             <form class="form-horizontal" name="loginform" id="loginform" method="post" action="" onsubmit="return chkform(this)" enctype="multipart/form-data">
                 <input type="hidden" name="r" value="main">
-                <input type="hidden" name="back_url" value="{{$back_url}}" />
-                {{csrf_field()}}
+                <input type="hidden" name="back_url" value="<!--{$back_url}-->" />
+                <!--{csrf_field()}-->
                 <div class="form-group m-b-20">
                     <div class="col-xs-12">
-                        <span style="color: #FF0000">{{$action_error_notice}}</span>
+                        <span style="color: #FF0000"><!--{$action_error_notice}--></span>
                     </div>
                 </div>
                 <div class="form-group m-b-20">
@@ -114,7 +114,7 @@
                         <input class="form-control" type="password" name="googlecode" id="googlecode" placeholder="Enter google auth" value="">
                     </div>
                 </div>
-                {{$l_yanzhengma}}
+                <!--{$l_yanzhengma}-->
                 <div class="form-group m-b-20">
                     <div class="col-xs-12">
                         <div class="checkbox checkbox-success">

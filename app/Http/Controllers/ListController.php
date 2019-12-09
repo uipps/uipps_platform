@@ -95,6 +95,7 @@ class ListController extends Controller
             // 导航应该放到总类里面去执行，因为具备通用性
             "html_title" => $arr["html_title"],
             "html_name"  => $arr["html_name"],
+            "html_lang"=>str_replace('_', '-', app()->getLocale()),
 
             "parent_nav" => $arr["parent_rela"] ? @$arr["parent_rela"]["parent_nav"] : '',
             "parent_elements_str"=>$arr["parent_rela"] ? @$arr["parent_rela"]["parent_elements_str"] : '',// 多项用逗号隔开，单项的分号后面是表名简称没有前缀的
