@@ -15,7 +15,7 @@ Route::get('/', function () {
     return redirect('/admin/login');
 });
 
-// Blade::setContentTags('<!--{', '}-->'); // 不可用
+//Blade::setContentTags('<!--{', '}-->'); // 不可用,需要在BladeCompiler类中增加方法public function setContentTags($start, $end) { $this->contentTags = [$start, $end]; }
 Auth::routes(); // 暂时隐藏外网用户注册、找回密码等
 
 
