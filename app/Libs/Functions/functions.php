@@ -153,45 +153,42 @@ function decode_ip($int_ip)
     return hexdec($hexipbang[0]). '.' . hexdec($hexipbang[1]) . '.' . hexdec($hexipbang[2]) . '.' . hexdec($hexipbang[3]);
 }
 
-function char_preg($a_charset="utf8")
+function char_preg($a_charset='utf8')
 {
     $l_c = array();
     $l_c['utf8']   = "/[\x01-\x7f]|[\xc0-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/e";
     $l_c['gb2312'] = "/[\x01-\x7f]|[\xb0-\xf7][\xa0-\xfe]/";
     $l_c['gbk']    = "/[\x01-\x7f]|[\x81-\xfe][\x40-\xfe]/";
     $l_c['big5']   = "/[\x01-\x7f]|[\x81-\xfe]([\x40-\x7e]|\xa1-\xfe])/";
-
-    if (key_exists($a_charset,$l_c)) {
+    if (isset($l_c[$a_charset]))
         return $l_c[$a_charset];
-    }else {
-        return $l_c;
-    }
+    return $l_c;
 }
+// 用于指定宽度截取，一个汉字相当于2个Ascii字符宽度，长度截取用mb_substr
 // 从0开始截取一定长度的字符串, 折算为英文长度, $a_len长度不能为负值，实际应用中不会有这样的
-function cn_substr($a_str, $a_len, $a_charset="utf8", $a_suffix="...")
+function cn_substr($a_str, $a_len, $a_charset='utf8', $a_suffix='...')
 {
     // suffix是英文字符串 ... 这样的或其他英文字符串，不要是中文的
-    $l_s_len = ($a_len-strlen($a_suffix));
-    $l_s_len = ($l_s_len<0)?0:$l_s_len;  // 后缀长度不能大于 a_len, 实际业务中也不会有这样的情况
+    $l_s_len = ($a_len - strlen($a_suffix));
+    $l_s_len = ($l_s_len < 0) ? 0 : $l_s_len;  // 后缀长度不能大于 a_len, 实际业务中也不会有这样的情况
 
     // 匹配所有的单个完整的字符和汉字
-    preg_match_all(char_preg($a_charset),$a_str,$l_arr);
-
+    preg_match_all(char_preg($a_charset), $a_str, $l_arr);
     $l_flag  = 0;  // 是否需要回退的标志
     $l_s_num = 0;  // 加后缀后的实际宽度
     $l_total = 0;  // 转换为字符的折算宽度，汉字算2个宽度
     $l_count = 0;  // 多少个字符，汉字算1个字符长度
-    foreach($l_arr[0] as $k=> $l_v)
+    foreach($l_arr[0] as $k => $l_v)
     {
-        if(strlen($l_v)==1){
-            if ($l_s_num<$l_s_len) {
+        if (1 == strlen($l_v)) {
+            if ($l_s_num < $l_s_len) {
                 $l_s_num += 1;
                 $l_count++;
             }
             $l_total += 1;
-        }else {
-            if ($l_s_num<$l_s_len) {
-                if ($l_s_num==$l_s_len-1) $l_flag = 1;
+        } else {
+            if ($l_s_num < $l_s_len) {
+                if ($l_s_num == $l_s_len - 1) $l_flag = 1;
                 $l_s_num += 2;
                 $l_count++;
             }
@@ -200,9 +197,9 @@ function cn_substr($a_str, $a_len, $a_charset="utf8", $a_suffix="...")
     }
     if ($l_flag) $l_count--;  // 回退1
     // 如果总长度小于等于截取的字符串长度，则不必加后缀
-    if ($l_total <= $l_s_len) $a_suffix = "";
+    if ($l_total <= $l_s_len) $a_suffix = '';
 
-    return join("",array_slice($l_arr[0],0,$l_count)).$a_suffix;
+    return join('', array_slice($l_arr[0], 0, $l_count)) . $a_suffix;
 }
 
 // utf8
