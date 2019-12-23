@@ -354,7 +354,7 @@ class UserService extends BaseService
                 if (!isset($_SESSION["ERROR_LOGIN"]["num"])) {
                     $_SESSION["ERROR_LOGIN"]["num"] = 0;
                 }
-                $_SESSION["ERROR_LOGIN"]["num"] += 1;
+                $_SESSION["ERROR_LOGIN"]["num"] += 1; // TODO 放到redis、甚至db中，用户清理session就会丢失session
 
                 // 用户名或密码不正确, 记录登录日志
                 $data_arr = array(
