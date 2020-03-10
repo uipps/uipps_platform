@@ -1,5 +1,16 @@
 <?php
-// php artisan autoGenerate:code  --r=Admin --B=Language --d=sys_language --o=1
+/*
+ 调用示例：单个
+php artisan autoGenerate:code  --r=Admin --B=Language --d=sys_language --o=1
+
+-- 所有表
+php artisan autoGenerate:code  --all_table=1 --o=1
+
+-- ucwords, ucfirst 函数测试
+php -r "$key_word='aaa_bbb_ccc';echo ucfirst($key_word) .  '  ';echo ucwords($key_word, ' _');"
+
+
+ */
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -13,7 +24,7 @@ class AutoGenerateCommand extends Command
     protected $name = 'autoGenerate';
     protected $description = '自动生成代码';
 
-    protected $signature = 'autoGenerate:code {--r=} {--B=} {--d=} {--C=} {--o=}';
+    protected $signature = 'autoGenerate:code {--r=} {--B=} {--d=} {--C=} {--o=} {--all_table=} {--except=}';
 
     public function handle() {
         $options = $this->option();
@@ -30,6 +41,83 @@ class AutoGenerateCommand extends Command
     }
 
     private function main($_o) {
+        if (isset($_o['all_table']) && $_o['all_table']) {
+            return $this->processMultiple($_o);
+        }
+        return $this->processOneTable($_o);
+    }
+
+    private function processMultiple($_o) {
+        // user表手动处理，不能自动生成，稍微复杂
+        $except = ['user', 'language', 'sys_language'];
+        if (isset($_o['except']) && $_o['except']) {
+            $l_except_list = explode(',', $_o['except']);
+            $except = array_merge($except, $l_except_list); // 合并数组，不能用+
+            $except = array_unique($except); // 去重
+        }
+
+        $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
+        if (!$tables) return 0;
+        foreach ($tables as $table_name) {
+            if (in_array(strtolower($table_name), $except)) {
+                $this->info( $table_name . ' is excepted, continue!' );
+                continue;
+            }
+
+            // 所有表，每张表需要强制填充 r,B,d参数
+            $_o['r'] = $this->getRouteByTable($table_name);
+            $_o['B'] = $this->getFileModelByTable($table_name);
+            $_o['d'] = $table_name; // 数据表名
+
+            // 逐个处理
+            $this->info( date('Y-m-d H:i:s') . ' begin to process table: ' . $table_name . ' !' );
+            $this->processOneTable($_o);
+            $this->info( date('Y-m-d H:i:s') . ' process complete , ' . $table_name . '  , sleep a moment!' );
+            sleep(1);
+            //break;
+        }
+        return 1;
+    }
+
+    public function getRouteByTable($table_name) {
+        $str = 'Admin'; // 默认放到Admin目录下
+
+        $table_name = strtolower(trim($table_name));
+
+        $key_word = 'customer';
+        if ($key_word == substr($table_name, 0, strlen($key_word))) {
+            return ucfirst($key_word);
+        }
+
+        $key_word = 'order';
+        if ('order' == substr($table_name, 0, 5)) {
+            $str = ucfirst($key_word) . 'PreSale'; // 售前订单
+            return $str;
+        }
+
+        $key_word = 'goods';
+        if ($key_word == substr($table_name, 0, strlen($key_word))) {
+            return ucfirst($key_word);
+        }
+
+        return $str;
+    }
+
+    public function getFileModelByTable($table_name) {
+        $table_name = strtolower(trim($table_name));
+
+        // 默认文件命名跟表名一样，但是有些sys_area这些去掉sys_, 但有几个例外：sys_routing，sys_privilege，sys_opt_record
+        $orig = ['sys_routing', 'sys_privilege','sys_opt_record'];
+        $key_word = 'sys_'; // 删除sys_前缀
+        if ($key_word == substr($table_name, 0, strlen($key_word)) && !in_array($table_name, $orig)) {
+            $table_name = substr($table_name, strlen($key_word));
+        }
+
+        $str = str_replace('_', '', ucwords($table_name, ' _')); // 下划线_分隔的单词首字母大写，然后去掉下划线
+        return $str;
+    }
+
+    private function processOneTable($_o) {
 
         if (!isset($_o['r']) || !isset($_o['B']) || !$_o['r'] || !$_o['B']) {
             // 输出提示
@@ -46,7 +134,13 @@ class AutoGenerateCommand extends Command
         $GLOBALS['overwrite'] = isset($_o['o']) ? $_o['o'] : 0;
 
         // user表手动处理，不能自动生成，稍微复杂
-        $except = ['user'];
+        $except = ['user', 'language'];
+        if (isset($_o['except']) && $_o['except']) {
+            $l_except_list = explode(',', $_o['except']);
+            print_r($l_except_list);
+            $except = array_merge($except, $l_except_list); // 合并数组，不能用+
+            $except = array_unique($except); // 去重
+        }
         if (in_array(strtolower($name), $except) || in_array(strtolower($database), $except)) {
             $this->info( " the $name / $database  Model can not auto generate!" . "\r\n");
             return ;
@@ -155,7 +249,7 @@ function BuildDto($path, $route, $name, $database=''){
         exit;
     }
     // 获取表结构 $field_arr = Schema::getColumnListing($table_name);
-    $sql = 'SHOW FULL FIELDS FROM ' . $table_name;
+    $sql = 'SHOW FULL FIELDS FROM `' . $table_name . '`';
     $rlt = DB::select($sql);  // 主键、字段类型、长度等详情，暂时不用 int(
 
 
