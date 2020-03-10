@@ -18,24 +18,29 @@ class InitProjectCommand extends Command
     protected $name = 'InitProjectCommand';
     protected $description = '项目初始化';
 
-    public function handle()
-    {
-        $argvList = $this->argument();
-        $action = $argvList['action'];
-        $data = $this->$action($argvList);
-
-        var_dump($data);
-    }
-
     // 设置参数接口
-    protected function getArguments()
-    {
+    protected function getArguments() {
         return [
             ['action', InputArgument::REQUIRED],
             ['p1', InputArgument::OPTIONAL],
             ['p2', InputArgument::OPTIONAL],
             ['project_type', InputArgument::OPTIONAL],
         ];
+    }
+
+    public function handle() {
+        $argvList = $this->argument();
+        $action = $argvList['action'];
+
+        $start_time = microtime(true);
+        $start_mem = memory_get_usage();
+        $this->info(date('Y-m-d H:i:s') . ' begin:');
+
+        $data = $this->$action($argvList);
+        $this->info('  result:' . var_export($data, true));
+
+        $end_mem = memory_get_usage();
+        $this->info(date('Y-m-d H:i:s') . ' end, cost:' . (microtime(true) - $start_time) . ' seconds! memory_use: ' . ($end_mem - $start_mem) . ' = '. $end_mem . ' - ' . $start_mem );
     }
 
     // table_def,field_def数据
