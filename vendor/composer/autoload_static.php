@@ -489,8 +489,9 @@ class ComposerStaticInitf412678694be5d871e29722e11eb0199
     );
 
     public static $classMap = array (
+        'App\\Console\\Commands\\AutoGenerateCommand' => __DIR__ . '/../..' . '/app/Console/Commands/AutoGenerateCommand.php',
         'App\\Console\\Commands\\CrontabCommand' => __DIR__ . '/../..' . '/app/Console/Commands/CrontabCommand.php',
-        'App\\Console\\Commands\\InitProjectCommand' => __DIR__ . '/../..' . '/app/Console/Commands/InitProjectCommand-2.php',
+        'App\\Console\\Commands\\InitProjectCommand' => __DIR__ . '/../..' . '/app/Console/Commands/InitProjectCommand.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Dto\\BaseDto' => __DIR__ . '/../..' . '/app/Dto/BaseDto.php',
         'App\\Dto\\DataListDto' => __DIR__ . '/../..' . '/app/Dto/DataListDto.php',

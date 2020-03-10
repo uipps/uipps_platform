@@ -6,8 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Console\\Commands\\AutoGenerateCommand' => $baseDir . '/app/Console/Commands/AutoGenerateCommand.php',
     'App\\Console\\Commands\\CrontabCommand' => $baseDir . '/app/Console/Commands/CrontabCommand.php',
-    'App\\Console\\Commands\\InitProjectCommand' => $baseDir . '/app/Console/Commands/InitProjectCommand-2.php',
+    'App\\Console\\Commands\\InitProjectCommand' => $baseDir . '/app/Console/Commands/InitProjectCommand.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Dto\\BaseDto' => $baseDir . '/app/Dto/BaseDto.php',
     'App\\Dto\\DataListDto' => $baseDir . '/app/Dto/DataListDto.php',
