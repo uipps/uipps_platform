@@ -52,18 +52,18 @@ class AutoGenerateCommand extends Command
             return ;
         }
 
-        // 1. 修改文件 index.php，添加路由，TODO
+        // 1. 修改路由 api.php，添加路由，TODO
 
-        // 2. 新增control, 样例： app/Http/Controllers/Admin/DepartmentController.php
+        // 1. 新增control, 样例： app/Http/Controllers/Admin/DepartmentController.php
         BuildControl($source_path . "/app/Http/Controllers", $route, $name);
 
-        // 3. 新增service, 样例： app/Services/Admin/DepartmentService.php
+        // 2. 新增service, 样例： app/Services/Admin/DepartmentService.php
         BuildDto($source_path . "/app/Dto", $route, $name, $database);
 
-        // 4. 新增service, 样例： app/Services/Admin/DepartmentService.php
+        // 3. 新增service, 样例： app/Services/Admin/DepartmentService.php
         BuildService($source_path . "/app/Services", $route, $name);
 
-        // 5. 新增repository, 样例： app/Repositories/Admin/DepartmentRepository.php
+        // 4-5. 新增repository, 样例： app/Repositories/Admin/DepartmentRepository.php
         BuildRepository($source_path . "/app/Repositories", $route, $name, $database);
         BuildRepositoryImpl($source_path . "/app/Repositories", $route, $name);
 
@@ -285,7 +285,7 @@ class ".$name."Service extends BaseService
                 return \$responseDto;
             }
             \$data_arr['updator_id'] = auth('api')->id();
-            \$data_arr['deleted_time'] = \$data_arr['deleted_time'] ?? \$this->theRepository::DATETIME_NOT_NULL_DEFAULT;
+            //\$data_arr['deleted_time'] = \$data_arr['deleted_time'] ?? \$this->theRepository::DATETIME_NOT_NULL_DEFAULT;
         } else {
             // 新增，注：有些需要检查对应的唯一key是否存在
             //\$v_detail = \$this->theRepository->getByUniqueKey(\$request);
@@ -296,7 +296,7 @@ class ".$name."Service extends BaseService
             \$data_arr['creator_id'] = auth('api')->id();
             \$data_arr['updator_id'] = \$data_arr['creator_id'];
             \$data_arr['created_time'] = date('Y-m-d H:i:s');
-            \$data_arr['deleted_time'] = \$this->theRepository::DATETIME_NOT_NULL_DEFAULT;
+            //\$data_arr['deleted_time'] = \$this->theRepository::DATETIME_NOT_NULL_DEFAULT;
         }
         // 数据增加几个默认值
         \$data_arr['updated_time'] = date('Y-m-d H:i:s');
@@ -504,7 +504,7 @@ function GetComment($route, $name, $a_t='Model') {
     $str = "/**
  * $name$a_t
  * @author dev@xhat.com
- * @since " . date("Y-m-d H:i:s:") . "
+ * @since " . date("Y-m-d") . "
  */";
 
     return $str;
