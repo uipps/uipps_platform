@@ -1,0 +1,561 @@
+<?php
+// php artisan autoGenerate:code  --r=Admin --B=Language --d=sys_language --o=1
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class AutoGenerateCommand extends Command
+{
+    const NEW_LINE_CHAR = "\r\n";
+
+    protected $name = 'autoGenerate';
+    protected $description = '自动生成代码';
+
+    protected $signature = 'autoGenerate:code {--r=} {--B=} {--d=} {--C=} {--o=}';
+
+    public function handle() {
+        $options = $this->option();
+
+        $start_time = microtime(true);
+        $start_mem = memory_get_usage();
+        $this->info(date('Y-m-d H:i:s') . ' begin:');
+
+        $data = $this->main($options);
+        $this->info('  result:' . var_export($data, true));
+
+        $end_mem = memory_get_usage();
+        $this->info(date('Y-m-d H:i:s') . ' end, cost:' . (microtime(true) - $start_time) . ' seconds! memory_use: ' . ($end_mem - $start_mem) . ' = '. $end_mem . ' - ' . $start_mem );
+    }
+
+    private function main($_o) {
+
+        if (!isset($_o['r']) || !isset($_o['B']) || !$_o['r'] || !$_o['B']) {
+            // 输出提示
+            $this->info( "please use like : php artisan autoGenerate:code  --r=Admin --B=Language --d=sys_language" . "\r\n");
+            return ;
+        }
+
+        $database = isset($_o['d']) ? $_o['d'] : '';
+        $route = $_o['r'];  // 路由,
+        $name = $_o['B'];   // 大写的方法名等
+        $source_path = app()->basePath();
+        $source_path = isset($_o['C']) ? $_o['C'] : $source_path; // 项目路径
+        $source_path = str_replace('\\', '/', $source_path); //
+        $GLOBALS['overwrite'] = isset($_o['o']) ? $_o['o'] : 0;
+
+        // user表手动处理，不能自动生成，稍微复杂
+        $except = ['user'];
+        if (in_array(strtolower($name), $except) || in_array(strtolower($database), $except)) {
+            $this->info( " the $name / $database  Model can not auto generate!" . "\r\n");
+            return ;
+        }
+
+        // 1. 修改文件 index.php，添加路由，TODO
+
+        // 2. 新增control, 样例： app/Http/Controllers/Admin/DepartmentController.php
+        BuildControl($source_path . "/app/Http/Controllers", $route, $name);
+
+        // 3. 新增service, 样例： app/Services/Admin/DepartmentService.php
+        BuildDto($source_path . "/app/Dto", $route, $name, $database);
+
+        // 4. 新增service, 样例： app/Services/Admin/DepartmentService.php
+        BuildService($source_path . "/app/Services", $route, $name);
+
+        // 5. 新增repository, 样例： app/Repositories/Admin/DepartmentRepository.php
+        BuildRepository($source_path . "/app/Repositories", $route, $name, $database);
+        BuildRepositoryImpl($source_path . "/app/Repositories", $route, $name);
+
+        // 6. 新增model, 样例： app/Models/Admin/Department.php
+        BuildModel($source_path . "/app/Models", $route, $name, $database);
+    }
+
+    // 获取数据库列表、表列表、字段列表
+    private function db_table_fields($request) {
+        $this->info('  ' . date('Y-m-d H:i:s') . ' start autoGenerateCode');
+
+        $current_db_name = DB::connection()->getDoctrineSchemaManager()->getSchemaSearchPaths(); var_dump($current_db_name[0]); // 当前数据库名称
+        //$db_list = DB::connection()->getDoctrineSchemaManager()->listDatabases();print_r($db_list);
+
+        // 获取所有数据表：
+        //$tables = DB::select('show tables');print_r($tables); // -- 也可，就是要自己替换一下
+        $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();print_r($tables);
+
+        // 字段详情
+        //$field_list = DB::connection()->getDoctrineSchemaManager()->listTableColumns('user');print_r($field_list);
+        $field_arr = Schema::getColumnListing('user');print_r($field_arr);
+
+        //  $tables = DB::connection()->getDoctrineSchemaManager()->listSequences();print_r($tables); -- failed
+        //
+        // $table_detail = DB::connection()->getDoctrineSchemaManager()->listTableDetails('user');print_r($table_detail);
+
+        $this->info(date('Y-m-d H:i:s') . ' Done!' . self::NEW_LINE_CHAR);
+        return 1;
+    }
+
+}
+
+
+
+
+// 增加一个control文件
+function BuildControl($path, $route, $name){
+    //$base_name = basename($name);
+    //$name_lower = lcfirst($name);
+
+    $route = ucfirst($route); // 首字母大写
+    $name = ucfirst($name);
+
+    $l_tmpl = "<?php
+" . GetComment($route, $name, 'Controller') . "
+namespace App\Http\Controllers\\".$route.";
+
+use App\Http\Controllers\CommonController;
+use App\Services\\".$route."\\".$name."Service;
+
+
+class ".$name."Controller extends CommonController
+{
+    protected \$theService;
+
+    public function __construct() {
+        \$this->theService = new ".$name."Service();
+        parent::__construct();
+    }
+
+    public function getList() {
+        return \$this->response_json(\$this->theService->getList());
+    }
+
+    public function addOrUpdate() {
+        return \$this->response_json(\$this->theService->addOrUpdate());
+    }
+
+    public function detail() {
+        return \$this->response_json(\$this->theService->detail());
+    }
+}
+";
+
+    $filename = $name . "Controller.php";
+    writefile($l_tmpl, $path . '/'. $route, $filename);
+}
+
+function BuildDto($path, $route, $name, $database=''){
+    $table_name = $database ? $database : strtolower($name);
+
+    //$route = ucfirst($route); // 首字母大写
+    $name = ucfirst($name);
+
+    // 获取所有的表
+    $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
+    if (!in_array($table_name, $tables)) {
+        echo ' table-name: ' . $table_name . ' not exists!';
+        exit;
+    }
+    // 获取表结构 $field_arr = Schema::getColumnListing($table_name);
+    $sql = 'SHOW FULL FIELDS FROM ' . $table_name;
+    $rlt = DB::select($sql);  // 主键、字段类型、长度等详情，暂时不用 int(
+
+
+    $l_tmpl = "<?php
+
+namespace App\Dto;
+
+class ".$name."Dto extends BaseDto
+{";
+
+//    public $id = 0;
+//    public $email = '';
+//    public $picsrc = '';
+//    public $department_id = 0;
+//    public $role_id = 0;
+//    public $real_name = '';
+//    public $phone = '';
+//    public $authority_list = '';
+
+    // 字段自动获取，并依据类型默认成0或空字符串
+    foreach ($rlt as $row) {
+        $zero_string = (false !== strpos($row->Type, 'int(')) ? 0 : "''";
+        $l_tmpl .= '
+    public $'. $row->Field .' = '. $zero_string .';';
+    }
+
+    $l_tmpl .= "
+}
+";
+
+    $filename = $name . "Dto.php";
+    writefile($l_tmpl, $path, $filename);
+}
+
+function BuildService($path, $route, $name) {
+    $route = ucfirst($route); // 首字母大写
+    $name = ucfirst($name);
+
+    $l_tmpl = "<?php
+
+namespace App\Services\\".$route.";
+
+use App\Libs\Utils\ErrorMsg;
+use App\Dto\DataListDto;
+use App\Dto\ResponseDto;
+use App\Dto\\".$name."Dto;
+use App\Repositories\\".$route."\\".$name."Repository;
+use App\Repositories\Admin\UserRepository;
+use App\Services\BaseService;
+use Illuminate\Support\Facades\Validator;
+
+
+class ".$name."Service extends BaseService
+{
+    protected \$theRepository;
+
+    public function __construct() {
+        \$this->theRepository = new ".$name."Repository();
+        \$this->userRepository = new UserRepository(); // 用于权限检查
+    }
+
+    public function getList() {
+        \$request = request()->all(); // 参数接收
+        \$responseDto = new ResponseDto();
+
+        //\$login_user_info = self::getCurrentLoginUserInfo(); // TODO 当前登录用户是否有权限，统一一个方法放到BaseService中
+
+        // 参数校验数组
+        \$rules = [
+            'page' => 'sometimes|integer',
+            'limit' => 'sometimes|integer',
+        ];
+        \$validate = Validator::make(\$request, \$rules);
+        if (\$validate->fails()) {
+            \$error_list = \$validate->errors()->all();
+            \$responseDto->status = ErrorMsg::PARAM_ERROR;
+            \$responseDto->msg = implode(\"\\r\\n\", \$error_list);
+            return \$responseDto;
+        }
+
+        // 获取数据，包含总数字段
+        \$list = \$this->theRepository->getList(\$request);
+        if (!\$list || !isset(\$list[\$responseDto::DTO_FIELD_TOTOAL]) || !isset(\$list[\$responseDto::DTO_FIELD_LIST])) {
+            ErrorMsg::FillResponseAndLog(\$responseDto, ErrorMsg::DATA_EMPTY);
+            return \$responseDto;
+        }
+        if (\$list[\$responseDto::DTO_FIELD_LIST]) {
+            // 成功，返回用户信息
+            foreach (\$list[\$responseDto::DTO_FIELD_LIST] as \$key => \$v_detail) {
+                \$v_info = new ".$name."Dto();
+                \$v_info->Assign(\$v_detail);
+                \$list[\$responseDto::DTO_FIELD_LIST][\$key] = \$v_info;
+            }
+        }
+        \$data_list = new DataListDto();
+        \$data_list->Assign(\$list);
+        \$responseDto->data = \$data_list;
+
+        return \$responseDto;
+    }
+
+    public function addOrUpdate(\$request = null) {
+        if (!\$request) \$request = request()->all();
+        \$responseDto = new ResponseDto();
+
+        // 参数校验数组, 当前登录用户是否有权限暂不验证，后面统一处理
+        //\$field_id = 'id';
+        \$rules = [
+            'id' => 'sometimes|integer',
+        ];
+        \$validate = Validator::make(\$request, \$rules);
+        if (\$validate->fails()) {
+            \$error_list = \$validate->errors()->all();
+            \$responseDto->status = ErrorMsg::PARAM_ERROR;
+            \$responseDto->msg = implode(\"\\r\\n\", \$error_list);
+            return \$responseDto;
+        }
+
+        \$data_arr = \$request; // 全部作为
+        if (isset(\$request['id']) && \$request['id']) {
+            // 修改的情况
+            \$data_arr['id'] = \$request['id'];
+            // 检查该记录是否存在
+            \$v_detail = \$this->theRepository->getInfoById(\$request['id']);
+            if (!\$v_detail) {
+                ErrorMsg::FillResponseAndLog(\$responseDto, ErrorMsg::DATA_NOT_EXISTS);
+                return \$responseDto;
+            }
+            \$data_arr['updator_id'] = auth('api')->id();
+            \$data_arr['deleted_time'] = \$data_arr['deleted_time'] ?? \$this->theRepository::DATETIME_NOT_NULL_DEFAULT;
+        } else {
+            // 新增，注：有些需要检查对应的唯一key是否存在
+            //\$v_detail = \$this->theRepository->getByUniqueKey(\$request);
+            //if (\$v_detail) {
+            //    ErrorMsg::FillResponseAndLog(\$responseDto, ErrorMsg::DATA_EXISTS);
+            //    return \$responseDto;
+            //}
+            \$data_arr['creator_id'] = auth('api')->id();
+            \$data_arr['updator_id'] = \$data_arr['creator_id'];
+            \$data_arr['created_time'] = date('Y-m-d H:i:s');
+            \$data_arr['deleted_time'] = \$this->theRepository::DATETIME_NOT_NULL_DEFAULT;
+        }
+        // 数据增加几个默认值
+        \$data_arr['updated_time'] = date('Y-m-d H:i:s');
+
+        if (isset(\$request['id']) && \$request['id']) {
+            // 更新
+            \$rlt = \$this->theRepository->updateData(\$request['id'], \$data_arr);
+            if (!\$rlt) {
+                ErrorMsg::FillResponseAndLog(\$responseDto, ErrorMsg::UPDATE_DB_FAILED);
+                return \$responseDto;
+            }
+        } else {
+            \$v_id = \$this->theRepository->insertGetId(\$data_arr);
+            if (!\$v_id) {
+                ErrorMsg::FillResponseAndLog(\$responseDto, ErrorMsg::INSERT_DB_FAILED);
+                return \$responseDto;
+            }
+            // 暂不返回详情，前端跳列表页
+        }
+        return \$responseDto;
+    }
+
+    public function detail(){
+        \$request = request()->all();
+        \$responseDto = new ResponseDto();
+
+        // uid参数校验; 当前登录用户是否有权限暂不验证，后面统一处理
+        \$field_id = 'id';
+        \$rules = [
+            \$field_id => 'required|integer|min:1'
+        ];
+        \$validate = Validator::make(\$request, \$rules);
+        if (\$validate->fails()) {
+            \$error_list = \$validate->errors()->all();
+            \$responseDto->status = ErrorMsg::PARAM_ERROR;
+            \$responseDto->msg = implode(\"\\r\\n\", \$error_list);
+            return \$responseDto;
+        }
+
+        \$v_detail = \$this->theRepository->getInfoById(\$request[\$field_id]);
+        if (!\$v_detail) {
+            ErrorMsg::FillResponseAndLog(\$responseDto, ErrorMsg::DATA_EMPTY);
+            return \$responseDto;
+        }
+        // 成功，返回信息
+        \$v_info = new ".$name."Dto();
+        \$v_info->Assign(\$v_detail);
+        \$responseDto->data = \$v_info;
+
+        return \$responseDto;
+    }
+
+    public function delete()
+    {
+        // 进行软删除，更新状态即可
+        return true;
+    }
+}
+";
+
+    $filename = $name . "Service.php";
+    writefile($l_tmpl, $path . '/'. $route, $filename);
+}
+
+
+function BuildRepository($path, $route, $name, $database='') {
+    $table_name = $database ? $database : strtolower($name);
+    $route = ucfirst($route); // 首字母大写
+    $name = ucfirst($name);
+
+    $l_tmpl = "<?php
+
+namespace App\Repositories\\".$route.";
+
+class ".$name."Repository extends ".$name."RepositoryImpl
+{
+    const CACHE_EXPIRE = 1;  // 单位秒，缓存时间
+
+    private static function GetCacheKey(\$id) {
+        return 'db:".$table_name.":detail-id-' . \$id;
+    }
+
+    // 通过id获取信息
+    public function getInfoById(\$id) {
+        // 先从cache获取数据
+        \$cache_key = self::GetCacheKey(\$id);
+        \$cached_result = \Cache::get(\$cache_key);
+        if (\$cached_result)
+            return \$cached_result;
+
+        // 再从数据库获取，获取到了则种cache
+        \$db_result = parent::getInfoById(\$id);
+        if (!\$db_result)
+            return \$db_result;
+        \Cache::put(\$cache_key, \$db_result, self::CACHE_EXPIRE);
+
+        return \$db_result;
+    }
+
+}
+";
+
+    $filename = $name . "Repository.php";
+    writefile($l_tmpl, $path . '/'. $route, $filename);
+}
+
+
+function BuildRepositoryImpl($path, $route, $name){
+    $route = ucfirst($route); // 首字母大写
+    $name = ucfirst($name);
+
+    $l_tmpl = "<?php
+
+namespace App\Repositories\\".$route.";
+
+use App\Models\\".$route."\\".$name.";
+use App\Repositories\BaseRepository;
+
+class ".$name."RepositoryImpl extends BaseRepository
+{
+    protected \$model ;
+
+    public function __construct() {
+        \$this->model = new ".$name."();
+    }
+
+    public function getList(\$params, \$field = ['*']) {
+        \$page = isset(\$params['page']) ? \$params['page'] : 1;
+        \$limit = (isset(\$params['limit']) && \$params['limit'] > 0) ? \$params['limit'] : parent::PAGE_SIZE;
+        //if (\$limit > parent::PAGE_SIZE_MAX) \$limit = parent::PAGE_SIZE; // 是否限制最大数量
+
+        \$builder = \$this->model;
+        if (isset(\$params['status'])) {
+            \$builder = \$builder->where('status', \$params['status']);
+        }
+        \$builder = \$builder->orderBy('id', 'asc');
+        return \$this->pager(\$builder, \$page, \$limit, \$field);
+    }
+
+    // 通过id获取信息
+    public function getInfoById(\$id) {
+        \$db_result = \$this->model->find(\$id);
+        if (!\$db_result)
+            return \$db_result;
+        return \$db_result->toArray();
+    }
+
+    // 新增并返回主键ID
+    public function insertGetId(\$data_arr) {
+        \$data_arr = \$this->filterFields4InsertOrUpdate(\$data_arr);
+        return \$this->model->insertGetId(\$data_arr);
+    }
+
+    public function updateData(\$id, \$data_arr) {
+        \$sql_where = [
+            'id' => \$id,
+        ];
+        \$data_arr = \$this->filterFields4InsertOrUpdate(\$data_arr);
+        if (isset(\$data_arr['id'])) unset(\$data_arr['id']);
+
+        return \$this->model->where(\$sql_where)->update(\$data_arr);
+    }
+}
+";
+
+    $filename = $name . "RepositoryImpl.php";
+    writefile($l_tmpl, $path . '/'. $route, $filename);
+}
+
+function BuildModel($path, $route, $name, $database=''){
+    $table_name = $database ? $database : strtolower($name);
+
+    $route = ucfirst($route); // 首字母大写
+    $name = ucfirst($name);
+
+    $l_tmpl = "<?php
+
+namespace App\Models\\".$route.";
+
+use Illuminate\Database\Eloquent\Model;
+
+class ".$name." extends Model
+{
+    protected \$table = '".$table_name."';
+    public \$timestamps = false;
+}
+";
+
+    $filename = $name . ".php";
+    writefile($l_tmpl, $path . '/'. $route, $filename);
+}
+
+
+function git_add($path, $filename) {
+    // 新创建的路径则不能添加，需手动； 或者逐级目录进行svn add操作，TODO ，有时间再完善
+    //$cmd = '"C:/Git/cmd/git.exe" add ' . $path . "/" . $filename . ' 2>&1';
+    $cmd = '"C:/Git/cmd/git.exe" -C "' . $path . '" add "' . $path . "/" . $filename . '" ' . ' 2>&1';
+    //echo $cmd;
+    exec($cmd, $out_put, $ret);
+    echo date("Y-m-d H:i:s") . " " . $path . "/" . $filename . " git_add succ!" . "\r\n";
+    return ;
+}
+
+function GetComment($route, $name, $a_t='Model') {
+    $str = "/**
+ * $name$a_t
+ * @author dev@xhat.com
+ * @since " . date("Y-m-d H:i:s:") . "
+ */";
+
+    return $str;
+}
+
+function writefile($l_tmpl, $path, $filename) {
+    if (!file_exists($path . "/" . $filename) || $GLOBALS['overwrite']) {
+        writeContent($l_tmpl, $path . "/" . $filename);
+        echo date("Y-m-d H:i:s") . " " . $path . "/" . $filename . " succ!" . "\r\n";
+    } else {
+        // 可以不用输出调试信息
+        echo date("Y-m-d H:i:s") . " " . $path . "/" . $filename . " file exist!" . "\r\n";
+    }
+    git_add($path, $filename);
+}
+
+//建立目地文件夹
+function createdir($dir='')
+{
+    if (!is_dir($dir)){
+        // 该参数本身不是目录 或者目录不存在的时候
+        $temp = explode('/',$dir);
+        $cur_dir = '';
+        for($i=0;$i<count($temp);$i++)
+        {
+            $cur_dir .= $temp[$i].'/';
+            if (!is_dir($cur_dir))
+            {
+                @mkdir($cur_dir,0775);
+            }
+        }
+    }
+}
+
+function writeContent( $content, $filePath, $mode='w' ){
+    createdir(dirname($filePath));
+    if ( !file_exists($filePath) || is_writable($filePath) ) {
+
+        if (!$handle = @fopen($filePath, $mode)) {
+            return "can't open file $filePath";
+        }
+
+        if (!fwrite($handle, $content)) {
+            return "cann't write into file $filePath";
+        }
+
+        fclose($handle);
+
+        return '';
+
+    } else {
+        return "file $filePath isn't writable";
+    }
+}
