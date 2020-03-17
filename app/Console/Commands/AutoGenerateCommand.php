@@ -355,6 +355,8 @@ class ".$name."Service extends BaseService
         if (!\$request) \$request = request()->all();
         \$responseDto = new ResponseDto();
 
+        if ('cli' != php_sapi_name()) \$current_uid = auth('api')->id();
+        else \$current_uid = (\$request['creator_id'] ?? 0) + 0;
         // 参数校验数组, 当前登录用户是否有权限暂不验证，后面统一处理
         //\$field_id = 'id';
         \$rules = [
@@ -378,7 +380,7 @@ class ".$name."Service extends BaseService
                 ErrorMsg::FillResponseAndLog(\$responseDto, ErrorMsg::DATA_NOT_EXISTS);
                 return \$responseDto;
             }
-            \$data_arr['updator_id'] = auth('api')->id();
+            \$data_arr['updator_id'] = \$current_uid;
             //\$data_arr['deleted_time'] = \$data_arr['deleted_time'] ?? \$this->theRepository::DATETIME_NOT_NULL_DEFAULT;
         } else {
             // 新增，注：有些需要检查对应的唯一key是否存在
@@ -387,7 +389,7 @@ class ".$name."Service extends BaseService
             //    ErrorMsg::FillResponseAndLog(\$responseDto, ErrorMsg::DATA_EXISTS);
             //    return \$responseDto;
             //}
-            \$data_arr['creator_id'] = auth('api')->id();
+            \$data_arr['creator_id'] = \$current_uid;
             \$data_arr['updator_id'] = \$data_arr['creator_id'];
             \$data_arr['created_time'] = date('Y-m-d H:i:s');
             //\$data_arr['deleted_time'] = \$this->theRepository::DATETIME_NOT_NULL_DEFAULT;
@@ -409,6 +411,7 @@ class ".$name."Service extends BaseService
                 return \$responseDto;
             }
             // 暂不返回详情，前端跳列表页
+            \$responseDto->data = ['id'=>\$v_id];
         }
         return \$responseDto;
     }
