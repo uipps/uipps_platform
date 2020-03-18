@@ -337,7 +337,7 @@ class ".$name."Service extends BaseService
             return \$responseDto;
         }
         if (\$list[\$responseDto::DTO_FIELD_LIST]) {
-            // 成功，返回用户信息
+            // 成功，返回列表信息
             foreach (\$list[\$responseDto::DTO_FIELD_LIST] as \$key => \$v_detail) {
                 \$v_info = new ".$name."Dto();
                 \$v_info->Assign(\$v_detail);
