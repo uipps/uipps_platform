@@ -370,6 +370,7 @@ class ".$name."Service extends BaseService
             return \$responseDto;
         }
 
+        \$curr_datetime = date('Y-m-d H:i:s');
         \$data_arr = \$request; // 全部作为
         if (isset(\$request['id']) && \$request['id']) {
             // 修改的情况
@@ -391,11 +392,11 @@ class ".$name."Service extends BaseService
             //}
             \$data_arr['creator_id'] = \$current_uid;
             \$data_arr['updator_id'] = \$data_arr['creator_id'];
-            \$data_arr['created_time'] = date('Y-m-d H:i:s');
+            \$data_arr['created_time'] = \$curr_datetime;
             //\$data_arr['deleted_time'] = \$this->theRepository::DATETIME_NOT_NULL_DEFAULT;
         }
         // 数据增加几个默认值
-        \$data_arr['updated_time'] = date('Y-m-d H:i:s');
+        \$data_arr['updated_time'] = \$curr_datetime;
 
         if (isset(\$request['id']) && \$request['id']) {
             // 更新
