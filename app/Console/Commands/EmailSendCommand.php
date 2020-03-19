@@ -37,8 +37,10 @@ class EmailSendCommand extends Command
 
     private function main($_o) {
         $this->info(date('Y-m-d H:i:s') . ' begin - mbp16inch: ');
-        $this->mbp16inch($_o);
+        $rlt = $this->mbp16inch($_o);
         $this->info(date('Y-m-d H:i:s') . ' end mbp16inch');
+
+        return $rlt;
     }
 
     // macbook pro 16inch 到货通知
