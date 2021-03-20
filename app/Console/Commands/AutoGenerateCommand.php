@@ -17,6 +17,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+//define('NEW_LINE_CHAR', "\n");
+define('NEW_LINE_HTML', '
+');
+
 class AutoGenerateCommand extends Command
 {
     const NEW_LINE_CHAR = "\r\n";
@@ -32,6 +36,9 @@ class AutoGenerateCommand extends Command
         $start_time = microtime(true);
         $start_mem = memory_get_usage();
         $this->info(date('Y-m-d H:i:s') . ' begin:');
+
+        $GLOBALS['except'] = ['user', 'language', 'sys_language'];
+        $GLOBALS['delete_status_tabs'] = ['user', 'role', 'sys_country', 'sys_language', 'sys_department'];
 
         $data = $this->main($options);
         $this->info('  result:' . var_export($data, true));
@@ -49,7 +56,7 @@ class AutoGenerateCommand extends Command
 
     private function processMultiple($_o) {
         // user表手动处理，不能自动生成，稍微复杂
-        $except = ['user', 'language', 'sys_language'];
+        $except = $GLOBALS['except'];
         if (isset($_o['except']) && $_o['except']) {
             $l_except_list = explode(',', $_o['except']);
             $except = array_merge($except, $l_except_list); // 合并数组，不能用+
@@ -107,7 +114,7 @@ class AutoGenerateCommand extends Command
         $table_name = strtolower(trim($table_name));
 
         // 默认文件命名跟表名一样，但是有些sys_area这些去掉sys_, 但有几个例外：sys_routing，sys_privilege，sys_opt_record
-        $orig = ['sys_routing', 'sys_privilege','sys_opt_record'];
+        $orig = ['sys_routing', 'sys_privilege', 'sys_opt_record', 'sys_config'];
         $key_word = 'sys_'; // 删除sys_前缀
         if ($key_word == substr($table_name, 0, strlen($key_word)) && !in_array($table_name, $orig)) {
             $table_name = substr($table_name, strlen($key_word));
@@ -134,7 +141,7 @@ class AutoGenerateCommand extends Command
         $GLOBALS['overwrite'] = isset($_o['o']) ? $_o['o'] : 0;
 
         // user表手动处理，不能自动生成，稍微复杂
-        $except = ['user', 'language'];
+        $except = $GLOBALS['except'];
         if (isset($_o['except']) && $_o['except']) {
             $l_except_list = explode(',', $_o['except']);
             print_r($l_except_list);
@@ -159,7 +166,7 @@ class AutoGenerateCommand extends Command
 
         // 4-5. 新增repository, 样例： app/Repositories/Admin/DepartmentRepository.php
         BuildRepository($source_path . "/app/Repositories", $route, $name, $database);
-        BuildRepositoryImpl($source_path . "/app/Repositories", $route, $name);
+        BuildRepositoryImpl($source_path . "/app/Repositories", $route, $name, $database);
 
         // 6. 新增model, 样例： app/Models/Admin/Department.php
         BuildModel($source_path . "/app/Models", $route, $name, $database);
@@ -269,11 +276,17 @@ class ".$name."Dto extends BaseDto
 //    public $phone = '';
 //    public $authority_list = '';
 
+    $str_pad_num = 48;
     // 字段自动获取，并依据类型默认成0或空字符串
     foreach ($rlt as $row) {
-        $zero_string = (false !== strpos($row->Type, 'int(')) ? 0 : "''";
-        $l_tmpl .= '
-    public $'. $row->Field .' = '. $zero_string .';';
+        $zero_string = "''";
+        if ((false !== strpos($row->Type, 'int(')) || (false !== strpos($row->Type, 'decimal(')))
+            $zero_string = 0;
+
+        $public_str = '    public $'. $row->Field .' = '. $zero_string .';';
+        $public_str = str_pad($public_str, $str_pad_num) . '// ' . $row->Comment; // 加上字段的备注，并且对齐
+
+        $l_tmpl .= NEW_LINE_HTML . $public_str;
     }
 
     $l_tmpl .= "
@@ -417,8 +430,8 @@ class ".$name."Service extends BaseService
         return \$responseDto;
     }
 
-    public function detail(){
-        \$request = request()->all();
+    public function detail(\$id) {
+        \$request['id'] = \$id;
         \$responseDto = new ResponseDto();
 
         // uid参数校验; 当前登录用户是否有权限暂不验证，后面统一处理
@@ -447,10 +460,29 @@ class ".$name."Service extends BaseService
         return \$responseDto;
     }
 
-    public function delete()
-    {
+    public function delete(\$id) {
         // 进行软删除，更新状态即可
         return true;
+    }
+    
+    // 更新单条
+    public function updateOne(\$id) {
+        \$request = request()->all();
+        \$request['id'] = \$id;
+        \$responseDto = new ResponseDto();
+
+        // 参数校验数组, 当前登录用户是否有权限暂不验证，后面统一处理
+        \$rules = [
+            'id' => 'required|integer|min:1'
+        ];
+        \$validate = Validator::make(\$request, \$rules);
+        if (\$validate->fails()) {
+            \$error_list = \$validate->errors()->all();
+            \$responseDto->status = ErrorMsg::PARAM_ERROR;
+            \$responseDto->msg = implode(\"\\r\\n\", \$error_list);
+            return \$responseDto;
+        }
+        return self::addOrUpdate(\$request);
     }
 }
 ";
@@ -502,9 +534,16 @@ class ".$name."Repository extends ".$name."RepositoryImpl
 }
 
 
-function BuildRepositoryImpl($path, $route, $name){
+function BuildRepositoryImpl($path, $route, $name, $database=''){
     $route = ucfirst($route); // 首字母大写
     $name = ucfirst($name);
+
+    $delete_status_str = " else {
+            \$builder = \$builder->where('status', '!=', -1);
+        }";
+    if (!in_array($database, $GLOBALS['delete_status_tabs'])) {
+        $delete_status_str = '';
+    }
 
     $l_tmpl = "<?php
 
@@ -570,6 +609,11 @@ function BuildModel($path, $route, $name, $database=''){
     $route = ucfirst($route); // 首字母大写
     $name = ucfirst($name);
 
+
+    // 获取表结构 $field_arr = Schema::getColumnListing($table_name);
+    $sql = 'SHOW FULL FIELDS FROM `' . $table_name . '`';
+    $rlt = DB::select($sql);  // 主键、字段类型、长度等详情，暂时不用 int(
+
     $l_tmpl = "<?php
 
 namespace App\Models\\".$route.";
@@ -580,6 +624,22 @@ class ".$name." extends Model
 {
     protected \$table = '".$table_name."';
     public \$timestamps = false;
+    
+    protected \$fillable = [";
+//    'month',                                // 分区字段 订单时间取yyyyMM(UTC+8)
+//    'order_source',                         // 订单来源,15网盟,16shopify,17分销,4crm
+
+    $str_pad_num = 48;
+    // 字段自动获取，并依据类型默认成0或空字符串
+    foreach ($rlt as $row) {
+        $public_str = '        \''. $row->Field .'\',';
+        $public_str = str_pad($public_str, $str_pad_num) . '// ' . $row->Comment; // 加上字段的备注，并且对齐
+
+        $l_tmpl .= NEW_LINE_HTML . $public_str;
+    }
+
+    $l_tmpl .= "
+    ];
 }
 ";
 
@@ -591,7 +651,10 @@ class ".$name." extends Model
 function git_add($path, $filename) {
     // 新创建的路径则不能添加，需手动； 或者逐级目录进行svn add操作，TODO ，有时间再完善
     //$cmd = '"C:/Git/cmd/git.exe" add ' . $path . "/" . $filename . ' 2>&1';
-    $cmd = '"C:/Git/cmd/git.exe" -C "' . $path . '" add "' . $path . "/" . $filename . '" ' . ' 2>&1';
+	$git_command = '"git"';
+    if ('WIN' === strtoupper(substr(PHP_OS, 0, 3)))
+        $git_command = '"C:/Git/cmd/git.exe"';
+    $cmd = $git_command . ' -C "' . $path . '" add "' . $path . "/" . $filename . '" ' . ' 2>&1';
     //echo $cmd;
     exec($cmd, $out_put, $ret);
     echo date("Y-m-d H:i:s") . " " . $path . "/" . $filename . " git_add succ!" . "\r\n";
@@ -616,7 +679,7 @@ function writefile($l_tmpl, $path, $filename) {
         // 可以不用输出调试信息
         echo date("Y-m-d H:i:s") . " " . $path . "/" . $filename . " file exist!" . "\r\n";
     }
-    git_add($path, $filename);
+    //git_add($path, $filename);
 }
 
 //建立目地文件夹
