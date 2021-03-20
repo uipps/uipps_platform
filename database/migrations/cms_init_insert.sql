@@ -1147,6 +1147,7 @@ update `field_def` set `list_order`='2000' where `name_eng`='url_1' and t_id not
 update `field_def` set `list_order`='2012' where `name_eng` IN ('last_modify', 'updated_at');
 update  field_def set `creator`='admin' where creator='0';
 update  field_def set `createdate`=DATE_FORMAT(NOW(),'%Y-%m-%d') where createdate='0000-00-00';
+update  field_def set `createdate`=DATE_FORMAT(NOW(),'%Y-%m-%d') where createdate='0000-01-01';
 update  field_def set `createtime`=DATE_FORMAT(NOW(),'%H:%i:%s') where createtime='00:00:00';
 
 -- 2) 非三张基本表
