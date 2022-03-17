@@ -2,11 +2,20 @@
 
 date ;
 php artisan clear-compiled
+#php artisan auth:clear-resets
 php artisan cache:clear
 php artisan config:clear
 php artisan event:clear
+#php artisan log:clear
+php artisan optimize:clear
+php artisan queue:clear
 php artisan route:clear
+php artisan schedule:clear-cache
 php artisan view:clear
+
+## php artisan|findstr clea 就能看到哪些
+##    其中auth:clear-resets 需要数据表password_resets  ;
+##    log:clear 需要 composer require uipps/laravel-log-clear ;
 
 ## git -C /www/html/test/uipps-api status  && \
 ## git status  && \
