@@ -6,7 +6,7 @@ php artisan clear-compiled
 php artisan cache:clear
 php artisan config:clear
 php artisan event:clear
-#php artisan log:clear
+php artisan log:clear
 php artisan optimize:clear
 php artisan queue:clear
 php artisan route:clear

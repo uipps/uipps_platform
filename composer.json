@@ -11,7 +11,9 @@
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.7",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "uipps/generate-models-4-packagist": "5.0.1",
+        "uipps/laravel-log-clear": "1.0.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -63,7 +65,7 @@
     "repositories": {
         "packagist": {
             "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer/"
+            "url": "https://mirrors.cloud.tencent.com/composer/"
         }
     }
 }
