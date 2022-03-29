@@ -12,3 +12,6 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+.svn
+.git_uipps
+.git_laravel_master
