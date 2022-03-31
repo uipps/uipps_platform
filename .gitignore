@@ -12,7 +12,10 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+composer.lock
 .env.local
 .svn
 .git_uipps
 .git_laravel_master
+/public/dpa_html
+/resources/views/admin
