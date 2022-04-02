@@ -13,7 +13,8 @@
         "laravel/tinker": "dev-develop",
         "predis/predis": "^1.1",
         "uipps/generate-models-4-packagist": "^5.0",
-        "uipps/laravel-log-clear": "^1.0"
+        "uipps/laravel-log-clear": "^1.0",
+        "uipps/uipps-init": "^1.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
