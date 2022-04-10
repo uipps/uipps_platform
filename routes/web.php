@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resource('/project', \App\Http\Controllers\Uipps\ProjectController::class);
+Route::resource('/user', \App\Http\Controllers\Uipps\UserController::class);

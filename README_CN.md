@@ -12,8 +12,7 @@ UIPPS(universal information publish platform) 通用信息发布平台 基于lar
 ## 1.安装步骤
 - `git clone git@github.com:uipps/uipps_platform.git`
 - `docker-compose up -d` (没有docker可不执行)
-- 复制.env.example为.env `cp .env.example .env`
-- 修改.env文件里的数据库连接、邮箱等信息
+- `cp .env.example .env` 复制.env.example为.env；并修改.env文件里的数据库连接、邮箱等信息
 - `composer update` (更换国内镜像或代理free_proxy composer update)
 - `php artisan key:generate` ( 可不用执行，已经在env中手动指定APP_KEY了)
 - `php artisan make:auth`    ( 可不用执行，因生成路由、controller、blade模版等文件)
