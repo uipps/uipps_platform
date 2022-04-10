@@ -67,6 +67,14 @@ return [
             'days' => 14,
         ],
 
+        'telescope' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/telescope/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'tap' => [App\Helpers\Logging\DailyFormatter::class],
+            'days' => 14,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

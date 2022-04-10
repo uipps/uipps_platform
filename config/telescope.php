@@ -95,8 +95,14 @@ return [
         // 'api/*'
     ],
 
+    // 不想记录高频率的基础数据接口，例如国家语言，map 字段等
     'ignore_paths' => [
         'nova-api*',
+        'v1/language',
+        'v1/country',
+        'v1/fieldmap',
+        'v1/department',
+        'v1/area/*'
     ],
 
     'ignore_commands' => [

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Gate;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Laravel\Telescope\TelescopeApplicationServiceProvider;
+use Illuminate\Support\Facades\Log;
 
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
@@ -30,6 +31,14 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                    $entry->isFailedJob() ||
                    $entry->isScheduledTask() ||
                    $entry->hasMonitoredTag();
+
+            /* // 参考： https://learnku.com/articles/45653
+            //if (!$this->app->environment('production')) return true;
+            // 线上环境只写入文件日志
+            //Log::info('telescope', $entry->toArray());
+            Log::channel('telescope')->info($entry->type, $entry->toArray());
+            return false;
+            */
         });
     }
 
