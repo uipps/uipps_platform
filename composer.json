@@ -10,6 +10,7 @@
         "fruitcake/laravel-cors": "dev-develop",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "dev-develop",
+        "laravel/telescope": "^4.8",
         "laravel/tinker": "dev-develop",
         "predis/predis": "^1.1",
         "uipps/generate-models-4-packagist": "^5.0",
