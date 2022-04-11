@@ -56,7 +56,7 @@ return [
 
         'single' => [
             'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/laravel_single.log'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
@@ -120,7 +120,13 @@ return [
         ],
 
         'emergency' => [
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/laravel_emergency.log'),
+        ],
+
+        // 记录弃用警告
+        'deprecations' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/php-deprecation-warnings.log'),
         ],
     ],
 
